@@ -74,10 +74,13 @@ WSGI_APPLICATION = 'Ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+DATABASES = {'default': {
+       'ENGINE': 'django.db.backends.postgresql_psycopg2',
+       'NAME': 'e-commerce_dbs',
+       'USER':'postgres',
+       'PASSWORD':'Alejandro189',
+       'HOST':'localhost',
+       'PORT':'5432',
     }
 }
 
@@ -129,6 +132,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'global_static'),
 )
 
+##### Envio de correos ######
 # EMAIL_USE_TLS = True
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_USER = 'aguileraa18@gmail.com'
