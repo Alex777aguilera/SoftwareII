@@ -12,3 +12,4 @@ media/.DS_Store
 *.DS_Store
 Ecommerce/__pycache__/*
 ecommerce_app/__pycache__/*
+ecommerce_app/migrations/__pycache__/*
