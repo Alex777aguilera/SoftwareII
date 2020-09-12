@@ -10,3 +10,5 @@ db.sqlite3
 ecommerce_app/media/imagen_producto/.DS_Store
 media/.DS_Store
 *.DS_Store
+Ecommerce/__pycache__/*
+ecommerce_app/__pycache__/*
