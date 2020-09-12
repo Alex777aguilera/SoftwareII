@@ -41,9 +41,8 @@ class Empresa(models.Model):
 	#direccion_gps = models.TextField(blank = True, null = True)
 	latitude_empresa = models.FloatField(default = 0.00, blank = True, null = True)
 	longitude_empresa = models.FloatField(default = 0.00, blank = True, null = True)
-	#encargado = models.ForeignKey(#)
 	descripcion = models.TextField(verbose_name='descripcion_empresa')#Si no se da el nombre detallado, Django lo creará automáticamente usando el nombre del atributo del campo, convirtiendo los guiones bajos en espacios
-	
+	#encargado = models.ForeignKey(#)
 	
 	def __str__(self):
 		return "{} {} " .format(self.nombre,self.contacto)
@@ -53,15 +52,15 @@ class Producto(models.Model):
 	imagen_producto = models.ImageField(upload_to='imagen_producto')
 	nombre_producto = models.CharField(max_length=200,blank=True,null=True)
 	descripcion_producto = models.CharField(max_length=500,blank=True,null=True)
-	categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
 	fecha_registro = models.DateField(auto_now_add=True,blank=True,null=True)
 	existencia = models.IntegerField(default=0,blank = True, null = True)
 	precio = models.FloatField(default=0,blank = True, null = True)
 	porcentaje_descuento = models.IntegerField(default=0,blank = True, null = True)
 	esta_descuento = models.BooleanField(default = False)
-	tipo_inventario = models.ForeignKey(TipoInventario,blank = True, null = True, on_delete=models.CASCADE)
 	nuevo_producto = models.BooleanField(default = False)
 	tipo_producto = models.ForeignKey(Tipo_producto, on_delete=models.CASCADE)
+	tipo_inventario = models.ForeignKey(TipoInventario,blank = True, null = True, on_delete=models.CASCADE)
+	categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return "{}-{} " .format(self.pk,self.nombre_producto,self.categoria)
@@ -77,8 +76,9 @@ class Redes_sociales(models.Model):
 		return "{}".format(self.pk)
 
 class Venta(models.Model):
-	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 	cantidad = models.IntegerField()
+	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+
 	#descripcion_producto
 	def __str__(self):
 		return "{}-{} " .format(self.pk,self.nombre_producto,self.cantidad)
