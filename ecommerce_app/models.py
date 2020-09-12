@@ -43,7 +43,7 @@ class Empresa(models.Model):
 	longitude_empresa = models.FloatField(default = 0.00, blank = True, null = True)
 	#encargado = models.ForeignKey(#)
 	descripcion = models.TextField(verbose_name='descripcion_empresa')#Si no se da el nombre detallado, Django lo creará automáticamente usando el nombre del atributo del campo, convirtiendo los guiones bajos en espacios
-	chat_telegram = models.TextField(blank = True, null = True)
+	
 	
 	def __str__(self):
 		return "{} {} " .format(self.nombre,self.contacto)
@@ -78,14 +78,29 @@ class Redes_sociales(models.Model):
 
 class Venta(models.Model):
 	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-	cabtidad = models.IntegerField()
+	cantidad = models.IntegerField()
+	#descripcion_producto
 	def __str__(self):
-		return "{}-{} " .format(self.pk,self.nombre_producto,self.categoria)
-		
+		return "{}-{} " .format(self.pk,self.nombre_producto,self.cantidad)
+
+#Modelos restantes
+#detalle_venta
+#carrito
+#cliente
+#metodo_envio 'empresa, terceros, cliente'
+#Marcas,Modelo , Proveedores
+#Alertas ''
+
+####cosas geniales ### likes por productos, asi poder mostrarlo en el dashboard, comentarios del producto, productos relacionados
+##mapita de la empresa
 
 
 #Datos de Telegram, trabajar con un chat-id o con group-id
 class Telegram(models.Model):
 	token = models.CharField(max_length=200)
 	groupid = models.CharField(max_length=200)
-		
+
+	def __str__(self):
+		return "{}" .format(self.pk)
+
+
