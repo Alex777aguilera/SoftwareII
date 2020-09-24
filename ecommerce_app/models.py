@@ -94,6 +94,17 @@ class Venta(models.Model):
 ####cosas geniales ### likes por productos, asi poder mostrarlo en el dashboard, comentarios del producto, productos relacionados
 ##mapita de la empresa
 
+##Modelo cliente
+class Cliente(models.Model):
+	num_identidad = models.CharField(max_length=20)
+	nombres =models.CharField(max_length=100)
+	apellidos =models.CharField(max_length=100)
+	fecha_registro = models.DateField(auto_now_add=True)
+	estado = models.BooleanField(default=True)
+	imagen = models.ImageField(upload_to='imagen_colaborador',blank=True,null=True)
+	cargo = models.ForeignKey(CargoColaborador)
+	usuario_colaborador = models.ForeignKey(User)
+
 
 #Datos de Telegram, trabajar con un chat-id o con group-id
 class Telegram(models.Model):
