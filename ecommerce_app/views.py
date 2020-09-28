@@ -17,9 +17,52 @@ from ecommerce_app.models import *
 
 #vista principal
 def principal(request):
-	return render(request,'inicio.html')
+	if request.user.is_authenticated:
+		if request.user.is_superuser :
+			return redirect('ecommerce_app:principal_admin')
+		else:
+			return render(request,'principal.html')
+	else:
+		return render(request,'principal.html')
+
+
+## Vista admin
+@login_required
+def principal_admin(request):
+	user = request.user
+	print (user.pk)
+	if user.is_authenticated:
+		if request.user.is_superuser :
+			return render(request,'inicio_admin.html')
+		else:
+			return redirect('ecommerce_app:principal')
+			
+		
+	else:
+		return render(request,'error.html')
+
+# #vista cliente
+# @login_required
+# def principal_cliente(request):
+# 	user = request.user
+# 	if user.is_authenticated:
+# 		if request.user.is_superuser :
+# 			return redirect('ecommerce_app:principal_admin')
+# 		else:
+# 			return render(request,'inicio_cliente.html')
+			
+# 	else:
+# 		return render(request,'error.html')
 
 def login(request):
+	if request.user.is_authenticated:
+		if request.user.is_superuser :
+			return redirect('ecommerce_app:principal_admin')
+		else:
+			return redirect('ecommerce_app:principal')	
+		
+	
+
 	mensaje = ''
 	if request.method == 'POST':
 		username = request.POST.get('username')
@@ -29,8 +72,11 @@ def login(request):
 		if user is not None:
 			if user.is_active:
 				auth_login(request,user)
-				
-				return redirect('ecommerce_app:principal')
+				if request.user.is_superuser :
+					return redirect('ecommerce_app:principal_admin')
+				else:
+					return redirect('ecommerce_app:principal')	
+	
 			else:
 				mensaje = 'USUARIO INACTIVO'
 				return render(request,'login.html',{'mensaje':mensaje})
@@ -47,5 +93,14 @@ def cerrar_sesion(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('ecommerce_app:login'))
 	
-
+# def buscar_productos(request):
+# 	if request.method == 'POST':
+# 		lista = {}
+# 		lista_buscar = vista de los productos.objects.filter(Q(nombre_producto__icontains=request.POST.get('Search')) 
+# 													| Q(empresa__nombre__icontains=request.POST.get('Search'))
+# 													| Q(descripcion_producto__icontains=request.POST.get('Search'))).filter(empresa__estado_aprobacion=3)
+# 		print lista_buscar.query,"lista buscar"
+# 		return render(request,'buscar_productos.html',{'empresas':lista_buscar})
+# 	else:
+# 		return render(request,'error.html')
 
