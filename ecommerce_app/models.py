@@ -125,6 +125,7 @@ class Venta(models.Model):
 ##mapita de la empresa
 
 
+
 #Datos de Telegram, trabajar con un chat-id o con group-id
 class Telegram(models.Model):
 	token = models.CharField(max_length=200)
