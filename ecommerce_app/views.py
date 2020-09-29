@@ -104,3 +104,5 @@ def cerrar_sesion(request):
 # 	else:
 # 		return render(request,'error.html')
 
+def registrar_producto(request):
+	return render(request,'registrar_producto.html')
