@@ -21,6 +21,8 @@
     <link href="{% static 'css/responsive.css' %}" rel="stylesheet" type="text/css" />
     <!-- custom javascript -->
     <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
+     <!-- datatables -->
+  <link rel="stylesheet" href="{% static 'datatables/dataTables.bootstrap4.min.css' %}">
 </head>
 
 <body>
@@ -69,13 +71,22 @@
                                     <small class="text"> Orders </small>
                                 </a>
                             </div>
-                            
+
                             <div class="widget-header">
                                 <a href="#" class="widget-view">
                                     <div class="icon-area icon icon-sm rounded-circle bg-light">
                                         <i class="fa fa-shopping-cart text-primary"></i>
                                     </div>
                                     <small class="text"> Carrito </small>
+                                </a>
+                            </div>
+
+                            <div class="widget-header">
+                                <a href="{% url 'ecommerce_app:agregar_empresa' %}" class="widget-view">
+                                    <div class="icon-area">
+                                        <i class="fas fa-building"></i>
+                                    </div>
+                                    <small class="text"> + Empresa </small>
                                 </a>
                             </div>
                         </div> <!-- widgets-wrap.// -->
@@ -103,7 +114,7 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Ready to ship</a>
+                            <a class="nav-link" href="{% url 'ecommerce_app:registrar_producto' %}">Registrar Productos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Trade shows</a>
@@ -167,6 +178,12 @@
         </div><!-- //container -->
     </footer>
     <!-- ========================= FOOTER END // ========================= -->
+<!-- datatables -->
+ <script src="{% static 'datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'datatables/dataTables.bootstrap4.min.js' %}"></script>
+{% block js %}
+
+{% endblock js %}
 </body>
 
 </html>

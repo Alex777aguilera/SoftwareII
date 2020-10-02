@@ -9,7 +9,7 @@ importlib.reload(sys)
 
 class TipoProducto(models.Model):
 	descripcion_tipo_producto = models.CharField(max_length=100)
-	
+	#En revision 
 	def __str__(self):
 		return "{}-{} " .format(self.pk,self.descripcion_tipo_producto)
     #Si el producto es nuevo,usado,especial
@@ -25,25 +25,14 @@ class Categoria(models.Model):
 class Marca(models.Model):
 	"""docstring for Marca"""
 	descripcion_marca = models.CharField(max_length=50)
+	categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+
 	def __str__(self):
 		return "{}".format(self.descripcion_marca)
 
-class Modelo(models.Model):
-	"""docstring for Modelo"""
-	descripcion_modelo = models.CharField(max_length=50)
-	def __str__(self):
-		return "{}".format(self.descripcion_modelo)
-
-class MarcaModelo(models.Model):
-	"""docstring for MarcaModelo"""
-	marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
-	modelo = models.ForeignKey(Modelo, on_delete=models.CASCADE)
-	def __str__(self):
-		return "{}|{}-{}".format(self.pk,self.marca,self.modelo)
-
 class TipoInventario(models.Model):
 	tipo_inventario = models.CharField(max_length=200,blank=True,null=True)
-
+	#En revision 
 	def __str__(self):
 		return "{}-{}".format(self.pk,self.tipo_inventario)
     #con inventario, significa que cuando se haga la compra se tiene que rebajar existencia
@@ -77,16 +66,17 @@ class Producto(models.Model):
 	nombre_producto = models.CharField(max_length=200,blank=True,null=True)
 	# existencia = models.IntegerField(default=0,blank = True, null = True)
 	descripcion_producto = models.CharField(max_length=500,blank=True,null=True)
+	modelo = models.CharField(max_length=500,blank=True,null=True)
 	fecha_registro = models.DateField(auto_now_add=True,blank=True,null=True)
 	precio = models.FloatField(default=0,blank = True, null = True)
-	categoria_genero = models.ForeignKey(Genero, on_delete=models.CASCADE)#para diferenciar si un producto es para hombre u mujer, esto hara mas facil un filtro u para el buscador
 	porcentaje_descuento = models.IntegerField(default=0,blank = True, null = True)
 	esta_descuento = models.BooleanField(default = False)
 	nuevo_producto = models.BooleanField(default = False)
+	estado_producto = models.BooleanField(default = False)
 	proveedor = models.CharField(max_length=500,blank=True,null=True)
-	tipo_producto = models.ForeignKey(TipoProducto, on_delete=models.CASCADE)
-	categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-	marca_modelo = models.ForeignKey(MarcaModelo, on_delete=models.CASCADE)
+	marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
+	categoria_genero = models.ForeignKey(Genero, on_delete=models.CASCADE)#para diferenciar si un producto es para hombre u mujer, esto hara mas facil un filtro u para el buscador
+
 
 	def __str__(self):
 		return "{}-{} |{}" .format(self.pk,self.nombre_producto,self.existencia)

@@ -5,7 +5,13 @@ e-commerce | Admin
 {% load static %}
 {% block content %}
 <h2>Este es el admin</h2>
+
 {% endblock content %}
 
 {% block js %}
+<script type="text/javascript">
+	$(document).ready( function () {
+    $('#table_id').DataTable();
+} );
+</script>
 {% endblock js %}
