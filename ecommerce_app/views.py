@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from django.db import transaction,connections
 from django.contrib.auth import login as auth_login,logout,authenticate
 from django.http import HttpResponseRedirect,JsonResponse, HttpResponse
 from django.urls import reverse
@@ -106,3 +107,89 @@ def cerrar_sesion(request):
 
 def registrar_producto(request):
 	return render(request,'registrar_producto.html')
+
+def agregar_empresa(request):
+	guardar_editar = True
+	ret_data,query_empresa,errores = {},{},{}
+
+	if request.method == 'POST':
+		ret_data['nombre'] = request.POST.get('nombre')
+		ret_data['imagen_logo'] = request.FILES.get('imagen_logo')
+		ret_data['contacto'] = request.POST.get('contacto')
+		ret_data['correo'] = request.POST.get('correo')
+		ret_data['direccion'] = request.POST.get('direccion')
+		ret_data['latitude_empresa'] = request.POST.get('latitude_empresa')
+		ret_data['longitude_empresa'] = request.POST.get('longitude_empresa')
+		ret_data['descripcion'] = request.POST.get('descripcion')
+
+		#1
+		if request.POST.get('nombre') == '':
+			errores['nombre'] = "Por favor ingrese el nombre de la Empresa"
+		else:
+			query_empresa['nombre'] = request.POST.get('nombre')
+
+		#2
+		if request.FILES.get('imagen_logo') == None:
+			errores['imagen_logo'] = "Por favor ingrese el logo de la Empresa"
+		else:
+			query_empresa['imagen_logo'] = request.FILES.get('imagen_logo')
+
+		#3
+		if request.POST.get('contacto') == '':
+			errores['contacto'] = "Por favor ingrese el contacto de la Empresa"
+		else:
+			query_empresa['contacto'] = request.POST.get('contacto')
+
+		#4
+		if request.POST.get('correo') == '':
+			errores['correo'] = "Por favor ingrese el correo de la Empresa"
+		else:
+			query_empresa['correo'] = request.POST.get('correo')
+
+		#5
+		if request.POST.get('direccion') == '':
+			errores['direccion'] = "Por favor ingrese la direccion de la Empresa"
+		else:
+			query_empresa['direccion'] = request.POST.get('direccion')
+
+		#6
+		if request.POST.get('latitude_empresa') == '':
+			errores['latitude_empresa'] = "Por favor ingrese la latitude de la Empresa"
+		else:
+			query_empresa['latitude_empresa'] = request.POST.get('latitude_empresa')
+
+		#7
+		if request.POST.get('longitude_empresa') == '':
+			errores['longitude_empresa'] = "Por favor ingrese la longitude de la Empresa"
+		else:
+			query_empresa['longitude_empresa'] = request.POST.get('longitude_empresa')
+
+		#8
+		if request.POST.get('descripcion') == '':
+			errores['descripcion'] = "Por favor ingrese la descripcion de la Empresa"
+		else:
+			query_empresa['descripcion'] = request.POST.get('descripcion')
+
+		if not errores:
+			try:
+				empresa = Empresa(**query_empresa)
+				empresa.save()
+			except Exception as e:
+				transaction.rollback()
+
+				errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
+				ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar}
+				
+				return render(request,'registrar_empresa.html',ctx)
+
+			else:
+				transaction.commit()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
+
+		else:
+			return redirect('ecommerce_app:agregar_empresa')
+
+
+	else:
+		return render(request,'agregar_empresa.html')
+
