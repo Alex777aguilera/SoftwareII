@@ -1,40 +1,149 @@
  {% extends "base_admin.html" %}
-{% block title %}
-e-commerce | Admin
-{% endblock title %}
-{% load static %}
-{% block content %}
+ {% block title %}
+ e-commerce | Admin
+ {% endblock title %}
+ {% load static %}
+ {% block content %}
+ <br>
+ <section class="content">
+ 	<div class="card shadow mb-4">
 
-<section class="header-main border-bottom">
-	<div class="card-header">
-        
-        <h3 >
-          Registrar Empresa
-        </h3>
+ 		<aside>
 
-        <form role="form" method="post" enctype="multipart/form-data" action="{% url 'ecommerce_app:agregar_empresa' %}" >
+ 			<!-- ============================ COMPONENT PROFILE  ================================= -->
+ 			<div class="card mb-4">
+ 				<div class="card-header py-3">
+ 					<h2 class="m-0 font-weight-bold text-primary">Registrar Empresa</h2>
+ 				</div>
 
-        	{% csrf_token %}
-        	{% if errores.administrador %}
-        	<div class="alert alert-danger alert-dismissible">
-          	
-          		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          		<h5><i class="icon fas fa-ban"></i> Error {{errores.administrador}} </h5>
-          
-        	</div>
-        	{% endif %}
+ 				<div class="card-body">
+ 					
+ 					<form role="form" method="post" enctype="multipart/form-data" action="{% url 'ecommerce_app:agregar_empresa' %}" >
 
-        	
+ 						{% csrf_token %}
 
-
-        </form>
-     
-     </div>
+ 						{% if errores.administrador %}
+ 						<div class="alert alert-danger alert-dismissible " role="alert">
+ 							<strong>ERROR! </strong>{{errores.administrador}}
+ 							{% endif %}
 
 
-</section>
+ 							<div class="form-row">
+ 								
+ 								<div class="form-group col-md-4">
+ 									<label>Logo de la Empresa</label>
+ 									<br>
+ 									<label  for="exampleFormControlFile1">
+ 										<input type="file" class="form-control-file" id="imagen_logo" name="imagen_logo" value="{{ret_data.imagen_logo}}">
+ 									</label>
 
-{% endblock content %}
+ 									{% if errores.imagen_logo %}
+ 									<div class="alert alert-danger alert-dismissible " role="alert">
+ 										<strong>ERROR! </strong>{{errores.imagen_logo}}
+ 									</div>
+ 									{% endif %}
+ 								</div> <!-- form-group end.// -->
 
-{% block js %}
-{% endblock js %}
+ 							</div> <!-- form-row.// -->
+
+ 							<div class="form-row">
+ 								<div class="col-md-4">
+ 									<div class="col form-group">
+ 										<label>Nombre</label>
+ 										<input type="text" class="form-control" id="id_nombre" name="nombre" placeholder="Nombre de la Empresa" value="{{ret_data.nombre}}">
+
+ 										{% if errores.nombre %}
+ 										<div class="alert alert-danger alert-dismissible " role="alert">
+ 											<strong>ERROR! </strong>{{errores.nombre}}
+ 										</div>
+ 										{% endif %}
+ 									</div> <!-- form-group end.// -->
+ 								</div>
+ 								
+ 								<div class="form-group col-md-4">
+ 									<label>Contacto</label>
+ 									<input type="text" class="form-control" id="id_contacto" name="contacto" placeholder="Contacto de la Empresa" value="{{ret_data.contacto}}">
+
+ 									{% if errores.contacto %}
+ 									<div class="alert alert-danger alert-dismissible " role="alert">
+ 										<strong>ERROR! </strong>{{errores.contacto}}
+ 									</div>
+ 									{% endif %}
+ 								</div> <!-- form-group end.// -->
+
+ 								<div class="form-group col-md-4">
+ 									<label>Correo</label>
+ 									<input type="text" class="form-control" id="id_correo" name="correo" placeholder="Correo de la Empresa" value="{{ret_data.correo}}">
+
+ 									{% if errores.correo %}
+ 									<div class="alert alert-danger alert-dismissible " role="alert">
+ 										<strong>ERROR! </strong>{{errores.correo}}
+ 									</div>
+ 									{% endif %}
+ 								</div> <!-- form-group end.// -->
+ 							</div>
+ 							
+ 							<div class="form-group">
+ 								<label>Direccion de la Empresa</label>
+ 								<textarea class="form-control" name="direccion" value="{{ret_data.direccion}}" id="id_direccion" rows="3"></textarea>
+
+ 							</div>
+
+ 							<div class="form-row">
+
+ 								<div class="form-group col-md-6">
+ 									<label>Latitude de la Empresa</label>
+ 									<input type="text" class="form-control" id="id_latitude_empresa" name="latitude_empresa" placeholder="latitude de la Empresa" value="{{ret_data.latitude_empresa}}">
+
+ 									{% if errores.latitude_empresa %}
+ 									<div class="alert alert-danger alert-dismissible " role="alert">
+ 										<strong>ERROR! </strong>{{errores.latitude_empresa}}
+ 									</div>
+ 									{% endif %}
+ 								</div> <!-- form-group end.// -->
+
+ 								<div class="form-group col-md-6">
+ 									<label>Longitude de la Empresa</label>
+ 									<input type="text" class="form-control" id="id_longitude_empresa" name="longitude_empresa" placeholder="longitude de la Empresa" value="{{ret_data.longitude_empresa}}">
+
+ 									{% if errores.longitude_empresa %}
+ 									<div class="alert alert-danger alert-dismissible " role="alert">
+ 										<strong>ERROR! </strong>{{errores.longitude_empresa}}
+ 									</div>
+ 									{% endif %}
+ 								</div> <!-- form-group end.// -->
+
+ 							</div> <!-- form-row.// -->
+
+ 							
+ 							<div class="form-group">
+ 								<label>Descripcion de la Empresa</label>
+ 								<textarea class="form-control" name="descripcion" value="{{ret_data.descripcion}}" id="id_descripcion" rows="3"></textarea>
+ 							</div>
+
+ 							<center>
+ 								<div class="col-md-3">
+ 									<button type="summit" class="btn btn-primary btn-block" >Guardar</button>	
+ 								</div>	
+ 							</center>
+ 							
+ 							
+ 							
+ 						</form>
+ 					</div> <!-- card-body.// -->
+ 				</div> <!-- card .// -->
+ 				<!-- ============================ COMPONENT PROFILE END.// ================================= -->
+
+
+ 			</aside>
+
+
+ 		</div>
+
+
+ 	</section>
+
+ 	{% endblock content %}
+
+ 	{% block js %}
+ 	{% endblock js %}

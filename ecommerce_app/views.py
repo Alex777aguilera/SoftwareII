@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from django.db import transaction,connections
 from django.contrib.auth import login as auth_login,logout,authenticate
 from django.http import HttpResponseRedirect,JsonResponse, HttpResponse
 from django.urls import reverse
@@ -128,7 +129,7 @@ def agregar_empresa(request):
 		if request.FILES.get('imagen_logo') == None:
 			errores['imagen_logo'] = "Por favor ingrese el logo de la Empresa"
 		else:
-			query_respuesta['imagen_logo'] = request.FILES.get('imagen_logo')
+			query_empresa['imagen_logo'] = request.FILES.get('imagen_logo')
 
 		#3
 		if request.POST.get('contacto') == '':
@@ -180,10 +181,10 @@ def agregar_empresa(request):
 
 			else:
 				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:lista_empresa'))
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
 
 		else:
-			return redirect('ecommerce_app:lista_empresa')
+			return redirect('ecommerce_app:agregar_empresa')
 
 
 	else:
