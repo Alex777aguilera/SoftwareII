@@ -72,7 +72,7 @@ class Empresa(models.Model):
 	def __str__(self):
 		return "{}-{} " .format(self.nombre,self.telefono)
 
-class Producto(models.Model):
+class Producto(models.Model): 
 	imagen_producto = models.ImageField(upload_to='imagen_producto')
 	nombre_producto = models.CharField(max_length=200,blank=True,null=True)
 	# existencia = models.IntegerField(default=0,blank = True, null = True)
@@ -132,6 +132,7 @@ class Cliente(models.Model):
 	numero_telefono = models.CharField(max_length=50)
 	fecha_nacimiento = models.DateField(auto_now_add=False)
 	fecha_registro = models.DateField(auto_now_add=True)
+	correo = models.CharField(max_length=100,blank=True,null=True)
 	imagen = models.ImageField(upload_to='avatar',blank=True,null=True)
 	usuario_cliente = models.ForeignKey(User, on_delete=models.CASCADE)
 	def __str__(self):
