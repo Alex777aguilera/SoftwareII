@@ -240,16 +240,27 @@ e-commerce | Admin
 								</div>
 								<div class="col-sm-4 form-group">
 									<label>Descuento</label>
-									<select class="form-control" id="id_esta_descuento" name="esta_descuento">
-					                  	<option value="1" selected="selected">No</option>
-					                  	<option value="2">Sí</option>
+									<select class="form-control clase_descuento" id="{{producto.pk}}" name="esta_descuento">
+					                  	    {% if producto.esta_descuento %}
+		                                    <option value="True" selected>Sí</option>
+		                                    <option value="False">No</option>
+		                                  {% else %}
+		                                    <option value="True">Sí</option>
+		                                    <option value="False" selected>No</option>
+		                                  {% endif %}
 									</select>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-sm-4 form-group">
-									<label>Descuento</label>
-								  	<input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento" name="porcentaje_descuento" disabled>
+									<span class="glyphicon glyphicon-ok">Descuento</span>
+									{% if producto.esta_descuento %}
+									 	<input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento{{producto.pk}}" name="porcentaje_descuento" value="{{producto.porcentaje_descuento}}">
+									{% else %}
+										<input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento{{producto.pk}}" name="porcentaje_descuento" disabled>
+									{% endif %}
+
+								 
 								</div> <!-- form-group end.// -->
 								<div class="col-sm-4 form-group">
 									<label  for="exampleFormControlFile1">
@@ -315,7 +326,20 @@ e-commerce | Admin
 {% block js %}
 	<script type="text/javascript">
   	$(document).ready(function() {
-    $('#dataTable').DataTable();
+    	$('#dataTable').DataTable();
+
+		$(document).on('change','.clase_descuento',function(){
+			var id = $(this).attr('id');
+			var id_seleccion = $(this).val();
+
+			if( id_seleccion == 'True'){
+				$('#id_porcentaje_descuento' + id).prop( "disabled", false);
+			}else{
+				//$('#id_porcentaje_descuento'+id).val('');
+				$('#id_porcentaje_descuento' + id).prop( "disabled", true);
+			}
+		});
+
 
  		$(document).on('change','#id_esta_descuento',function(){
 			var id_seleccion = $(this).val();
@@ -327,7 +351,7 @@ e-commerce | Admin
 			}
 		});
 
-	 $('#id_categoria').on('change',function(){
+	 	$('#id_categoria').on('change',function(){
 
         $('#id_marca').find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
         if($('#id_categoria').val().toString().trim() != ''){
