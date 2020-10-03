@@ -1,0 +1,355 @@
+ {% extends "base_admin.html" %}
+{% block title %}
+e-commerce | Admin
+{% endblock title %}
+{% load static %}
+{% block content %}
+<br>
+<div  class="card shadow mb-4">
+	<div class="card-header py-3">
+		<h2 class="m-0 font-weight-bold text-primary">Registrar Producto</h2>
+	</div>
+	<article class="card-body">
+	<form action="{% url 'ecommerce_app:registrar_producto' %}" method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+		<div class="form-row">
+			<div class="col-sm-4 form-group">
+				<label>Nombre</label>
+			  	<input type="text" class="form-control" placeholder="Nombre del Producto" id="id_nombre" name="nombre_producto">
+			</div> <!-- form-group end.// -->
+			<div class="col-sm-4 form-group">
+				<label>Precio</label>
+			  	<input type="text" class="form-control" placeholder="Precio del Producto" id="id_precio" name="precio">
+			</div> <!-- form-group end.// -->
+			<div class="col-sm-4 form-group">
+				<label>Proveedor</label>
+			  	<input type="text" class="form-control" placeholder="Proveedor" id="id_proveedor" name="proveedor">
+			</div> <!-- form-group end.// -->
+		</div> <!-- form-row end.// -->
+		<div class="form-row">
+			<div class="col-sm-4 form-group">
+				<label>Categoría</label>
+				<select class="form-control" data-live-search="true" id="id_categoria" name="categoria">
+					<option value="0">-Seleccione-</option>
+					{% for  categoria in categorias  %}	
+					<option value="{{categoria.pk}}">{{categoria.descripcion_categoria}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-sm-4 form-group">
+				<label>Marca</label>
+				<select class="form-control"  data-live-search="true" id="id_marca" name="marca">
+                  	<option value="0" selected="selected">--Seleccione--</option>
+				</select>
+			</div>
+			<div class="col-sm-4 form-group">
+				<label>Modelo</label>
+			  	<input type="text" class="form-control" placeholder="Modelo del Producto" id="id_modelo" name="modelo">
+			</div> <!-- form-group end.// -->
+		</div>
+		<div class="form-row">
+			<div class="col-sm-4 form-group">
+				<label>Género</label>
+				<select class="form-control" id="id_categoria_genero" name="categoria_genero">
+					<option value="0">-Seleccione-</option>
+					{% for genero in generos  %}
+					<option value="{{genero.pk}}">{{genero.descripcion_genero}}</option>	
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-sm-4 form-group">
+				<label>Estado del Producto</label>
+				<select class="form-control"  data-live-search="true" id="id_nuevo_producto" name="nuevo_producto">
+                  	<option value="1" selected="selected">Nuevo</option>
+                  	<option value="2">Usado</option>
+				</select>
+			</div>
+			<div class="col-sm-4 form-group">
+				<label>Descuento</label>
+				<select class="form-control" id="id_esta_descuento" name="esta_descuento">
+                  	<option value="1" selected="selected">No</option>
+                  	<option value="2">Sí</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col-sm-4 form-group">
+				<label>Descuento</label>
+			  	<input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento" name="porcentaje_descuento" disabled>
+			</div> <!-- form-group end.// -->
+			<div class="col-sm-4 form-group">
+				<label  for="exampleFormControlFile1">
+					Imagen
+    				<input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto">
+    			</label>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col-sm-12 form-group">
+				<label>Descripción</label>
+			  	<textarea name="descripcion_producto" id="id_descripcion_producto" cols="30" rows="2" placeholder="Descripción del Producto" class="form-control"></textarea>
+			</div> <!-- form-group end.// -->
+		</div>
+		<hr>
+	    <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
+	        <button type="submit" class="btn btn-primary btn-block"> Guardar  </button>
+	    </div> <!-- form-group// -->      
+	                                          
+	</form>
+	</article> <!-- card-body end .// -->
+</div> <!-- card.// -->
+<!-- Aqui comienza la tabla-->
+<div class="card shadow mb-4">
+	<div class="card-header py-3">
+		<h2 class="m-0 font-weight-bold text-primary">Registros Productos</h2>
+	</div>
+	<article class="card-body">
+		<div class="table-responsive">
+		<table  class="table table-striped table-bordered" id="dataTable"  width="100%" cellspacing="50%">
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Categoría</th>
+					<th>Marca</th>
+					<th>Modelo</th>
+					<th>Fecha de Registro</th>
+					<th>Precio</th>
+					<th>Descuento</th>
+					<th>Porcentaje Descuento</th>
+					<th>Estado del Producto</th>
+					<th>Imgen</th>
+					<th>Destalles</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					{% for producto in productos  %}
+					<td>{{producto.nombre_producto}}</td>
+					<td>{{producto.marca.categoria.descripcion_categoria}}</td>
+					<td>{{producto.marca.descripcion_marca}}</td>
+					<td>{{producto.modelo}}</td>
+					<td>{{producto.fecha_registro}}</td>
+					<td>{{producto.precio}}</td>
+
+					{% if producto.esta_descuento %}
+					<td>Sí</td>					
+					{% else %}
+					<td>No</td>
+					{% endif %}
+
+					{% if producto.porcentaje_descuento %}
+					<td>{{producto.porcentaje_descuento}}</td>
+					{% else %}
+					<td><center>----------</center></td>
+					{% endif %}
+
+					{% if producto.estado_producto %}
+					<td>Activo</td>
+					{% else %}
+					<td>Inactivo</td>
+					{% endif %}
+
+					<td> <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#id_imagen{{producto.pk}}">
+                    Ver 
+                  </button></td>
+
+					<td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#id_producto{{producto.pk}}">
+                    Ver/Editar 
+                  </button></td>
+				</tr>
+								<!-- The Modal Para editar datos-->
+				<div class="modal fade" id="id_producto{{producto.pk}}">
+				  <div class="modal-dialog modal-lg">
+				    <div class="modal-content">
+
+				      <!-- Modal Header -->
+				      <div class="modal-header">
+				        <h4 class="modal-title">Producto: {{producto.nombre_producto}}</h4>
+				        <button type="button" class="close" data-dismiss="modal">&times;</button>
+				      </div>
+
+				      <!-- Modal body -->
+				      <div class="modal-body">
+				        <form action="" method="POST">
+		        			{% csrf_token %}
+			        		<div class="form-row">
+								<div class="col-sm-4 form-group">
+									<label>Nombre</label>
+								  	<input type="text" class="form-control" placeholder="Nombre del Producto" id="id_nombre" name="nombre_producto" value="{{producto.nombre_producto}}">
+								</div> <!-- form-group end.// -->
+								<div class="col-sm-4 form-group">
+									<label>Precio</label>
+								  	<input type="text" class="form-control" placeholder="Precio del Producto" id="id_precio" name="precio" value="{{producto.precio}}">
+								</div> <!-- form-group end.// -->
+								<div class="col-sm-4 form-group">
+									<label>Proveedor</label>
+								  	<input type="text" class="form-control" placeholder="Proveedor" id="id_proveedor" name="proveedor" value="{{producto.proveedor}}">
+								</div> <!-- form-group end.// -->
+							</div> <!-- form-row end.// -->
+
+							<div class="form-row">
+								<div class="col-sm-4 form-group">
+									<label>Categoría</label>
+									<select class="form-control" data-live-search="true" id="id_categoria" name="categoria">
+										<option value="0">-Seleccione-</option>
+										 {% for categoria in categorias  %}
+	                                    {% ifequal categoria.pk producto.marca.categoria.pk %}
+	                                      <option value='{{categoria.pk}}' selected>{{categoria.descripcion_categoria}}</option>
+	                                    {% else %}
+	                                      <option value='{{categoria.pk}}'>{{categoria.descripcion_categoria}}</option>
+	                                    {% endifequal %} 
+	                                   {% endfor %}
+									</select>
+								</div>
+								<div class="col-sm-4 form-group">
+									<label>Marca</label>
+									<select class="form-control"  data-live-search="true" id="id_marca" name="marca">
+					                  	<option value="0" selected="selected">--Seleccione--</option>
+									</select>
+								</div>
+								<div class="col-sm-4 form-group">
+									<label>Modelo</label>
+								  	<input type="text" class="form-control" placeholder="Modelo del Producto" id="id_modelo" name="modelo" value="{{producto.modelo}}">
+								</div> <!-- form-group end.// -->
+							</div>
+							<div class="form-row">
+								<div class="col-sm-4 form-group">
+									<label>Género</label>
+									<select class="form-control" id="id_categoria_genero" name="categoria_genero">
+										<option value="0">-Seleccione-</option>
+										 {% for genero in generos  %}
+	                                    {% ifequal genero.pk producto.categoria_genero.pk %}
+	                                      <option value='{{genero.pk}}' selected>{{genero.descripcion_genero}}</option>
+	                                    {% else %}
+	                                      <option value='{{genero.pk}}'>{{genero.descripcion_genero}}</option>
+	                                    {% endifequal %} 
+	                                   {% endfor %}
+									</select>
+								</div>
+								<div class="col-sm-4 form-group">
+									<label>Estado del Producto</label>
+									<select class="form-control"  data-live-search="true" id="id_nuevo_producto" name="nuevo_producto">
+					               		    {% if producto.nuevo_producto %}
+		                                    <option value="True" selected>Nuevo</option>
+		                                    <option value="False">Usado</option>
+		                                  {% else %}
+		                                    <option value="True">Nuevo</option>
+		                                    <option value="False" selected>Usado</option>
+		                                  {% endif %}
+									</select>
+								</div>
+								<div class="col-sm-4 form-group">
+									<label>Descuento</label>
+									<select class="form-control" id="id_esta_descuento" name="esta_descuento">
+					                  	<option value="1" selected="selected">No</option>
+					                  	<option value="2">Sí</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-sm-4 form-group">
+									<label>Descuento</label>
+								  	<input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento" name="porcentaje_descuento" disabled>
+								</div> <!-- form-group end.// -->
+								<div class="col-sm-4 form-group">
+									<label  for="exampleFormControlFile1">
+										Imagen
+					    				<input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto">
+					    			</label>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-sm-12 form-group">
+									<label>Descripción</label>
+								  	<textarea name="descripcion_producto" id="id_descripcion_producto" cols="30" rows="2" placeholder="Descripción del Producto" class="form-control">{{producto.descripcion_producto}}</textarea>
+								</div> <!-- form-group end.// -->
+							</div>
+			        		 <!-- Modal footer -->
+			        	    <div class="modal-footer">
+					        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+	 						<button type="submit" class="btn btn-secondary">Guardar</button>
+					      </div>
+				        </form>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+				<!-- The Modal para visualizar imgen-->
+				<div class="modal fade" id="id_imagen{{producto.pk}}">
+				  <div class="modal-dialog">
+				    <div class="modal-content">
+
+				      <!-- Modal Header -->
+				      <div class="modal-header">
+				        <h4 class="modal-title"><strong>{{producto.nombre_producto}}</strong></h4>
+				        <button type="button" class="close" data-dismiss="modal">&times;</button>
+				      </div>
+
+				      <!-- Modal body -->
+				      <div class="modal-body">
+				         {% if producto.imagen_producto %}
+                              <center><img src="{{producto.imagen_producto.url}}" width="400" height="400"></center>
+                              {% else %} <br>
+                              <label for="">No se encontró imagen</label>
+                              {% endif %}
+				      </div>
+
+				      <!-- Modal footer -->
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	</article>
+</div>
+
+
+
+
+{% endblock content %}
+{% block js %}
+	<script type="text/javascript">
+  	$(document).ready(function() {
+    $('#dataTable').DataTable();
+
+ 		$(document).on('change','#id_esta_descuento',function(){
+			var id_seleccion = $(this).val();
+			if( id_seleccion == 2){
+				$( "#id_porcentaje_descuento" ).prop( "disabled", false );
+			}else{
+				$('#id_porcentaje_descuento').val('');
+				$('#id_porcentaje_descuento').prop( "disabled", true );
+			}
+		});
+
+	 $('#id_categoria').on('change',function(){
+
+        $('#id_marca').find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
+        if($('#id_categoria').val().toString().trim() != ''){
+          $.get('{% url "ecommerce_app:ajax_categoria_marca" %}',{id_categoria:$('#id_categoria').val().toString().trim()},function(data){
+              if(data.marcas_categorias == 'nada'){
+               alert("¡Advertencia! No existe marcas para la categoría seleccionada");
+                $('#id_marca').selectpicker('refresh'); 
+              }else{
+                $.each(data,function(key,val){
+                  $('#id_marca').append("<option value="+val.id+">"+val.descripcion_marca+"</option>");
+                  $('#id_marca').selectpicker('refresh');
+                });
+                $('#id_marca').selectpicker('refresh');
+              }
+          },'json');
+
+        }else{
+          $('#id_marca').selectpicker('refresh');
+        }
+    });
+
+ });
+
+	</script>
+{% endblock js %}
