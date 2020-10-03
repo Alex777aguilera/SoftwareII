@@ -193,3 +193,111 @@ def agregar_empresa(request):
 	else:
 		return render(request,'agregar_empresa.html')
 
+##Categoria Producto
+def agregar_categoria(request):
+	categoria = Categoria.objects.all()
+	ret_data,query_categoria,errores = {},{},{}
+
+	if request.method == 'POST':
+		ret_data['descripcion_categoria'] = request.POST.get('descripcion_categoria')
+		
+		if request.POST.get('descripcion_categoria') == '':
+			errores['descripcion_categoria'] = "Debe ingresar la Categoría"
+			
+		else:
+			query_categoria['descripcion_categoria'] = request.POST.get('descripcion_categoria')
+
+		if not errores:
+			try:
+				categoria = Categoria(**query_categoria)
+				categoria.save()
+				pass
+			except Exception as e:
+				transaction.rollback()
+				errores['administrador'] = e
+				ctx = {'categoria':categoria,'errores':errores,'ret_data':ret_data}
+
+				return render(request,'agregar_categoria.html',ctx)
+			else:
+				transaction.commit()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+		else:
+			ctx = {'categoria':categoria,'errores':errores,'ret_data':ret_data}
+			return render(request,'agregar_categoria.html',ctx)
+	else:
+		ctx = {'categoria':categoria}
+		return render(request,'agregar_categoria.html',ctx)
+
+##Categoria Genero
+def agregar_categoria_genero(request):
+	categoria_genero = Genero.objects.all()
+	ret_data,query_categoria,errores = {},{},{}
+
+	if request.method == 'POST':
+		ret_data['descripcion_genero'] = request.POST.get('descripcion_genero')
+		
+		if request.POST.get('descripcion_genero') == '':
+			errores['descripcion_genero'] = "Debe ingresar la descripción de Categoría Género"
+			
+		else:
+			query_categoria['descripcion_genero'] = request.POST.get('descripcion_genero')
+
+		if not errores:
+			try:
+				categoria_genero = Genero(**query_categoria)
+				categoria_genero.save()
+				pass
+			except Exception as e:
+				transaction.rollback()
+				errores['administrador'] = e
+				ctx = {'categoria_genero':categoria_genero,'errores':errores,'ret_data':ret_data}
+
+				return render(request,'agregar_categoria_genero.html',ctx)
+			else:
+				transaction.commit()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria_genero'))
+		else:
+			ctx = {'categoria_genero':categoria_genero,'errores':errores,'ret_data':ret_data}
+			return render(request,'agregar_categoria_genero.html',ctx)
+	else:
+		ctx = {'categoria_genero':categoria_genero}
+		return render(request,'agregar_categoria_genero.html',ctx)
+
+##Marca
+def agregar_marca(request):
+	marca = Marca.objects.all()
+	ret_data,query_marca,errores = {},{},{}
+
+	if request.method == 'POST':
+		ret_data['descripcion_marca'] = request.POST.get('descripcion_marca')
+		
+		if request.POST.get('descripcion_marca') == '':
+			errores['descripcion_marca'] = "Debe ingresar la Marca"
+			
+		else:
+			query_marca['descripcion_marca'] = request.POST.get('descripcion_marca')
+		
+		query_marca['categoria'] = request.POST.get('categoria')
+
+		if not errores:
+			try:
+				marca = Marca(**query_marca)
+				marca.save()
+				pass
+			except Exception as e:
+				transaction.rollback()
+				errores['administrador'] = e
+				ctx = {'marca':marca,'errores':errores,'ret_data':ret_data}
+
+				return render(request,'agregar_marca.html',ctx)
+			else:
+				transaction.commit()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca'))
+		else:
+			ctx = {'marca':marca,'errores':errores,'ret_data':ret_data}
+			return render(request,'agregar_marca.html',ctx)
+	else:
+		ctx = {'marca':marca}
+		return render(request,'agregar_marca.html',ctx)
+
+

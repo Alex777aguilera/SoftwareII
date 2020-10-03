@@ -12,4 +12,8 @@ urlpatterns = [
  path('cerrar_sesion', views.cerrar_sesion, name='cerrar_sesion'),
  path('registrar_producto', views.registrar_producto, name='registrar_producto'),
  path('agregar/empresa', views.agregar_empresa, name='agregar_empresa'),
+ path('agregar/categoria/producto', views.agregar_categoria, name='agregar_categoria'),
+ path('agregar/categoria/genero', views.agregar_categoria_genero, name='agregar_categoria_genero'),
+ path('agregar/marca', views.agregar_marca, name='agregar_marca'),
+
 ]

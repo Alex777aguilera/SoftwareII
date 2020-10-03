@@ -1,0 +1,56 @@
+ {% extends "base_admin.html" %}
+ {% block title %}
+ e-commerce | Admin
+ {% endblock title %}
+ {% load static %}
+ {% block content %}
+ <br>
+ <section class="content">
+ 	<div class="card shadow mb-4">
+ 		<aside>
+ 			<!-- ============================ COMPONENT PROFILE  ================================= -->
+ 			<div class="card mb-4">
+ 				<div class="card-header py-3">
+ 					<h2 class="m-0 font-weight-bold text-primary">Registrar Categoría Género</h2>
+ 				</div>
+
+ 				<div class="card-body">
+ 					<form role="form" method="post" enctype="multipart/form-data" action="{% url 'ecommerce_app:agregar_categoria_genero' %}" >
+
+ 						{% csrf_token %}
+
+ 						{% if errores.administrador %}
+ 						<div class="alert alert-danger alert-dismissible " role="alert">
+ 							<strong>ERROR! </strong>{{errores.administrador}}
+ 							{% endif %}
+ 						</div>
+
+						<div class="form-row">
+							<div class="col-md-4">
+								<div class="col form-group">
+									<label>Categoría Género:</label>
+									<input type="text" class="form-control" id="id_descripcion_genero" name="descripcion_genero" placeholder="Descripción Categoría Género" value="{{ret_data.descripcion_genero}}">
+
+									{% if errores.descripcion_genero %}
+									<div class="alert alert-danger alert-dismissible " role="alert">
+										<strong>ERROR! </strong>{{errores.descripcion_genero}}
+									</div>
+									{% endif %}
+								</div> <!-- form-group end.// -->
+							</div>
+						</div>
+						<div class="col-md-1">
+							<button type="summit" class="btn btn-primary btn-block">Guardar</button>	
+						</div>	
+ 					</form>
+ 				</div> <!-- card-body.// -->
+ 			</div> <!-- card .// -->
+ 			<!-- ============================ COMPONENT PROFILE END.// ================================= -->
+ 		</aside>
+ 	</div>
+</section>
+
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}
