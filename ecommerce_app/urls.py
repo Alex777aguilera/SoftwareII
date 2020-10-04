@@ -15,9 +15,12 @@ urlpatterns = [
  path('cerrar_sesion', views.cerrar_sesion, name='cerrar_sesion'),
  path('registrar/producto', views.registrar_producto, name='registrar_producto'),
  path('agregar/empresa', views.agregar_empresa, name='agregar_empresa'),
- path('agregar/categoria/producto', views.agregar_categoria, name='agregar_categoria'),
- path('agregar/categoria/genero', views.agregar_categoria_genero, name='agregar_categoria_genero'),
+ path('agregar/categoria', views.agregar_categoria, name='agregar_categoria'),
+ path('modificar/categoria/<int:id_categoria>/', views.modificar_categoria, name='modificar_categoria'),
+ path('agregar/genero', views.agregar_genero, name='agregar_genero'),
+ path('modificar/genero/<int:id_genero>/', views.modificar_genero, name='modificar_genero'),
  path('agregar/marca', views.agregar_marca, name='agregar_marca'),
+ path('modificar/marca/<int:id_marca>/', views.modificar_marca, name='modificar_marca'),
  path('ajax/marcas', views.ajax_categoria_marca, name='ajax_categoria_marca'),
 
 ]
