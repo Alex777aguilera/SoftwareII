@@ -20,13 +20,16 @@ from ecommerce_app.models import *
 
 #vista principal
 def principal(request):
+	productos = Producto.objects.all()
+	categorias = Categoria.objects.all()
+	data = {'productos':productos,'categorias':categorias}
 	if request.user.is_authenticated:
 		if request.user.is_superuser :
 			return redirect('ecommerce_app:principal_admin')
 		else:
-			return render(request,'principal.html')
+			return render(request,'principal.html',data)
 	else:
-		return render(request,'principal.html')
+		return render(request,'principal.html',data)
 
 
 ## Vista admin
@@ -295,6 +298,14 @@ def registrar_producto(request):
 	else:
 		data = {'generos':generos,'categorias':categorias,'productos':productos}
 		return render(request,'registrar_producto.html',data)
+
+def detalle_producto(request,id_producto):
+	producto = Producto.objects.get(pk=id_producto);
+	return render(request,'detalle_producto.html',{'producto':producto})
+
+def lista_categorias(request):
+	categorias = Categoria.objects.all();
+	return render(request,'lista_categorias.html',{'categorias':categorias})
 
 def ajax_categoria_marca(request):
 	if request.method == "GET" and request.is_ajax():

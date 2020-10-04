@@ -36,7 +36,7 @@ e-commerce | Admin
 					{% endfor %}
 				</select>
 			</div>
-			<div class="col-sm-4 form-group">
+			<div class="col-sm-4 form-group selectpicker">
 				<label>Marca</label>
 				<select class="form-control"  data-live-search="true" id="id_marca" name="marca">
                   	<option value="0" selected="selected">--Seleccione--</option>
@@ -358,18 +358,20 @@ e-commerce | Admin
           $.get('{% url "ecommerce_app:ajax_categoria_marca" %}',{id_categoria:$('#id_categoria').val().toString().trim()},function(data){
               if(data.marcas_categorias == 'nada'){
                alert("¡Advertencia! No existe marcas para la categoría seleccionada");
-                $('#id_marca').selectpicker('refresh'); 
+         		$('#id_marca').append("<option value="+'0'+">"+'--Seleccione-'+"</option>");	
+                //$('#id_marca').selectpicker('refresh'); 
               }else{
                 $.each(data,function(key,val){
-                  $('#id_marca').append("<option value="+val.id+">"+val.descripcion_marca+"</option>");
-                  $('#id_marca').selectpicker('refresh');
+              	$('#id_marca').val('');		
+              	$('#id_marca').append("<option value="+val.id+">"+val.descripcion_marca+"</option>");
+              	//$('#id_marca').selectpicker('refresh');
                 });
-                $('#id_marca').selectpicker('refresh');
+                //$('#id_marca').selectpicker('refresh');
               }
           },'json');
 
         }else{
-          $('#id_marca').selectpicker('refresh');
+         // $('#id_marca').selectpicker('refresh');
         }
     });
 

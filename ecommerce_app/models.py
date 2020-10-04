@@ -79,7 +79,7 @@ class Producto(models.Model):
 
 
 	def __str__(self):
-		return "{}-{} |{}" .format(self.pk,self.nombre_producto,self.existencia)
+		return "{}-{}" .format(self.pk,self.nombre_producto)
 
 class Carrito(models.Model):
 	"""docstring for lote"""
