@@ -488,7 +488,7 @@ def agregar_genero(request):
 				return render(request,'agregar_categoria_genero.html',ctx)
 			else:
 				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria_genero'))
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
 		else:
 			ctx = {'categoria_genero':categoria_genero,'errores':errores,'ret_data':ret_data}
 			return render(request,'agregar_categoria_genero.html',ctx)
