@@ -66,8 +66,6 @@ def login(request):
 		else:
 			return redirect('ecommerce_app:principal')	
 		
-	
-
 	mensaje = ''
 	if request.method == 'POST':
 		username = request.POST.get('username')
@@ -260,6 +258,8 @@ def modificar_normal(request,id_cliente):
 # 		return render(request,'buscar_productos.html',{'empresas':lista_buscar})
 # 	else:
 # 		return render(request,'error.html')
+
+@login_required
 def registrar_producto(request):
 	generos = Genero.objects.all()
 	categorias = Categoria.objects.all()
@@ -407,7 +407,7 @@ def agregar_empresa(request):
 		ctx = {'empresas':empresas}
 		return render(request,'agregar_empresa.html',ctx)
 
-<<<<<<< HEAD
+
 #vista carrito
 def carrito(request):
 	user = request.user
@@ -419,8 +419,10 @@ def carrito(request):
 			return render(request,'carrito.html')
 	else:
 		return render(request,'carrito.html')
-=======
+
+
 ##Categoria Producto
+@login_required
 def agregar_categoria(request):
 	categorias = Categoria.objects.all()
 	ret_data,query_categoria,errores = {},{},{}
@@ -477,6 +479,7 @@ def modificar_categoria(request,id_categoria):
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
 
 ##Categoria Genero
+@login_required
 def agregar_genero(request):
 	categoria_genero = Genero.objects.all()
 	ret_data,query_categoria,errores = {},{},{}
@@ -533,6 +536,7 @@ def modificar_genero(request,id_genero):
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
 
 ##Marca
+@login_required
 def agregar_marca(request):
 	marcas = Marca.objects.all()
 	categorias = Categoria.objects.all()
@@ -572,6 +576,7 @@ def agregar_marca(request):
 		ctx = {'marcas':marcas,'categorias':categorias}
 		return render(request,'agregar_marca.html',ctx)
 
+@login_required
 def modificar_marca(request,id_marca):
 	marca = Marca.objects.get(pk=id_marca)
 	errores = {}
@@ -594,4 +599,4 @@ def modificar_marca(request,id_marca):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca'))
 
->>>>>>> af28bf4506a5332c5422dbb4bc90c20a9eedb3d5
+

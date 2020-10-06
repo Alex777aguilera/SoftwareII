@@ -15,9 +15,7 @@ urlpatterns = [
  path('cerrar_sesion', views.cerrar_sesion, name='cerrar_sesion'),
  path('registrar/producto', views.registrar_producto, name='registrar_producto'),
  path('agregar/empresa', views.agregar_empresa, name='agregar_empresa'),
-<<<<<<< HEAD
  path('carrito', views.carrito, name='carrito'),
-=======
  path('agregar/categoria', views.agregar_categoria, name='agregar_categoria'),
  path('modificar/categoria/<int:id_categoria>/', views.modificar_categoria, name='modificar_categoria'),
  path('agregar/genero', views.agregar_genero, name='agregar_genero'),
@@ -28,7 +26,4 @@ urlpatterns = [
  path('detalle/producto/<int:id_producto>/', views.detalle_producto, name='detalle_producto'),
  path('lista/categorias/', views.lista_categorias, name='lista_categorias'),
 
-
-
->>>>>>> af28bf4506a5332c5422dbb4bc90c20a9eedb3d5
 ]

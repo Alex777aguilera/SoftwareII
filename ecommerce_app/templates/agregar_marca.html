@@ -5,13 +5,14 @@
  {% load static %}
  {% block content %}
  <br>
+ <div class="container">
  <section class="content">
  	<div class="card shadow mb-4">
  		<aside>
  			<!-- ============================ COMPONENT PROFILE  ================================= -->
  			<div class="card mb-4">
  				<div class="card-header py-3">
- 					<h2 class="m-0 font-weight-bold text-primary">Registrar Marca</h2>
+ 					<h5 class="m-0 font-weight-bold text-primary">Registrar Marca</h5>
  				</div>
 
  				<div class="card-body">
@@ -52,7 +53,7 @@
 								</div> <!-- form-group end.// -->
 							</div>
 						</div>
-						<hr>
+						
 					    <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
 					        <button type="submit" class="btn btn-primary btn-block"> Guardar  </button>
 					    </div>		
@@ -61,12 +62,10 @@
  			</div> <!-- card .// -->
  			<!-- ============================ COMPONENT PROFILE END.// ================================= -->
  		</aside>
- 	</div>
-
- 	<!-- Tabla de registros -->
+ 		<!-- Tabla de registros -->
 	<div class="card shadow mb-4">
 		<div class="card-header py-3">
-			<h2 class="m-0 font-weight-bold text-primary">Registros Marca</h2>
+			<h5 class="m-0 font-weight-bold text-primary">Registros Marca</h5>
 		</div>
 		<article class="card-body">
 		<div class="table-responsive">
@@ -138,8 +137,11 @@
 		</div>
 		</article>
 	</div>
-</section>
+ 	</div>
 
+ 	
+</section>
+</div>
 {% endblock content %}
 
 {% block js %}
