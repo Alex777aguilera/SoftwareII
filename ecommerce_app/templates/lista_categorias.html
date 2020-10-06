@@ -1,0 +1,43 @@
+ {% extends "base_cliente.html" %}
+{% block title %}
+e-commerce | Categoías
+{% endblock title %}
+{% load static %}
+{% block content %}
+
+<section class="py-3 bg-light">
+  <div class="container">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'ecommerce_app:principal' %}">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Categorías</li>
+    </ol>
+  </div>
+</section>
+
+<section class="section-content padding-y bg">
+<div class="container">
+ 	<div class="row">
+ 		{% for categoria  in categorias %}
+		<div class="col-md-4" style="padding-top: 2%;">
+		<!-- ============================ COMPONENT BANNER 1 ================================= -->
+			<div class="card-banner rounded-lg" style="height:220px; background-image: url({% static 'images/logo_proyecto.jpg' %});">
+			  <article class="card-body caption">
+				<h5 class="card-title">{{categoria.descripcion_categoria}}</h5>
+				<p>Esta es la descripcion de la categoría</p>
+				<a href="#" class="btn btn-warning ">Ver</a>
+			  </article>
+			</div>
+		<!-- ======================= COMPONENT BANNER 1  END .// ============================ -->
+		</div> <!-- col.// -->
+		{% empty %}
+		<h1><strong>Lo sentimos, no hay categorías agregadas.</strong></h1>
+ 		{% endfor %}	
+
+	</div>
+</div>
+</section>
+
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}
