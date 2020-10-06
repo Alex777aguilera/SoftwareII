@@ -1,0 +1,34 @@
+ {% extends "base_cliente.html" %}
+{% block title %}
+e-commerce | Car_ecommerce
+{% endblock title %}
+{% load static %}
+{% block content %}
+<div class="container">
+	<br>
+	<div class="card-header py-3">
+        <h2 class="m-0 font-weight-bold text-primary">Este es el carrito</h2>
+    </div>
+
+  <section class="padding-bottom-sm">
+            <header class="section-heading heading-line">
+                <h4 class="title-section text-uppercase">Productos agregados</h4>
+            </header>
+            <div class="row row-sm">
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                    <div href="#" class="card card-sm card-product-grid">
+                        <a href="#" class="img-wrap"> <img src="{% static "images/items/1.jpg" %}"> </a>
+                        <figcaption class="info-wrap">
+                            <a href="#" class="title">Just another product name</a>
+                            <div class="price mt-1">$179.00</div> <!-- price-wrap.// -->
+                        </figcaption>
+                    </div>
+                </div> <!-- col.// -->
+                
+            </div> <!-- row.// -->
+        </section>
+    </div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

@@ -53,8 +53,8 @@ class Empresa(models.Model):
 	correo = models.CharField(max_length=100)
 	fecha_registro = models.DateField(auto_now_add=True)
 	direccion = models.TextField()
-	latitude_empresa = models.FloatField(default = 0.00, blank = True, null = True)
-	longitude_empresa = models.FloatField(default = 0.00, blank = True, null = True)
+	latitude_empresa = models.CharField(max_length=30,null=False)
+	longitude_empresa = models.CharField(max_length=30,null=False)
 	descripcion = models.TextField(verbose_name='descripcion_empresa')#Si no se da el nombre detallado, Django lo creará automáticamente usando el nombre del atributo del campo, convirtiendo los guiones bajos en espacios
 	
 	

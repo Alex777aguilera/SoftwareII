@@ -1,0 +1,75 @@
+ {% extends "base_cliente.html" %}
+e-commerce | Car_ecommerce
+{% block content %}
+{% load staticfiles %}
+	 <div class="container">
+	 	 <div class="section">
+         	<div id="card-widgets" class="seaction">
+                <div class="row">
+                	{% if empresas %}
+	                  {% for empresa in empresas %}
+	                     <div class="col s12 m4 ">
+	                        <div id="profile-card" class="card">
+	                          <div class="card-image waves-effect waves-block waves-light">
+	                            <!--<img class="activator" src="{% static 'images/gallary/3.png' %}" alt="user bg">-->
+	                            <img  src="/media/{{empresa.imagen_producto}}" alt="{{empresa.nombre}}" width="360" height="200">
+	                          </div>
+	                          <div class="card-content">
+	                            <img src="{% static 'images/logo/emprende.png' %}" alt="" class="circle responsive-img activator card-profile-image white lighten-1 padding-2">
+	                            <a class="btn-floating activator btn-move-up waves-effect waves-light red accent-2 z-depth-4 right">
+	                              <i class="material-icons">edit</i>
+	                            </a>
+	                            <h5 class="card-title activator grey-text text-darken-4">{{empresa.empresa.nombre}}</h5>
+	                           
+	                            <p>
+	                              <i class="material-icons">perm_phone_msg</i><a href=" https://wa.me/{{empresa.contacto}}" target="_blank" style="text-decoration: none;">{{empresa.empresa.contacto}}</a></p>
+	                            
+	                          </div>
+	                          <div class="card-reveal">
+	                            <span class="card-title grey-text text-darken-4">{{empresa.empresa.nombre}}
+	                              <i class="material-icons right">close</i>
+	                            
+	                            </span>
+	                            <p class="center-align" style="text-align:justify;">
+	                              <i class="material-icons">recent_actors</i>{{empresa.empresa.descripcion}}</p>
+	                            <p class="center-align" style="text-align:justify;">
+	                              <i class="material-icons">room</i> <strong>Dirección: </strong>{{empresa.empresa.direccion}}
+	                            </p>
+	                            <p>
+	                              <i class="material-icons">call_made</i>{{empresa.empresa.departamento}}</p>
+	                          </div>
+	                           <form enctype='multipart/form-data' method="POST" action="{% url 'empresa:empresa_productos' %}">
+	                            {% csrf_token %}
+	                            <div class="card-action border-non center">
+	                              <input type="hidden" value="{{empresa.empresa.pk}}" name="empresa_pk">
+	                              <button class="waves-effect waves-light btn gradient-45deg-light-blue-cyan box-shadow" type="submit">Ver productos</button>
+	                            </div>
+	                          </form>
+	                        </div>
+	                      </div>
+	                    </a>  
+	                  {% endfor %}
+	                {% else %}
+	                	<div class="col s12 ">
+		                   	 <div id="card-alert" class="card gradient-45deg-red-pink">
+			                    <div class="card-content white-text">
+			                      <p class="single-alert">
+			                        <img src="{% static 'images/avatar/avatar-2.png' %}" alt="avatar" class="alert-circle responsive-img valign profile-image" />
+			                        <span>No se encontro ningun resultado!!</span>
+			                      </p>
+			                    </div>
+			                    <button type="button" class="close cyan-text" data-dismiss="alert" aria-label="Close">
+			                      <span aria-hidden="true">×</span>
+			                    </button>
+			                  </div>
+			            </div>
+	                {% endif %}
+                </div>
+          	</div>
+      	</div>
+   </div>
+
+{% block scripts %}
+   
+{% endblock scripts %}
+{% endblock %}

@@ -44,14 +44,13 @@ def principal_admin(request):
 
 # #vista cliente
 # @login_required
-# def principal_cliente(request):
+# def perfil_cliente(request):
 # 	user = request.user
 # 	if user.is_authenticated:
 # 		if request.user.is_superuser :
 # 			return redirect('ecommerce_app:principal_admin')
 # 		else:
-# 			return render(request,'inicio_cliente.html')
-			
+# 			return render(request,'perfil_cliente.html')	
 # 	else:
 # 		return render(request,'error.html')
 
@@ -97,9 +96,9 @@ def cerrar_sesion(request):
 # def buscar_productos(request):
 # 	if request.method == 'POST':
 # 		lista = {}
-# 		lista_buscar = vista de los productos.objects.filter(Q(nombre_producto__icontains=request.POST.get('Search')) 
-# 													| Q(empresa__nombre__icontains=request.POST.get('Search'))
-# 													| Q(descripcion_producto__icontains=request.POST.get('Search'))).filter(empresa__estado_aprobacion=3)
+# 		lista_buscar = vista de los productos.objects.filter(Q(nombre_producto__icontains=request.POST.get('busqueda')) 
+# 													| Q(empresa__nombre__icontains=request.POST.get('busqueda'))
+# 													| Q(descripcion_producto__icontains=request.POST.get('busqueda'))).filter(empresa__estado_aprobacion=3)
 # 		print lista_buscar.query,"lista buscar"
 # 		return render(request,'buscar_productos.html',{'empresas':lista_buscar})
 # 	else:
@@ -108,14 +107,16 @@ def cerrar_sesion(request):
 def registrar_producto(request):
 	return render(request,'registrar_producto.html')
 
+@login_required
 def agregar_empresa(request):
 	guardar_editar = True
+	empresas = Empresa.objects.all()
 	ret_data,query_empresa,errores = {},{},{}
 
 	if request.method == 'POST':
 		ret_data['nombre'] = request.POST.get('nombre')
 		ret_data['imagen_logo'] = request.FILES.get('imagen_logo')
-		ret_data['contacto'] = request.POST.get('contacto')
+		ret_data['telefono'] = request.POST.get('telefono')
 		ret_data['correo'] = request.POST.get('correo')
 		ret_data['direccion'] = request.POST.get('direccion')
 		ret_data['latitude_empresa'] = request.POST.get('latitude_empresa')
@@ -135,10 +136,10 @@ def agregar_empresa(request):
 			query_empresa['imagen_logo'] = request.FILES.get('imagen_logo')
 
 		#3
-		if request.POST.get('contacto') == '':
-			errores['contacto'] = "Por favor ingrese el contacto de la Empresa"
+		if request.POST.get('telefono') == '':
+			errores['telefono'] = "Por favor ingrese el contacto de la Empresa"
 		else:
-			query_empresa['contacto'] = request.POST.get('contacto')
+			query_empresa['telefono'] = request.POST.get('telefono')
 
 		#4
 		if request.POST.get('correo') == '':
@@ -176,20 +177,32 @@ def agregar_empresa(request):
 				empresa.save()
 			except Exception as e:
 				transaction.rollback()
-
+				print (e)
 				errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
-				ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar}
+				ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar,'empresas':empresas}
 				
-				return render(request,'registrar_empresa.html',ctx)
+				return render(request,'agregar_empresa.html',ctx)
 
 			else:
 				transaction.commit()
 				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
 
 		else:
-			return redirect('ecommerce_app:agregar_empresa')
-
+			ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar,'empresas':empresas}
+			return render(request,'agregar_empresa.html',ctx)
 
 	else:
-		return render(request,'agregar_empresa.html')
+		ctx = {'empresas':empresas}
+		return render(request,'agregar_empresa.html',ctx)
 
+#vista carrito
+def carrito(request):
+	user = request.user
+	print (user)
+	if user.is_authenticated:
+		if request.user.is_superuser :
+			return redirect('ecommerce_app:principal')
+		else:
+			return render(request,'carrito.html')
+	else:
+		return render(request,'carrito.html')
