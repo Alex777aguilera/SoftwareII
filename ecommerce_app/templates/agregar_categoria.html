@@ -58,7 +58,7 @@
 		</div>
 		<article class="card-body">
 		<div class="table-responsive">
-			<table  class="table table-striped table-bordered" id="dataTable"  width="100%" cellspacing="50%">
+			<table  class="table table-striped table-bordered" id="tablaC"  width="100%" cellspacing="50%">
 				<thead>
 					<tr>
 						<th>Categoría</th>
@@ -117,4 +117,9 @@
 {% endblock content %}
 
 {% block js %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#tablaC').DataTable();
+});
+</script>
 {% endblock js %}
