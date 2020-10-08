@@ -106,7 +106,7 @@ e-commerce | Cliente_
             <div href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="card card-product-grid rounded-lg">
                 <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="img-wrap"><img src="{{producto.imagen_producto.url}}"></a>
                 <figcaption class="info-wrap">
-                    <a hhref="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="title">{{producto.nombre_producto}}</a>
+                    <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="title">{{producto.nombre_producto}}</a>
                     <div class="rating-wrap">
                         {% if producto.nuevo_producto %}
                             <span class="label-rating text-muted">Nuevo</span>

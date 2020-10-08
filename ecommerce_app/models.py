@@ -21,14 +21,21 @@ class Categoria(models.Model):
 	def __str__(self):
 		return "{}-{}".format(self.pk,self.descripcion_categoria)
 	#si pertenece a Tecnologia, Hogar, Juguetes
+class SubCategoria(models.Model):
+	"""docstring for Categoria"""
+	descripcion_subcategoria = models.CharField(max_length=50)
+	categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return "{}-{}".format(self.pk,self.descripcion_subcategoria)
 
 class Marca(models.Model):
 	"""docstring for Marca"""
 	descripcion_marca = models.CharField(max_length=50)
-	categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+	subcategoria = models.ForeignKey(SubCategoria, on_delete=models.CASCADE)
 
 	def __str__(self):
-		return "{}".format(self.descripcion_marca)
+		return "{}".format(self.descripcion_marca,self.subcategoria.descripcion_subcategoria)
 
 class TipoInventario(models.Model):
 	tipo_inventario = models.CharField(max_length=200,blank=True,null=True)
