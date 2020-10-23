@@ -379,13 +379,15 @@ $(document).ready(function() {
         if ($('#id_categoria').val().toString().trim() != '') {
             $.get('{% url "ecommerce_app:ajax_categoria_subcategoria" %}', { id_categoria: $('#id_categoria').val().toString().trim() }, function(data) {
                 if (data.subcategorias_categorias == 'nada') {
-                    alert("¡Advertencia! No existe subcategorias para la categoría seleccionada");
+                    alertify.alert("<h3><strong>Advertencia</strong></h3> "," No existe subcategorias para la categoría seleccionada");
                     $('#id_marca').find('option').not('option[value=""]').remove();
                     $('#id_marca').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                     $('#id_subcategoria').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                     //$('#id_subcategoria').selectpicker('refresh'); 
                 } else {
                     $.each(data, function(key, val) {
+                        $('#id_marca').find('option').not('option[value=""]').remove();
+                        $('#id_marca').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                         $('#id_subcategoria').val('');
                         $('#id_subcategoria').append("<option value=" + val.id + ">" + val.descripcion_subcategoria + "</option>");
                         //$('#id_subcategoria').selectpicker('refresh');

@@ -22,7 +22,12 @@
     <!-- custom javascript -->
     <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
     <!-- datatables -->
-  <link rel="stylesheet" href="{% static 'datatables/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'datatables/dataTables.bootstrap4.min.css' %}">
+    <!-- Style Alertify-->
+    <link href="{% static 'alertifyjs/css/alertify.css' %}" rel="stylesheet">
+    <link href="{% static 'alertifyjs/css/alertify.min.css' %}" rel="stylesheet">
+    <link href="{% static 'alertifyjs/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'alertifyjs/css/bootstrap.min.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -262,8 +267,10 @@
     </footer>
     <!-- ========================= FOOTER END // ========================= -->
     <!-- datatables -->
- <script src="{% static 'datatables/jquery.dataTables.min.js' %}"></script>
-  <script src="{% static 'datatables/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'datatables/dataTables.bootstrap4.min.js' %}"></script>
+    <!-- Alertifyjs -->
+    <script src="{% static 'alertifyjs/alertify.min.js' %}"></script>
 {% block js %}
 
 {% endblock js %}
