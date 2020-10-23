@@ -22,8 +22,10 @@ urlpatterns = [
  path('modificar/genero/<int:id_genero>/', views.modificar_genero, name='modificar_genero'),
  path('agregar/marca', views.agregar_marca, name='agregar_marca'),
  path('modificar/marca/<int:id_marca>/', views.modificar_marca, name='modificar_marca'),
- path('ajax/marcas', views.ajax_categoria_marca, name='ajax_categoria_marca'),
+ path('ajax/categoria/subcategorias', views.ajax_categoria_subcategoria, name='ajax_categoria_subcategoria'),
  path('detalle/producto/<int:id_producto>/', views.detalle_producto, name='detalle_producto'),
  path('lista/categorias/', views.lista_categorias, name='lista_categorias'),
+ path('ajax/subcategoria/marcas', views.ajax_subcategoria_marca, name='ajax_subcategoria_marca'),
+
 
 ]

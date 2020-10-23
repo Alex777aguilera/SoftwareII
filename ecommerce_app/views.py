@@ -264,6 +264,8 @@ def registrar_producto(request):
 	generos = Genero.objects.all()
 	categorias = Categoria.objects.all()
 	productos = Producto.objects.all()
+	subcategorias = SubCategoria.objects.all()
+	marcas = Marca.objects.all()
 	if request.method == 'POST':
 		ret_data,query_producto,errores = {},{},{}
 
@@ -295,7 +297,8 @@ def registrar_producto(request):
 
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
 	else:
-		data = {'generos':generos,'categorias':categorias,'productos':productos}
+		data = {'generos':generos,'categorias':categorias,'marcas':marcas,
+				'subcategorias':subcategorias,'productos':productos}
 		return render(request,'registrar_producto.html',data)
 
 def detalle_producto(request,id_producto):
@@ -306,16 +309,24 @@ def lista_categorias(request):
 	categorias = Categoria.objects.all();
 	return render(request,'lista_categorias.html',{'categorias':categorias})
 
-def ajax_categoria_marca(request):
+def ajax_categoria_subcategoria(request):
 	if request.method == "GET" and request.is_ajax():
 
 		if request.GET.get('id_categoria') is not None:
-
-			marcas_categorias = list(Marca.objects.filter(categoria=request.GET.get('id_categoria')).values('id','descripcion_marca'))
-			if marcas_categorias:
-				return JsonResponse(marcas_categorias,safe=False)
+			subcategorias_categorias = list(SubCategoria.objects.filter(categoria=request.GET.get('id_categoria')).values('id','descripcion_subcategoria'))
+			if subcategorias_categorias:
+				return JsonResponse(subcategorias_categorias,safe=False)
 			else:
-				return JsonResponse({'marcas_categorias':'nada'})
+				return JsonResponse({'subcategorias_categorias':'nada'})
+
+def ajax_subcategoria_marca(request):
+	if request.method == "GET" and request.is_ajax():
+		if request.GET.get('id_subcategoria') is not None:
+			marcas_subcategorias = list(Marca.objects.filter(subcategoria=request.GET.get('id_subcategoria')).values('id','descripcion_marca'))
+			if marcas_subcategorias:
+				return JsonResponse(marcas_subcategorias,safe=False)
+			else:
+				return JsonResponse({'marcas_subcategorias':'nada'})
 
 
 

@@ -38,18 +38,27 @@ e-commerce | Admin
                                 {% endfor %}
                             </select>
                         </div>
+                       <div class="col-sm-4 form-group">
+                            <label>Subcategoría</label>
+                            <select class="form-control" data-live-search="true" id="id_subcategoria" name="subcategoria">
+                                <option value="0">-Seleccione-</option>
+                                {% for subcategoria in subcategorias %}
+                                <option value="{{subcategoria.pk}}">{{subcategoria.descripcion_subcategoria}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <div class="col-sm-4 form-group selectpicker">
                             <label>Marca</label>
                             <select class="form-control" data-live-search="true" id="id_marca" name="marca">
                                 <option value="0" selected="selected">--Seleccione--</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="col-sm-4 form-group">
                             <label>Modelo</label>
                             <input type="text" class="form-control" placeholder="Modelo del Producto" id="id_modelo" name="modelo">
                         </div> <!-- form-group end.// -->
-                    </div>
-                    <div class="form-row">
                         <div class="col-sm-4 form-group">
                             <label>Género</label>
                             <select class="form-control" id="id_categoria_genero" name="categoria_genero">
@@ -66,6 +75,8 @@ e-commerce | Admin
                                 <option value="2">Usado</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="col-sm-4 form-group">
                             <label>Descuento</label>
                             <select class="form-control" id="id_esta_descuento" name="esta_descuento">
@@ -73,8 +84,6 @@ e-commerce | Admin
                                 <option value="2">Sí</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="col-sm-4 form-group">
                             <label>Descuento</label>
                             <input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento" name="porcentaje_descuento" disabled>
@@ -112,8 +121,8 @@ e-commerce | Admin
                             <tr>
                                 <th>Nombre</th>
                                 <th>Categoría</th>
+                                <th>Subcategoría</th>
                                 <th>Marca</th>
-                                <th>Modelo</th>
                                 <th>Fecha de Registro</th>
                                 <th>Precio</th>
                                 <th>Descuento</th>
@@ -127,9 +136,9 @@ e-commerce | Admin
                             <tr>
                                 {% for producto in productos %}
                                 <td>{{producto.nombre_producto}}</td>
-                                <td>{{producto.marca.categoria.descripcion_categoria}}</td>
+                                <td>{{producto.marca.subcategoria.categoria.descripcion_categoria}}</td>
+                                <td>{{producto.marca.subcategoria.descripcion_subcategoria}}</td>
                                 <td>{{producto.marca.descripcion_marca}}</td>
-                                <td>{{producto.modelo}}</td>
                                 <td>{{producto.fecha_registro}}</td>
                                 <td>{{producto.precio}}</td>
                                 {% if producto.esta_descuento %}
@@ -156,7 +165,7 @@ e-commerce | Admin
                                         Ver/Editar
                                     </button></td>
                             </tr>
-                            <!-- The Modal Para editar datos-->
+                            <!-- Modal Para ver y editar datos de cada producto-->
                             <div class="modal fade" id="id_producto{{producto.pk}}">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
@@ -189,7 +198,7 @@ e-commerce | Admin
                                                         <select class="form-control" data-live-search="true" id="id_categoria" name="categoria">
                                                             <option value="0">-Seleccione-</option>
                                                             {% for categoria in categorias %}
-                                                            {% ifequal categoria.pk producto.marca.categoria.pk %}
+                                                            {% ifequal categoria.pk producto.marca.subcategoria.categoria.pk %}
                                                             <option value='{{categoria.pk}}' selected>{{categoria.descripcion_categoria}}</option>
                                                             {% else %}
                                                             <option value='{{categoria.pk}}'>{{categoria.descripcion_categoria}}</option>
@@ -198,17 +207,37 @@ e-commerce | Admin
                                                         </select>
                                                     </div>
                                                     <div class="col-sm-4 form-group">
-                                                        <label>Marca</label>
-                                                        <select class="form-control" data-live-search="true" id="id_marca" name="marca">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
+                                                        <label>Subcategoría</label>
+                                                        <select class="form-control" data-live-search="true" id="id_subcategoria" name="subcategoria">
+                                                            <option value="0">-Seleccione-</option>
+                                                            {% for subcategoria in subcategorias %}
+                                                            {% ifequal subcategoria.pk producto.marca.subcategoria.pk %}
+                                                            <option value='{{subcategoria.pk}}' selected>{{subcategoria.descripcion_subcategoria}}</option>
+                                                            {% else %}
+                                                            <option value='{{subcategoria.pk}}'>{{subcategoria.descripcion_subcategoria}}</option>
+                                                            {% endifequal %}
+                                                            {% endfor %}
                                                         </select>
                                                     </div>
+                                                    <div class="col-sm-4 form-group">
+                                                        <label>Marca</label>
+                                                        <select class="form-control" data-live-search="true" id="id_marca_{{producto.pk}}" name="marca">
+                                                            <option value="0" selected="selected">--Seleccione--</option>
+                                                            {% for marca in marcas  %}
+                                                            {% ifequal marca.pk producto.marca.pk  %} 
+                                                            <option value="{{marca.pk}}" selected>{{marca.descripcion_marca}}</option>
+                                                            {% else %}
+                                                            <option value="{{marca.pk}}">{{marca.descripcion_marca}}</option>
+                                                            {% endifequal %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
                                                     <div class="col-sm-4 form-group">
                                                         <label>Modelo</label>
                                                         <input type="text" class="form-control" placeholder="Modelo del Producto" id="id_modelo" name="modelo" value="{{producto.modelo}}">
                                                     </div> <!-- form-group end.// -->
-                                                </div>
-                                                <div class="form-row">
                                                     <div class="col-sm-4 form-group">
                                                         <label>Género</label>
                                                         <select class="form-control" id="id_categoria_genero" name="categoria_genero">
@@ -234,9 +263,12 @@ e-commerce | Admin
                                                             {% endif %}
                                                         </select>
                                                     </div>
+                                                </div>
+                                                <div class="form-row">
                                                     <div class="col-sm-4 form-group">
                                                         <label>Descuento</label>
-                                                        <select class="form-control clase_descuento" id="{{producto.pk}}" name="esta_descuento">
+                                                        <select class="form-control clase_descuento" id="{{producto.pk}}" name="esta_descuento"><!-- agregar una clase_descuento para todas las ventanas
+                                                            modales y su id unico producto para que el select sea diferente en cada modal-->
                                                             {% if producto.esta_descuento %}
                                                             <option value="True" selected>Sí</option>
                                                             <option value="False">No</option>
@@ -246,8 +278,6 @@ e-commerce | Admin
                                                             {% endif %}
                                                         </select>
                                                     </div>
-                                                </div>
-                                                <div class="form-row">
                                                     <div class="col-sm-4 form-group">
                                                         <span class="glyphicon glyphicon-ok">Descuento</span>
                                                         {% if producto.esta_descuento %}
@@ -256,6 +286,8 @@ e-commerce | Admin
                                                         <input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento{{producto.pk}}" name="porcentaje_descuento" disabled>
                                                         {% endif %}
                                                     </div> <!-- form-group end.// -->
+                                                </div>
+                                                <div class="form-row">
                                                     <div class="col-sm-4 form-group">
                                                         <label for="exampleFormControlFile1">
                                                             Imagen
@@ -279,7 +311,7 @@ e-commerce | Admin
                                     </div>
                                 </div>
                             </div>
-                            <!-- The Modal para visualizar imgen-->
+                            <!--  Modal para visualizar imgen-->
                             <div class="modal fade" id="id_imagen{{producto.pk}}">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -317,18 +349,7 @@ e-commerce | Admin
 $(document).ready(function() {
     $('#dataTable').DataTable();
 
-    $(document).on('change', '.clase_descuento', function() {
-        var id = $(this).attr('id');
-        var id_seleccion = $(this).val();
-
-        if (id_seleccion == 'True') {
-            $('#id_porcentaje_descuento' + id).prop("disabled", false);
-        } else {
-            //$('#id_porcentaje_descuento'+id).val('');
-            $('#id_porcentaje_descuento' + id).prop("disabled", true);
-        }
-    });
-
+    //Esta es para habilitar descuento en registro
     $(document).on('change', '#id_esta_descuento', function() {
         var id_seleccion = $(this).val();
         if (id_seleccion == 2) {
@@ -339,12 +360,51 @@ $(document).ready(function() {
         }
     });
 
-    $('#id_categoria').on('change', function() {
+    //Esta para habilitar descuento en las ventanas modales
+    $(document).on('change', '.clase_descuento', function() {
+        var id = $(this).attr('id');
+        var id_seleccion = $(this).val();
 
-        $('#id_marca').find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
+        if (id_seleccion == 'True') {
+            $('#id_porcentaje_descuento' + id).prop("disabled", false);
+        } else {
+            $('#id_porcentaje_descuento'+id).val('');
+            $('#id_porcentaje_descuento' + id).prop("disabled", true);
+        }
+    });
+
+    //Ajax para filtrar las subcategorias a partir de la categoria
+    $('#id_categoria').on('change', function() {
+        $('#id_subcategoria').find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
         if ($('#id_categoria').val().toString().trim() != '') {
-            $.get('{% url "ecommerce_app:ajax_categoria_marca" %}', { id_categoria: $('#id_categoria').val().toString().trim() }, function(data) {
-                if (data.marcas_categorias == 'nada') {
+            $.get('{% url "ecommerce_app:ajax_categoria_subcategoria" %}', { id_categoria: $('#id_categoria').val().toString().trim() }, function(data) {
+                if (data.subcategorias_categorias == 'nada') {
+                    alert("¡Advertencia! No existe subcategorias para la categoría seleccionada");
+                    $('#id_marca').find('option').not('option[value=""]').remove();
+                    $('#id_marca').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
+                    $('#id_subcategoria').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
+                    //$('#id_subcategoria').selectpicker('refresh'); 
+                } else {
+                    $.each(data, function(key, val) {
+                        $('#id_subcategoria').val('');
+                        $('#id_subcategoria').append("<option value=" + val.id + ">" + val.descripcion_subcategoria + "</option>");
+                        //$('#id_subcategoria').selectpicker('refresh');
+                    });
+                    //$('#id_subcategoria').selectpicker('refresh');
+                }
+            }, 'json');
+
+        } else {
+            // $('#id_subcategoria').selectpicker('refresh');
+        }
+    });
+
+    //Ajax para filtrar las marcas a partir de la subcategoria
+    $('#id_subcategoria').on('change', function() {
+        $('#id_marca').find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
+        if ($('#id_subcategoria').val().toString().trim() != '') {
+            $.get('{% url "ecommerce_app:ajax_subcategoria_marca" %}', { id_subcategoria: $('#id_subcategoria').val().toString().trim() }, function(data) {
+                if (data.marcas_subcategorias == 'nada') {
                     alert("¡Advertencia! No existe marcas para la categoría seleccionada");
                     $('#id_marca').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                     //$('#id_marca').selectpicker('refresh'); 
@@ -362,7 +422,7 @@ $(document).ready(function() {
             // $('#id_marca').selectpicker('refresh');
         }
     });
-
+    
 });
 </script>
 {% endblock js %}
