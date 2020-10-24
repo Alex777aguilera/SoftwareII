@@ -7,19 +7,13 @@ importlib.reload(sys)
 
 # Create your models here.
 
-class TipoProducto(models.Model):
-	descripcion_tipo_producto = models.CharField(max_length=100)
-	#En revision 
-	def __str__(self):
-		return "{}-{} " .format(self.pk,self.descripcion_tipo_producto)
-    #Si el producto es nuevo,usado,especial
-    #para colocoarlo en el buscador y filtrar por tipo de productos, sea promociones, descuentos, remates ect
 
 class Categoria(models.Model):
 	"""docstring for Categoria"""
 	descripcion_categoria = models.CharField(max_length=50)
 	def __str__(self):
 		return "{}-{}".format(self.pk,self.descripcion_categoria)
+
 	#si pertenece a Tecnologia, Hogar, Juguetes
 class SubCategoria(models.Model):
 	"""docstring for Categoria"""
@@ -37,14 +31,6 @@ class Marca(models.Model):
 	def __str__(self):
 		return "{}".format(self.descripcion_marca,self.subcategoria.descripcion_subcategoria)
 
-class TipoInventario(models.Model):
-	tipo_inventario = models.CharField(max_length=200,blank=True,null=True)
-	#En revision 
-	def __str__(self):
-		return "{}-{}".format(self.pk,self.tipo_inventario)
-    #con inventario, significa que cuando se haga la compra se tiene que rebajar existencia
-    #sin inventairo
-   
 #Femenino
 #Masculino
 #Indefinido 
@@ -52,6 +38,17 @@ class Genero(models.Model):#este modelo no solo sirve para el cliente, si no par
 	descripcion_genero = models.CharField(max_length=20)
 	def __str__(self):
 		return "{}-{} " .format(self.pk,self.descripcion_genero)
+
+class MetodoPago(models.Model):
+	descripcion_pago = models.CharField(max_length=20)
+	def __str__(self):
+		return "{}-{} " .format(self.pk,self.descripcion_pago)
+
+class Domicilio(models.Model):
+	direccion = models.TextField()
+	usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+	def __str__(self):
+		return "{}-{} " .format(self.pk,self.direccion)
 
 class Empresa(models.Model):
 	nombre = models.CharField(max_length=200)
@@ -62,6 +59,9 @@ class Empresa(models.Model):
 	direccion = models.TextField()
 	latitude_empresa = models.CharField(max_length=30,null=False)
 	longitude_empresa = models.CharField(max_length=30,null=False)
+	url_facebook = models.CharField(max_length=100,blank=True,null=True)
+	url_instagram = models.CharField(max_length=100,blank=True,null=True)
+	correo = models.EmailField()
 	descripcion = models.TextField(verbose_name='descripcion_empresa')#Si no se da el nombre detallado, Django lo creará automáticamente usando el nombre del atributo del campo, convirtiendo los guiones bajos en espacios
 	
 	
@@ -78,8 +78,8 @@ class Producto(models.Model):
 	precio = models.FloatField(default=0,blank = True, null = True)
 	porcentaje_descuento = models.IntegerField(default=0,blank = True, null = True)
 	esta_descuento = models.BooleanField(default = False)
-	nuevo_producto = models.BooleanField(default = False)
-	estado_producto = models.BooleanField(default = False)
+	nuevo_producto = models.BooleanField(default = True)
+	estado_producto = models.BooleanField(default = True)
 	proveedor = models.CharField(max_length=500,blank=True,null=True)
 	marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
 	categoria_genero = models.ForeignKey(Genero, on_delete=models.CASCADE)#para diferenciar si un producto es para hombre u mujer, esto hara mas facil un filtro u para el buscador
@@ -104,20 +104,23 @@ class Lote(models.Model):
 	def __str__(self):
 		return "{}-{} |{}".format(self.pk,self.existencia,self.producto.nombre_producto)
 #opcional,  dejar en los datos de la empresa
-class Redes_sociales(models.Model):
-	url_facebook = models.CharField(max_length=100,blank=True,null=True)
-	url_instagram = models.CharField(max_length=100,blank=True,null=True)
-	correo = models.EmailField()
-	def __str__(self):
-		return "{}".format(self.pk)
 
-class Venta(models.Model):
+class Orden(models.Model):
+	total = models.DecimalField(max_digits=10,decimal_places=2)
+	metodo_pago = models.ForeignKey(MetodoPago, on_delete=models.CASCADE)
+	domicilio = models.ForeignKey(Domicilio, on_delete=models.CASCADE)
+	usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+	def __str__(self):
+		return "{}-{} " .format(self.pk,self.total)
+
+class DetalleOrden(models.Model):
 	cantidad = models.IntegerField()
+	precio = models.DecimalField(max_digits=10,decimal_places=2)
 	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+	orden = models.ForeignKey(Orden, on_delete=models.CASCADE)
 
-	#descripcion_producto
 	def __str__(self):
-		return "{}-{} |{} " .format(self.pk,self.producto.nombre_producto,self.cantidad)
+		return "{}-{} |{} " .format(self.pk,self.cantidad,self.precio,self.producto.nombre_producto)
 
 
 # Modelo cliente
