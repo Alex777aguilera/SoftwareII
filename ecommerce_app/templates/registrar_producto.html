@@ -14,14 +14,32 @@ e-commerce | Admin
             <article class="card-body">
                 <form action="{% url 'ecommerce_app:registrar_producto' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
+                    {% if errores.administrador %}
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h5><i class="icon fas fa-ban"></i> ERROR {{errores.administrador}}!</h5>
+                        </div>
+                    {% endif %}
                     <div class="form-row">
                         <div class="col-sm-4 form-group">
                             <label>Nombre</label>
-                            <input type="text" class="form-control" placeholder="Nombre del Producto" id="id_nombre" name="nombre_producto">
+                            <input type="text" class="form-control" placeholder="Nombre del Producto" id="id_nombre" name="nombre_producto" required>
+                             {% if errores.nombre_producto %}
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h5><i class="icon fas fa-ban"></i> Error {{errores.nombre_producto}} </h5>
+                                </div>
+                            {% endif %}
                         </div> <!-- form-group end.// -->
                         <div class="col-sm-4 form-group">
                             <label>Precio</label>
-                            <input type="text" class="form-control" placeholder="Precio del Producto" id="id_precio" name="precio">
+                            <input type="text" class="form-control" placeholder="Precio del Producto" id="id_precio" name="precio" required>
+                               {% if errores.precio %}
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h5><i class="icon fas fa-ban"></i> Error {{errores.precio}} </h5>
+                                </div>
+                            {% endif %}
                         </div> <!-- form-group end.// -->
                         <div class="col-sm-4 form-group">
                             <label>Proveedor</label>
@@ -49,6 +67,12 @@ e-commerce | Admin
                             <select class="form-control" data-live-search="true" id="id_marca" name="marca">
                                 <option value="0" selected="selected">--Seleccione--</option>
                             </select>
+                            {% if errores.marca %}
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h5><i class="icon fas fa-ban"></i> Error {{errores.marca}} </h5>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="form-row">
@@ -64,6 +88,12 @@ e-commerce | Admin
                                 <option value="{{genero.pk}}">{{genero.descripcion_genero}}</option>
                                 {% endfor %}
                             </select>
+                            {% if errores.categoria_genero %}
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h5><i class="icon fas fa-ban"></i> Error {{errores.categoria_genero}} </h5>
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="col-sm-4 form-group">
                             <label>Estado del Producto</label>
@@ -82,14 +112,20 @@ e-commerce | Admin
                             </select>
                         </div>
                         <div class="col-sm-4 form-group">
-                            <label>Descuento</label>
+                            <label>Porcentaje</label>
                             <input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento" name="porcentaje_descuento" disabled>
                         </div> <!-- form-group end.// -->
                         <div class="col-sm-4 form-group">
                             <label for="exampleFormControlFile1">
                                 Imagen
-                                <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto">
+                                <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto" required>
                             </label>
+                             {% if errores.imagen_producto %}
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <h5><i class="icon fas fa-ban"></i> Error {{errores.imagen_producto}} </h5>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="form-row">
@@ -100,7 +136,7 @@ e-commerce | Admin
                     </div>
                     
                     <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
-                        <button type="submit" class="btn btn-primary btn-block"> Guardar </button>
+                        <button type="submit" class="btn btn-primary btn-block" id="guardar"> Guardar </button>
                         
                     </div> <!-- form-group// -->
                 </form>
@@ -332,6 +368,11 @@ e-commerce | Admin
 $(document).ready(function() {
     $('#dataTable').DataTable();
 
+   {% if 'ok' in request.GET %}
+        alertify.alert("<h4><strong>Correcto</strong></h4>","Datos guardados con éxito.",function(){
+        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
+        });
+    {% endif %}
     //Esta es para habilitar descuento en registro
     $(document).on('change', '#id_esta_descuento', function() {
         var id_seleccion = $(this).val();
@@ -561,6 +602,21 @@ $(document).ready(function() {
             }
 
         }
-    
+
+      $('#guardar').click(function(e){
+        if($('#id_categoria').val() == 0){
+            alertify.alert("<h4><strong>Advertencia</strong></h4>","Debe seleccionar la Categoría");
+            return false;
+        }else if($('#id_subcategoria').val() == 0){
+            alertify.alert("<h4><strong>Advertencia</strong></h4>","Debe seleccionar la Subcategoría");
+            return false;
+        }else if($('#id_marca').val() == 0){
+            alertify.alert("<h4><strong>Advertencia</strong></h4>","Debe seleccionar la Marca");
+            return false;
+        }else if($('#id_categoria_genero').val() == 0){
+            alertify.alert("<h4><strong>Advertencia</strong></h4>","Debe seleccionar el género del Producto");
+            return false;
+        }
+    });
 </script>
 {% endblock js %}

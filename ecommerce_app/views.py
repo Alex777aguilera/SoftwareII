@@ -269,33 +269,65 @@ def registrar_producto(request):
 	if request.method == 'POST':
 		ret_data,query_producto,errores = {},{},{}
 
-		query_producto['nombre_producto'] = request.POST.get('nombre_producto')
+		ret_data['nombre_producto'] = request.POST.get('nombre_producto')
+		ret_data['precio'] = request.POST.get('precio')
+
 		query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
 		query_producto['descripcion_producto'] = request.POST.get('descripcion_producto')
 		query_producto['modelo'] = request.POST.get('modelo')
-		query_producto['precio'] = request.POST.get('precio')
 		query_producto['porcentaje_descuento'] = request.POST.get('porcentaje_descuento')
 		query_producto['proveedor'] = request.POST.get('proveedor')
-		query_producto['marca'] = Marca.objects.get(pk=int(request.POST.get('marca')))
-		query_producto['categoria_genero'] = Genero.objects.get(pk=int(request.POST.get('categoria_genero')))
 
-		if int(request.POST.get('esta_descuento')) == 2:
+		if int(request.POST.get('esta_descuento')) == 2: #Por defecto es 1 que es false no esta en descuento
 			query_producto['esta_descuento'] = True
-		else:
-			query_producto['esta_descuento'] = False
-
-
-		if int(request.POST.get('nuevo_producto')) == 1:
-			query_producto['nuevo_producto'] = True
-		else:
+		
+		if int(request.POST.get('nuevo_producto')) == 2: #Por defecto es 1 que es True es un producto nuevo
 			query_producto['nuevo_producto'] = False
-
-		query_producto['estado_producto'] = True
-
-		producto = Producto(**query_producto)
-		producto.save()
-
-		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
+		#1
+		if request.POST.get('nombre_producto') == '':
+			errores['nombre_producto'] = "Por favor ingrese el nombre del Producto"
+		else:
+			query_producto['nombre_producto'] = request.POST.get('nombre_producto')
+		#2	
+		if request.POST.get('precio') == '':
+			errores['precio'] = "Por favor ingrese el precio del Producto"
+		else:
+			query_producto['precio'] = request.POST.get('precio')
+		#3	
+		if request.FILES.get('imagen_producto') == None:
+			errores['imagen_producto'] = "Por favor carge imagen del producto"
+		else:
+			query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
+		#4
+		if int(request.POST.get('marca')) == 0:
+			errores['marca'] = "Por favor debe seleccionar la marca"
+		else:
+			query_producto['marca'] = Marca.objects.get(pk=int(request.POST.get('marca')))
+		#5
+		if int(request.POST.get('categoria_genero')) == 0:
+			errores['categoria_genero'] = "Por favor debe seleccionar el genero"
+		else:
+			query_producto['categoria_genero'] = Genero.objects.get(pk=int(request.POST.get('categoria_genero')))
+	
+		if not errores:
+			try:
+				producto = Producto(**query_producto)
+				producto.save()
+			except Exception as e:
+				transaction.rollback()
+				errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
+				ctx = {'generos':generos,'categorias':categorias,'marcas':marcas,
+				'subcategorias':subcategorias,'productos':productos,
+				'errores':errores,'ret_data':ret_data}
+				return render(request,'registrar_producto.html',ctx)
+			else:
+				transaction.commit()
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?ok")
+		else:
+			ctx = {'generos':generos,'categorias':categorias,'marcas':marcas,
+			'subcategorias':subcategorias,'productos':productos,
+			'errores':errores,'ret_data':ret_data}
+			return render(request,'registrar_producto.html',ctx)
 	else:
 		data = {'generos':generos,'categorias':categorias,'marcas':marcas,
 				'subcategorias':subcategorias,'productos':productos}
