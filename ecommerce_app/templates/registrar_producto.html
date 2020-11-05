@@ -42,9 +42,6 @@ e-commerce | Admin
                             <label>Subcategoría</label>
                             <select class="form-control" data-live-search="true" id="id_subcategoria" name="subcategoria">
                                 <option value="0">-Seleccione-</option>
-                                {% for subcategoria in subcategorias %}
-                                <option value="{{subcategoria.pk}}">{{subcategoria.descripcion_subcategoria}}</option>
-                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-sm-4 form-group selectpicker">
@@ -161,7 +158,7 @@ e-commerce | Admin
                                 <td> <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#id_imagen{{producto.pk}}">
                                         Ver
                                     </button></td>
-                                <td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#id_producto{{producto.pk}}" onclick="categoria_seleccionada({{producto.pk}},{{producto.marca.subcategoria.categoria.pk}},{{producto.marca.subcategoria.pk}});">
+                                <td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#id_producto{{producto.pk}}" onclick="categoria_seleccionada({{producto.pk}},{{producto.marca.subcategoria.categoria.pk}},{{producto.marca.subcategoria.pk}},{{producto.marca.pk}});">
                                         Ver/Editar
                                     </button></td>
                             </tr>
@@ -413,11 +410,12 @@ $(document).ready(function() {
 });
 
     //-----------------------FUNCIONES VENTANA MODALES-----------------------
-    //Funcion Ajax para combobox de ventana modal cargamos subcategoria
+    //Funcion Ajax para combobox de ventana modal cargamos subcategoria (inicialmente)
     var pk_producto_global = 0;
-        function categoria_seleccionada(pk_producto,pk_categoria,pk_subcategoria_act){
+        function categoria_seleccionada(pk_producto,pk_categoria,pk_subcategoria_act,pk_marca_act){
           var codigo ="#id_subcategoria_".concat(String(pk_producto));
           pk_producto_global = pk_producto;
+          subcategoria_seleccionada(pk_producto,pk_subcategoria_act,pk_marca_act);//Esto es una funcion para cargar la marca del producto en la ventana modal
           $.ajax({
             type: "get",
             url: "{% url 'ecommerce_app:ajax_categoria_subcategoria'%}",
@@ -453,6 +451,49 @@ $(document).ready(function() {
           });  
 
         }
+
+        //Funcion Ajax para combobox de ventana modal cargamos marcas (inicialmente)
+    var pk_producto_global = 0;
+        function subcategoria_seleccionada(pk_producto,pk_subcategoria_act,pk_marca_act){
+          var codigo ="#id_marca_".concat(String(pk_producto));
+          pk_producto_global = pk_producto;
+          $.ajax({
+            type: "get",
+            url: "{% url 'ecommerce_app:ajax_subcategoria_marca'%}",
+            data: {
+              'id_subcategoria':pk_subcategoria_act,
+              'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val(),
+            },
+            contentType: "application/json; charset=utf-8b",
+            dataType: "json",
+            success: function(data){
+              if(data.subcategorias_categorias == 'nada'){
+                //$(codigo).selectpicker('refresh');
+              }else{
+                $(codigo).find('option').not('option[value=""]').remove();
+                
+                $.each(data,function(key,val){
+                  if(val.id==pk_marca_act){
+                    //alert("entro");
+                    $(codigo).append("<option value="+val.id+" selected>"+val.descripcion_marca+"</option>")
+                    //alert(val.descripcion_subcategoria);
+
+                  }else{
+                    $(codigo).append("<option value="+val.id+">"+val.descripcion_marca+"</option>")
+                  }
+                });
+                //$(codigo).selectpicker('refresh');
+              }
+            },
+            error: function(data){
+              //alert(ts);
+            }
+
+          });  
+
+        }
+
+
     //Funcion Ajax para combobox de ventana modal cargamos subcategoria dinamica
         function cargar_subcategoria(){
             var id_categoria = $('#id_categoria_'+pk_producto_global).val();
