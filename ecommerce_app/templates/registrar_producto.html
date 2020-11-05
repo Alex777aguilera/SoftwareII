@@ -205,7 +205,7 @@ e-commerce | Admin
                                                     </div>
                                                     <div class="col-sm-4 form-group">
                                                         <label>Subcategoría</label>
-                                                        <select class="form-control" data-live-search="true" id="id_subcategoria_{{producto.pk}}" name="subcategoria">
+                                                        <select class="form-control" data-live-search="true" id="id_subcategoria_{{producto.pk}}" name="subcategoria" onchange="cargar_marca();">
                                                             <option value="0">-Seleccione-</option>
                                                         </select>
                                                     </div>
@@ -416,6 +416,7 @@ $(document).ready(function() {
           var codigo ="#id_subcategoria_".concat(String(pk_producto));
           pk_producto_global = pk_producto;
           subcategoria_seleccionada(pk_producto,pk_subcategoria_act,pk_marca_act);//Esto es una funcion para cargar la marca del producto en la ventana modal
+           $("#id_categoria_"+pk_producto).val(pk_categoria);//Categoria por defecto del producto
           $.ajax({
             type: "get",
             url: "{% url 'ecommerce_app:ajax_categoria_subcategoria'%}",
@@ -494,22 +495,57 @@ $(document).ready(function() {
         }
 
 
-    //Funcion Ajax para combobox de ventana modal cargamos subcategoria dinamica
+    //Funcion Ajax para combobox de ventana modal cargamos subcategoria dinamicamente
         function cargar_subcategoria(){
             var id_categoria = $('#id_categoria_'+pk_producto_global).val();
             var codigo ="#id_subcategoria_".concat(String(pk_producto_global));
+            var codigo2 ="#id_marca_".concat(String(pk_producto_global));
             $(codigo).find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
-
+            var numero = 0;
             if (id_categoria != '') {
                 $.get('{% url "ecommerce_app:ajax_categoria_subcategoria" %}', { id_categoria: id_categoria }, function(data) {
-                    if (data.marcas_subcategorias == 'nada') {
-                        alert("¡Advertencia! No existe marcas para la categoría seleccionada");
+                    if (data.subcategorias_categorias == 'nada') {
+                        alert("¡Advertencia! No existe subcategoria para la categoría seleccionada");
                         $(codigo).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
+                        $(codigo2).empty();
+                        $(codigo2).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                         //$('#id_marca').selectpicker('refresh'); 
                     } else {
                         $.each(data, function(key, val) {
                             $(codigo).val('');
                             $(codigo).append("<option value=" + val.id + ">" + val.descripcion_subcategoria + "</option>");
+                            if(numero == 0){
+                                cargar_marca();
+                            }
+                            numero = 1;
+                            //$('#id_marca').selectpicker('refresh');
+                        });
+                        //$('#id_marca').selectpicker('refresh');
+                    }
+                }, 'json');
+
+            } else {
+                // $('#id_marca').selectpicker('refresh');
+            }
+
+        }
+
+        //Funcion Ajax para combobox de ventana modal cargamos marcas dinamicamente
+        function cargar_marca(){
+            var id_subcategoria = $('#id_subcategoria_'+ pk_producto_global).val();
+            var codigo ="#id_marca_".concat(String(pk_producto_global));
+            $(codigo).find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
+
+            if (id_subcategoria.toString().trim() != '') {
+                $.get('{% url "ecommerce_app:ajax_subcategoria_marca" %}', { id_subcategoria: id_subcategoria }, function(data) {
+                    if (data.marcas_subcategorias == 'nada') {
+                        alert("¡Advertencia! No existe marcas para la subcategoria seleccionada");
+                        $(codigo).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
+                        //$('#id_marca').selectpicker('refresh'); 
+                    } else {
+                        $.each(data, function(key, val) {
+                            $(codigo).val('');
+                            $(codigo).append("<option value=" + val.id + ">" + val.descripcion_marca + "</option>");
                             //$('#id_marca').selectpicker('refresh');
                         });
                         //$('#id_marca').selectpicker('refresh');
