@@ -40,7 +40,7 @@ e-commerce | Admin
                         </div>
                        <div class="col-sm-4 form-group">
                             <label>Subcategoría</label>
-                            <select class="form-control" data-live-search="true" id="id_subcategoria" name="subcategoria">
+                            <select class="form-control" data-live-search="true" id="id_subcategoria" name="subcategoria" onchange="cargar_marca_principal();">
                                 <option value="0">-Seleccione-</option>
                             </select>
                         </div>
@@ -359,6 +359,7 @@ $(document).ready(function() {
     //Ajax para filtrar las subcategorias a partir de la categoria
     $('#id_categoria').on('change', function() {
         $('#id_subcategoria').find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
+        var numero = true;
         if ($('#id_categoria').val().toString().trim() != '') {
             $.get('{% url "ecommerce_app:ajax_categoria_subcategoria" %}', { id_categoria: $('#id_categoria').val().toString().trim() }, function(data) {
                 if (data.subcategorias_categorias == 'nada') {
@@ -369,10 +370,13 @@ $(document).ready(function() {
                     //$('#id_subcategoria').selectpicker('refresh'); 
                 } else {
                     $.each(data, function(key, val) {
-                        $('#id_marca').find('option').not('option[value=""]').remove();
-                        $('#id_marca').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
-                        $('#id_subcategoria').val('');
+                        $('#id_marca').empty();
+                        $('#id_subcategoria').empty();
                         $('#id_subcategoria').append("<option value=" + val.id + ">" + val.descripcion_subcategoria + "</option>");
+                        if(numero){
+                            cargar_marca_principal();
+                        }
+                        numero = false;
                         //$('#id_subcategoria').selectpicker('refresh');
                     });
                     //$('#id_subcategoria').selectpicker('refresh');
@@ -384,13 +388,14 @@ $(document).ready(function() {
         }
     });
 
+});
     //Ajax para filtrar las marcas a partir de la subcategoria
-    $('#id_subcategoria').on('change', function() {
+    function cargar_marca_principal(){
         $('#id_marca').find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
         if ($('#id_subcategoria').val().toString().trim() != '') {
             $.get('{% url "ecommerce_app:ajax_subcategoria_marca" %}', { id_subcategoria: $('#id_subcategoria').val().toString().trim() }, function(data) {
                 if (data.marcas_subcategorias == 'nada') {
-                    alert("¡Advertencia! No existe marcas para la categoría seleccionada");
+                    alertify.alert("<h3><strong>Advertencia</strong></h3> ","No existe marcas para la categoría seleccionada");
                     $('#id_marca').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                     //$('#id_marca').selectpicker('refresh'); 
                 } else {
@@ -406,8 +411,8 @@ $(document).ready(function() {
         } else {
             // $('#id_marca').selectpicker('refresh');
         }
-    });
-});
+    }
+     
 
     //-----------------------FUNCIONES VENTANA MODALES-----------------------
     //Funcion Ajax para combobox de ventana modal cargamos subcategoria (inicialmente)
@@ -505,7 +510,7 @@ $(document).ready(function() {
             if (id_categoria != '') {
                 $.get('{% url "ecommerce_app:ajax_categoria_subcategoria" %}', { id_categoria: id_categoria }, function(data) {
                     if (data.subcategorias_categorias == 'nada') {
-                        alert("¡Advertencia! No existe subcategoria para la categoría seleccionada");
+                        alertify.alert("<h3><strong>Advertencia</strong></h3> ","No existe subcategoria para la categoría seleccionada");
                         $(codigo).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                         $(codigo2).empty();
                         $(codigo2).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
@@ -539,7 +544,7 @@ $(document).ready(function() {
             if (id_subcategoria.toString().trim() != '') {
                 $.get('{% url "ecommerce_app:ajax_subcategoria_marca" %}', { id_subcategoria: id_subcategoria }, function(data) {
                     if (data.marcas_subcategorias == 'nada') {
-                        alert("¡Advertencia! No existe marcas para la subcategoria seleccionada");
+                        alertify.alert("<h3><strong>Advertencia</strong></h3> ","No existe marcas para la subcategoria seleccionada");
                         $(codigo).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                         //$('#id_marca').selectpicker('refresh'); 
                     } else {
