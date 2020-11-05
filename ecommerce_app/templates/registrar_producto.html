@@ -161,7 +161,7 @@ e-commerce | Admin
                                 <td> <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#id_imagen{{producto.pk}}">
                                         Ver
                                     </button></td>
-                                <td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#id_producto{{producto.pk}}">
+                                <td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#id_producto{{producto.pk}}" onclick="categoria_seleccionada({{producto.pk}},{{producto.marca.subcategoria.categoria.pk}},{{producto.marca.subcategoria.pk}});">
                                         Ver/Editar
                                     </button></td>
                             </tr>
@@ -195,7 +195,7 @@ e-commerce | Admin
                                                 <div class="form-row">
                                                     <div class="col-sm-4 form-group">
                                                         <label>Categoría</label>
-                                                        <select class="form-control" data-live-search="true" id="id_categoria" name="categoria">
+                                                        <select class="form-control" data-live-search="true" id="id_categoria_{{producto.pk}}" name="categoria" onchange="cargar_subcategoria();">
                                                             <option value="0">-Seleccione-</option>
                                                             {% for categoria in categorias %}
                                                             {% ifequal categoria.pk producto.marca.subcategoria.categoria.pk %}
@@ -208,28 +208,14 @@ e-commerce | Admin
                                                     </div>
                                                     <div class="col-sm-4 form-group">
                                                         <label>Subcategoría</label>
-                                                        <select class="form-control" data-live-search="true" id="id_subcategoria" name="subcategoria">
+                                                        <select class="form-control" data-live-search="true" id="id_subcategoria_{{producto.pk}}" name="subcategoria">
                                                             <option value="0">-Seleccione-</option>
-                                                            {% for subcategoria in subcategorias %}
-                                                            {% ifequal subcategoria.pk producto.marca.subcategoria.pk %}
-                                                            <option value='{{subcategoria.pk}}' selected>{{subcategoria.descripcion_subcategoria}}</option>
-                                                            {% else %}
-                                                            <option value='{{subcategoria.pk}}'>{{subcategoria.descripcion_subcategoria}}</option>
-                                                            {% endifequal %}
-                                                            {% endfor %}
                                                         </select>
                                                     </div>
                                                     <div class="col-sm-4 form-group">
                                                         <label>Marca</label>
                                                         <select class="form-control" data-live-search="true" id="id_marca_{{producto.pk}}" name="marca">
                                                             <option value="0" selected="selected">--Seleccione--</option>
-                                                            {% for marca in marcas  %}
-                                                            {% ifequal marca.pk producto.marca.pk  %} 
-                                                            <option value="{{marca.pk}}" selected>{{marca.descripcion_marca}}</option>
-                                                            {% else %}
-                                                            <option value="{{marca.pk}}">{{marca.descripcion_marca}}</option>
-                                                            {% endifequal %}
-                                                            {% endfor %}
                                                         </select>
                                                     </div>
                                                 </div>
@@ -424,7 +410,76 @@ $(document).ready(function() {
             // $('#id_marca').selectpicker('refresh');
         }
     });
-    
 });
+
+    //-----------------------FUNCIONES VENTANA MODALES-----------------------
+    //Funcion Ajax para combobox de ventana modal cargamos subcategoria
+    var pk_producto_global = 0;
+        function categoria_seleccionada(pk_producto,pk_categoria,pk_subcategoria_act){
+          var codigo ="#id_subcategoria_".concat(String(pk_producto));
+          pk_producto_global = pk_producto;
+          $.ajax({
+            type: "get",
+            url: "{% url 'ecommerce_app:ajax_categoria_subcategoria'%}",
+            data: {
+              'id_categoria':pk_categoria,
+              'csrfmiddlewaretoken' : $("input[name=csrfmiddlewaretoken]").val(),
+            },
+            contentType: "application/json; charset=utf-8b",
+            dataType: "json",
+            success: function(data){
+              if(data.subcategorias_categorias == 'nada'){
+                //$(codigo).selectpicker('refresh');
+              }else{
+                $(codigo).find('option').not('option[value=""]').remove();
+                
+                $.each(data,function(key,val){
+                  if(val.id==pk_subcategoria_act){
+                    //alert("entro");
+                    $(codigo).append("<option value="+val.id+" selected>"+val.descripcion_subcategoria+"</option>")
+                    //alert(val.descripcion_subcategoria);
+
+                  }else{
+                    $(codigo).append("<option value="+val.id+">"+val.descripcion_subcategoria+"</option>")
+                  }
+                });
+                //$(codigo).selectpicker('refresh');
+              }
+            },
+            error: function(data){
+              //alert(ts);
+            }
+
+          });  
+
+        }
+    //Funcion Ajax para combobox de ventana modal cargamos subcategoria dinamica
+        function cargar_subcategoria(){
+            var id_categoria = $('#id_categoria_'+pk_producto_global).val();
+            var codigo ="#id_subcategoria_".concat(String(pk_producto_global));
+            $(codigo).find('option').not('option[value=""]').remove(); /* limpiamos el combobox*/
+
+            if (id_categoria != '') {
+                $.get('{% url "ecommerce_app:ajax_categoria_subcategoria" %}', { id_categoria: id_categoria }, function(data) {
+                    if (data.marcas_subcategorias == 'nada') {
+                        alert("¡Advertencia! No existe marcas para la categoría seleccionada");
+                        $(codigo).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
+                        //$('#id_marca').selectpicker('refresh'); 
+                    } else {
+                        $.each(data, function(key, val) {
+                            $(codigo).val('');
+                            $(codigo).append("<option value=" + val.id + ">" + val.descripcion_subcategoria + "</option>");
+                            //$('#id_marca').selectpicker('refresh');
+                        });
+                        //$('#id_marca').selectpicker('refresh');
+                    }
+                }, 'json');
+
+            } else {
+                // $('#id_marca').selectpicker('refresh');
+            }
+
+        }
+    
 </script>
 {% endblock js %}
