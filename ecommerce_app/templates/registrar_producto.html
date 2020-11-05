@@ -371,7 +371,6 @@ $(document).ready(function() {
                 } else {
                     $.each(data, function(key, val) {
                         $('#id_marca').empty();
-                        $('#id_subcategoria').empty();
                         $('#id_subcategoria').append("<option value=" + val.id + ">" + val.descripcion_subcategoria + "</option>");
                         if(numero){
                             cargar_marca_principal();
