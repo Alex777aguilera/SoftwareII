@@ -295,7 +295,7 @@ def registrar_producto(request):
 			query_producto['precio'] = request.POST.get('precio')
 		#3	
 		if request.FILES.get('imagen_producto') == None:
-			errores['imagen_producto'] = "Por favor carge imagen del producto"
+			query_producto['imagen_producto'] = 'logo_proyecto.jpg'
 		else:
 			query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
 		#4
@@ -333,6 +333,48 @@ def registrar_producto(request):
 				'subcategorias':subcategorias,'productos':productos}
 		return render(request,'registrar_producto.html',data)
 
+## Modificar producto
+def modificar_producto(request,id_producto):
+	productos = Producto.objects.get(pk=id_producto)
+	ret_data,query_producto,errores = {},{},{}
+
+	if request.method=='POST':
+		if int(request.POST.get('nombre_producto')) == '' or int(request.POST.get('precio')) == '':
+			errores['errores'] = "HAY ERRORES!"
+
+		if not errores:
+			try: 
+				productos =Producto.objects.filter(pk=id_producto).update(
+																 nombre_producto = request.POST.get('IdFinca'),
+																 codigo_maquina = request.POST.get('CodigoMaquina'),
+																 marca_motor = request.POST.get('MarcaMotor'),
+																 modelo_motor = request.POST.get('ModeloMotor'),
+																 numero_serie = request.POST.get('NumeroSerie'),
+																 tipo_maquina = request.POST.get('IdTipoMaquina'),
+																 estado_motor = request.POST.get('IdEstadoMotor'),
+																 tipo_combustible = request.POST.get('IdTipoCombustible'),
+																 horas_trabajadas = request.POST.get('HorasTrabajadas'),
+																 fecha_instalacion = request.POST.get('FechaInstalacion'),
+																 potencia_HP = request.POST.get('PotenciaHP'),
+																 potencia_CV = request.POST.get('PotenciaCV'),
+																 consumo_hora = request.POST.get('ConsumoHora'),
+																 proveedor = request.POST.get('Proveedor'),
+																 velocidad_maxima = request.POST.get('VelocidadMaxima'),
+																 velocidad_ralenti = request.POST.get('VelocidadRalenti'),
+																 peso_bruto = request.POST.get('PesoBruto'),
+																),
+
+			except Exception as e:	
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error")
+			else:
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))		
+		else:
+			return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error")
+		
+	else:
+		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
+			
+	
 def detalle_producto(request,id_producto):
 	producto = Producto.objects.get(pk=id_producto);
 	return render(request,'detalle_producto.html',{'producto':producto})

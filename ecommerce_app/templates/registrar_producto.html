@@ -118,14 +118,8 @@ e-commerce | Admin
                         <div class="col-sm-4 form-group">
                             <label for="exampleFormControlFile1">
                                 Imagen
-                                <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto" required>
+                                <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto">
                             </label>
-                             {% if errores.imagen_producto %}
-                                <div class="alert alert-danger alert-dismissible">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                    <h5><i class="icon fas fa-ban"></i> Error {{errores.imagen_producto}} </h5>
-                                </div>
-                            {% endif %}
                         </div>
                     </div>
                     <div class="form-row">
@@ -229,7 +223,6 @@ e-commerce | Admin
                                                     <div class="col-sm-4 form-group">
                                                         <label>Categoría</label>
                                                         <select class="form-control" data-live-search="true" id="id_categoria_{{producto.pk}}" name="categoria" onchange="cargar_subcategoria();">
-                                                            <option value="0">-Seleccione-</option>
                                                             {% for categoria in categorias %}
                                                             {% ifequal categoria.pk producto.marca.subcategoria.categoria.pk %}
                                                             <option value='{{categoria.pk}}' selected>{{categoria.descripcion_categoria}}</option>
@@ -242,13 +235,11 @@ e-commerce | Admin
                                                     <div class="col-sm-4 form-group">
                                                         <label>Subcategoría</label>
                                                         <select class="form-control" data-live-search="true" id="id_subcategoria_{{producto.pk}}" name="subcategoria" onchange="cargar_marca();">
-                                                            <option value="0">-Seleccione-</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-sm-4 form-group">
                                                         <label>Marca</label>
                                                         <select class="form-control" data-live-search="true" id="id_marca_{{producto.pk}}" name="marca">
-                                                            <option value="0" selected="selected">--Seleccione--</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -260,7 +251,6 @@ e-commerce | Admin
                                                     <div class="col-sm-4 form-group">
                                                         <label>Género</label>
                                                         <select class="form-control" id="id_categoria_genero" name="categoria_genero">
-                                                            <option value="0">-Seleccione-</option>
                                                             {% for genero in generos %}
                                                             {% ifequal genero.pk producto.categoria_genero.pk %}
                                                             <option value='{{genero.pk}}' selected>{{genero.descripcion_genero}}</option>
@@ -307,9 +297,9 @@ e-commerce | Admin
                                                     </div> <!-- form-group end.// -->
                                                 </div>
                                                 <div class="form-row">
-                                                    <div class="col-sm-4 form-group">
+                                                    <div class="col-sm-12 form-group">
                                                         <label for="exampleFormControlFile1">
-                                                            Imagen
+                                                            Imagen <Strong>(Si no se desea actualizar la imagen se puede dejar vacío)</Strong>
                                                             <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto">
                                                         </label>
                                                     </div>
