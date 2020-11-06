@@ -155,7 +155,7 @@ e-commerce | Admin
                                 <th>Descuento</th>
                                 <th>Porcentaje Descuento</th>
                                 <th>Estado del Producto</th>
-                                <th>Imgen</th>
+                                <th>Imagen</th>
                                 <th>Destalles</th>
                             </tr>
                         </thead>
@@ -185,12 +185,12 @@ e-commerce | Admin
                                 {% else %}
                                 <td>Inactivo</td>
                                 {% endif %}
-                                <td> <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#id_imagen{{producto.pk}}">
-                                        Ver
-                                    </button></td>
-                                <td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#id_producto{{producto.pk}}" onclick="categoria_seleccionada({{producto.pk}},{{producto.marca.subcategoria.categoria.pk}},{{producto.marca.subcategoria.pk}},{{producto.marca.pk}});">
-                                        Ver/Editar
-                                    </button></td>
+                                <td> <center><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#id_imagen{{producto.pk}}">
+                                    <i class="fas fa-eye"></i>  <i class="fas fa-pencil-alt"></i>
+                                    </button></center></td>
+                                <td><center><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#id_producto{{producto.pk}}" onclick="categoria_seleccionada({{producto.pk}},{{producto.marca.subcategoria.categoria.pk}},{{producto.marca.subcategoria.pk}},{{producto.marca.pk}});">
+                                     <i class="fas fa-eye"></i>  <i class="fas fa-pencil-alt"></i>
+                                    </button></center</td>
                             </tr>
                             <!-- Modal Para ver y editar datos de cada producto-->
                             <div class="modal fade" id="id_producto{{producto.pk}}">
@@ -298,14 +298,6 @@ e-commerce | Admin
                                                 </div>
                                                 <div class="form-row">
                                                     <div class="col-sm-12 form-group">
-                                                        <label for="exampleFormControlFile1">
-                                                            Imagen <Strong>(Si no se desea actualizar la imagen se puede dejar vacío)</Strong>
-                                                            <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto">
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-row">
-                                                    <div class="col-sm-12 form-group">
                                                         <label>Descripción</label>
                                                         <textarea name="descripcion_producto" id="id_descripcion_producto" cols="30" rows="2" placeholder="Descripción del Producto" class="form-control">{{producto.descripcion_producto}}</textarea>
                                                     </div> <!-- form-group end.// -->
@@ -337,10 +329,20 @@ e-commerce | Admin
                                             <label for="">No se encontró imagen</label>
                                             {% endif %}
                                         </div>
+                                        <form action="{% url 'ecommerce_app:modificar_img_producto' producto.pk %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="col-sm-4 form-group">
+                                            <label for="exampleFormControlFile1">
+                                            Imagen
+                                            <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto" required>
+                                            </label>
+                                        </div>
                                         <!-- Modal footer -->
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-info">Actualizar</button>
                                         </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -360,6 +362,18 @@ $(document).ready(function() {
 
    {% if 'ok' in request.GET %}
         alertify.alert("<h4><strong>Correcto</strong></h4>","Datos guardados con éxito.",function(){
+        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
+        });
+    {% endif %}
+
+   {% if 'ok1' in request.GET %}
+        alertify.alert("<h4><strong>Correcto</strong></h4>","Imagen cargada con éxito.",function(){
+        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
+        });
+    {% endif %}
+
+    {% if 'error1' in request.GET %}
+        alertify.alert("<h4><strong>Error</strong></h4>","No se pudo actualizar la imagen.",function(){
         history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
         });
     {% endif %}

@@ -26,6 +26,7 @@ urlpatterns = [
  path('detalle/producto/<int:id_producto>/', views.detalle_producto, name='detalle_producto'),
  path('lista/categorias/', views.lista_categorias, name='lista_categorias'),
  path('ajax/subcategoria/marcas', views.ajax_subcategoria_marca, name='ajax_subcategoria_marca'),
-
+ path('modificar/imagen/producto<int:id_producto>/', views.modificar_img_producto, name='modificar_img_producto'),
+ path('modificar/producto/<int:id_producto>/', views.modificar_producto, name='modificar_producto'),
 
 ]
