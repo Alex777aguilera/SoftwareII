@@ -26,6 +26,10 @@ urlpatterns = [
  path('detalle/producto/<int:id_producto>/', views.detalle_producto, name='detalle_producto'),
  path('lista/categorias/', views.lista_categorias, name='lista_categorias'),
  path('ajax/subcategoria/marcas', views.ajax_subcategoria_marca, name='ajax_subcategoria_marca'),
-
+ path('delete/prudcto/carrito/<int:id_Pdelete>/', views.Eliminar_producto_carrito, name='Eliminar_producto_carrito'),
+ path('productos/categoria/<int:idcategoria>/', views.productos_categoria, name='productos_categoria'),
+ path('ajax/existencia', views.ajax_existencia, name='ajax_existencia'),
+ path('registro/domicilio', views.registrar_domicilio, name='registrar_domicilio'),
+ path('email', views.email, name='email'),
 
 ]

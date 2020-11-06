@@ -8,7 +8,7 @@ importlib.reload(sys)
 # Create your models here.
 
 
-class Categoria(models.Model):
+class Categoria(models.Model):## Seria bueno agregar campo de img para las categorias, igual para las sub
 	"""docstring for Categoria"""
 	descripcion_categoria = models.CharField(max_length=50)
 	def __str__(self):
@@ -87,7 +87,7 @@ class Producto(models.Model):
 
 	def __str__(self):
 		return "{}-{}" .format(self.pk,self.nombre_producto)
-
+#Cambiar el precio del producto, en caso haya descuento o este en promocion, precio anterior, precio actual
 class Carrito(models.Model):
 	"""docstring for lote"""
 	cantidad = models.CharField(max_length=50)
