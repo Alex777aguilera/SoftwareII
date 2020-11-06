@@ -360,7 +360,7 @@ def modificar_producto(request,id_producto):
 																	modelo = request.POST.get('modelo'),
 																	precio = request.POST.get('precio'),
 																	porcentaje_descuento = request.POST.get('porcentaje_descuento'),
-																	proveedor = request.POST.get('nombre_producto'),
+																	proveedor = request.POST.get('proveedor'),
 																	esta_descuento = bool_descuento,
 																	nuevo_producto = bool_nuevo_producto,
 																	estado_producto = bool_estado_producto,
