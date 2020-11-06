@@ -419,8 +419,7 @@ $(document).ready(function() {
     $(document).on('change', '.clase_descuento', function() {
         var id = $(this).attr('id');
         var id_seleccion = $(this).val();
-
-        if (id_seleccion == 'True') {
+        if (id_seleccion == 2) {
             $('#id_porcentaje_descuento' + id).prop("disabled", false);
         } else {
             $('#id_porcentaje_descuento'+id).val('');
