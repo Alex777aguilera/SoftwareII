@@ -143,107 +143,105 @@ e-commerce | Admin
                 </div> <!-- card .// -->
                 <!-- ============================ COMPONENT PROFILE END.// ================================= -->
             </aside>
-             <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h5 class="m-0 font-weight-bold text-primary">Datos de Empresa</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered" id="tablaE" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Empresa</th>
-                                <th>Telefono</th>
-                                <th>Correo</th>
-                                <th>Fecha registro</th>
-                                <th>Direccion</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th>Descripcion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for empresa in empresas %}
-                            <tr>
-                                <td>{{empresa.nombre}}</td>
-                                <td>{{empresa.telefono}}</td>
-                                <td>{{empresa.correo}}</td>
-                                <td>{{empresa.fecha_registro}}</td>
-                                <td>
-                                    <center><button type="button" class="btn btn-link" data-toggle="modal" data-target="#ver{{direccion.pk}}" onclick="{{empresa.pk}}">Ver</button></center>
-                                </td>
-                                <td>{{empresa.latitude_empresa}}</td>
-                                <td>{{empresa.longitude_empresa}}</td>
-                                <td>
-                                    <center><button type="button" class="btn btn-link" data-toggle="modal" data-target="#ve{{descripcion.pk}}" onclick="{{empresa.pk}}">Ver</button></center>
-                                </td>
-                            </tr>
-                            <div class="modal fade" id="ver{{direccion.pk}}">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="m-0 font-weight-bold text-primary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;&nbsp;Direccion de: {{empresa.nombre}}</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            {% csrf_token %}
-                                            <div class="row">
-                                                <br>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <center>
-                                                            <h6>{{empresa.direccion}}</h6>
-                                                        </center>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">Datos de Empresa</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" id="tablaE" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Empresa</th>
+                                    <th>Telefono</th>
+                                    <th>Correo</th>
+                                    <th>Fecha registro</th>
+                                    <th>Direccion</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                    <th>Descripcion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for empresa in empresas %}
+                                <tr>
+                                    <td>{{empresa.nombre}}</td>
+                                    <td>{{empresa.telefono}}</td>
+                                    <td>{{empresa.correo}}</td>
+                                    <td>{{empresa.fecha_registro}}</td>
+                                    <td>
+                                        <center><button type="button" class="btn btn-link" data-toggle="modal" data-target="#ver{{direccion.pk}}" onclick="{{empresa.pk}}">Ver</button></center>
+                                    </td>
+                                    <td>{{empresa.latitude_empresa}}</td>
+                                    <td>{{empresa.longitude_empresa}}</td>
+                                    <td>
+                                        <center><button type="button" class="btn btn-link" data-toggle="modal" data-target="#ve{{descripcion.pk}}" onclick="{{empresa.pk}}">Ver</button></center>
+                                    </td>
+                                </tr>
+                                <div class="modal fade" id="ver{{direccion.pk}}">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="m-0 font-weight-bold text-primary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;&nbsp;Direccion de: {{empresa.nombre}}</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <br>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <center>
+                                                                <h6>{{empresa.direccion}}</h6>
+                                                            </center>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="modal-footer justify-content">
-                                                <button type="button" class="btn btn-outline-info btn-sm" data-dismiss="modal">Cerrar</button>
+                                                <div class="modal-footer justify-content">
+                                                    <button type="button" class="btn btn-outline-info btn-sm" data-dismiss="modal">Cerrar</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- modal de Descripcion-->
-                            <div class="modal fade" id="ve{{descripcion.pk}}">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="m-0 font-weight-bold text-primary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;&nbsp;Descripcion de: {{empresa.nombre}}</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            {% csrf_token %}
-                                            <div class="row">
-                                                <br>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <center>
-                                                            <h6>{{empresa.descripcion}}</h6>
-                                                        </center>
+                                <!-- modal de Descripcion-->
+                                <div class="modal fade" id="ve{{descripcion.pk}}">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="m-0 font-weight-bold text-primary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;&nbsp;Descripcion de: {{empresa.nombre}}</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <br>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <center>
+                                                                <h6>{{empresa.descripcion}}</h6>
+                                                            </center>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="modal-footer justify-content">
-                                                <button type="button" class="btn btn-outline-info btn-sm" data-dismiss="modal">Cerrar</button>
+                                                <div class="modal-footer justify-content">
+                                                    <button type="button" class="btn btn-outline-info btn-sm" data-dismiss="modal">Cerrar</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
-
-       
     </section>
 </div>
 <script type="text/javascript" src="{% static 'js/mapa.js' %}"></script>

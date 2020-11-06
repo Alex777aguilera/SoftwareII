@@ -23,8 +23,9 @@ e-commerce | Categoías
 			<div class="card-banner rounded-lg" style="height:220px; background-image: url({% static 'images/logo_proyecto.jpg' %});">
 			  <article class="card-body caption">
 				<h5 class="card-title">{{categoria.descripcion_categoria}}</h5>
-				<p>Esta es la descripcion de la categoría</p>
-				<a href="#" class="btn btn-warning ">Ver</a>
+				<p>Esta es la descripcion de la categoría {{categoria.pk}}</p>
+
+				<a href="{% url 'ecommerce_app:productos_categoria' categoria.pk %}"  class="btn btn-warning ">Ver</a>
 			  </article>
 			</div>
 		<!-- ======================= COMPONENT BANNER 1  END .// ============================ -->

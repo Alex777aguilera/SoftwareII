@@ -4,77 +4,74 @@ e-commerce | Admin
 {% endblock title %}
 {% load static %}
 {% block content %}
-<h1>{% if guardar_modificar %}REGISTRAR{% else %}MODIFICAR{% endif %} COLABORADOR</h1>
-{% if guardar_modificar %}
-<form action="{% url 'ecommerce_app:registro_cliente' %}" method="POST" enctype="multipart/form-data" id="id_form">
-    {% else %}
-    <form action="{% url 'ecommerce_app:modificar_normal' id_cliente %}" method="POST" enctype="multipart/form-data" id="id_form">
-        {% endif %}
-        {% csrf_token %}
-        <div class="row">
-            {% if errores.administrador %}
-            <div class="alert alert-danger alert-dismissible " role="alert">
-                <strong>ERROR! </strong>{{errores.administrador}}
-                {% endif %}
-                <div class="conteiner">
-                  <div class="content">
-                    <div class="card shadow mb-4">
-                        <article class="card-body">
-                            <header class="mb-4">
-                                <h4 class="card-title">Registro Cliente</h4>
-                            </header>
-                            <form>
+<br>
+<div class="container">
+    <section class="content">
+        <div class="card shadow mb-4">
+            <aside>
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">Crear Cuenta</h5>
+                </div>
+                <form action="{% url 'ecommerce_app:registro_cliente' %}" method="POST" enctype="multipart/form-data" onsubmit="Charger()">
+                    {% csrf_token %}
+                    <div class="row">
+                        {% if errores.administrador %}
+                        <div class="alert alert-danger alert-dismissible " role="alert">
+                            <strong>ERROR! </strong>{{errores.administrador}}
+                            {% endif %}
+                            <article class="card-body">
                                 <div class="form-row">
                                     <div class="col-sm-4 form-group">
                                         <label>Identidad</label>
-                                        <input type="text" class="form-control" id="identificacion" name="identificacion" placeholder="Número de Identidad" value="{{ret_data.num_identidad}}">
+                                        {% if errores.num_identidad %}
+                                        <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                            <strong>ERROR! </strong>{{errores.num_identidad}}
+                                        </div>
+                                        {% endif %}
+                                        <input type="text" class="form-control" id="identificacion" name="identificacion" placeholder="ejm .. 0601-1995-07789" value="{{ret_data.num_identidad}}">
                                     </div> <!-- form-group end.// -->
-                                    {% if errores.num_identidad %}
-                                    <div class="alert alert-danger alert-dismissible " role="alert">
-                                        <strong>ERROR! </strong>{{errores.num_identidad}}
-                                    </div>
-                                    {% endif %}
                                     <div class="col-sm-4 form-group">
                                         <label>Nombres</label>
-                                        <input type="text" class="form-control" id="id_nombres" name="nombres" placeholder="Nombres" value="{{ret_data.nombres}}">
+                                        {% if errores.nombres %}
+                                        <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                            <strong>ERROR! </strong>{{errores.nombres}}
+                                        </div>
+                                        {% endif %}
+                                        <input type="text" class="form-control" id="id_nombres" name="nombres" placeholder="1ro y 2do nombre" value="{{ret_data.nombres}}">
                                     </div> <!-- form-group end.// -->
-                                    {% if errores.nombres %}
-                                    <div class="alert alert-danger alert-dismissible " role="alert">
-                                        <strong>ERROR! </strong>{{errores.nombres}}
-                                    </div>
-                                    {% endif %}
                                     <div class="col-sm-4 form-group">
                                         <label>Apellidos</label>
-                                        <input type="text" class="form-control" id="id_apellidos" name="apellidos" placeholder="APELLIDOS" value="{{ret_data.apellidos}}">
+                                        {% if errores.apellidos %}
+                                        <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                            <strong>ERROR! </strong>{{errores.apellidos}}
+                                        </div>
+                                        {% endif %}
+                                        <input type="text" class="form-control" id="id_apellidos" name="apellidos" placeholder="Apellidos" value="{{ret_data.apellidos}}">
                                     </div> <!-- form-group end.// -->
-                                    {% if errores.apellidos %}
-                                    <div class="alert alert-danger alert-dismissible " role="alert">
-                                        <strong>ERROR! </strong>{{errores.apellidos}}
-                                    </div>
-                                    {% endif %}
                                 </div> <!-- form-row end.// -->
                                 <div class="form-row">
                                     <div class="col-sm-4 form-group">
                                         <label>Telefono</label>
-                                        <input type="text" class="form-control" id="id_telefono" name="telefono" placeholder="TELEFONO" value="{{ret_data.numero_telefono}}">
+                                        {% if errores.numero_telefono %}
+                                        <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                            <strong>ERROR! </strong>{{errores.numero_telefono}}
+                                        </div>
+                                        {% endif %}
+                                        <input type="text" class="form-control" id="id_telefono" name="telefono" placeholder="Telefono" value="{{ret_data.numero_telefono}}">
                                     </div> <!-- form-group end.// -->
-                                    {% if errores.numero_telefono %}
-                                    <div class="alert alert-danger alert-dismissible " role="alert">
-                                        <strong>ERROR! </strong>{{errores.numero_telefono}}
-                                    </div>
-                                    {% endif %}
                                     <div class="col-sm-4 form-group">
                                         <label>Correo</label>
-                                        <input type="text" class="form-control" id="id_Correo" name="Correo" placeholder="CORREO" value="{{ret_data.correo}}">
+                                        {% if errores.correo %}
+                                        <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                            <strong>ERROR! </strong>{{errores.correo}}
+                                        </div>
+                                        {% endif %}
+                                        <input type="text" class="form-control" id="id_Correo" name="Correo" placeholder="Email" value="{{ret_data.correo}}">
                                     </div> <!-- form-group end.// -->
-                                    {% if errores.correo %}
-                                    <div class="alert alert-danger alert-dismissible " role="alert">
-                                        <strong>ERROR! </strong>{{errores.correo}}
-                                    </div>
-                                    {% endif %}
                                     <div class="col-sm-4 form-group">
                                         <label>Género</label>
                                         <select name="genero" id="id_genero" class="form-control">
+                                            <option value='0' selected="selected" disabled selected>--Seleccione--</option>
                                             {% for genero in generos %}
                                             {% ifequal genero.pk ret_data.genero %}
                                             <option value='{{genero.pk}}' selected>{{genero.descripcion_genero}}</option>
@@ -84,9 +81,14 @@ e-commerce | Admin
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Fecha de nacimiento</label>
+                                            {% if errores.fecha_nacimiento %}
+                                            <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                                <strong>ERROR! </strong>{{errores.fecha_nacimiento}}
+                                            </div>
+                                            {% endif %}
                                             <div class="input-group">
                                                 <div class="input-group-txt">
                                                     <span class="input-group-text">
@@ -95,42 +97,224 @@ e-commerce | Admin
                                                 </div>
                                                 <input type="text" class="form-control float-right" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{ret_data.fecha_nacimiento|date:'Y-m-d'}}">
                                             </div>
-                                            {% if errores.fecha_nacimiento %}
-                                            <div class="alert alert-danger alert-dismissible " role="alert">
-                                                <strong>ERROR! </strong>{{errores.fecha_nacimiento}}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Avatar: </label>
+                                            {% if errores.imagen %}
+                                            <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                                <strong>ERROR! </strong>{{errores.imagen}}
                                             </div>
                                             {% endif %}
+                                            <input type="file" name="imagen">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="">IMAGEN: </label>
-                                            <input type="file" name="imagen">
+                                <hr>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Domicilio</label>
+                                        {% if errores_domicilio.direccion %}
+                                        <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                            <strong>ERROR! </strong>{{errores_domicilio.direccion}}
                                         </div>
+                                        {% endif %}
+                                        <textarea class="form-control" name="direccion" value="{{ret_data.direccion}}" id="id_direccion" rows="3"></textarea>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
                                     <button type="submit" class="btn btn-primary btn-block"> Guardar </button>
                                 </div> <!-- form-group// -->
-                            </form>
-                        </article> <!-- card-body end .// -->
-                    </div> <!-- card.// -->
+                            </article> <!-- card-body end .// -->
+                </form>
+<div class="row">
+            <div class="col s12 m12">
+                <div id="modal1" class="modal">
+                    <div class="modal-content">
+                        <div id="myProgress">
+                            <div id="myBar">GUARDANDO...</div>
+                        </div>
+                    </div>
                 </div>
-                </div>
+            </div>
+        </div>
 
-                {% endblock content %}
-                {% block script %}
-                <script type="text/javascript">
-                $('#id_fecha_nacimiento').daterangepicker({
-                    singleDatePicker: true,
-                    showDropdowns: true,
-                    maxDate: '12/31/2020',
-                    locale: {
-                        format: 'YYYY-MM-DD'
-                    }
-                });
-                </script>
-                {% endblock script %}
+                <!-- Inicio modal de carga-->
+                <div class="modal fade" id="modal2">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <!-- Modal Header -->
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <div id="background"></div>
+                                <div id="logocontainer" onclick=fill()>
+                                    <div id="pelogo">e-commerce</div>
+                                    <div class="loader" style="left:2vh; top:0; height:2vh; width:0; animation:slide1 1s linear forwards infinite"></div>
+                                    <div class="loader" style="right:0; top:2vh; width:2vh; height:0; animation:slide2 1s linear forwards infinite; animation-delay:0.5s"></div>
+                                    <div class="loader" style="right:2vh; bottom:0; height:2vh; width:0; animation:slide3 1s linear forwards infinite"></div>
+                                    <div class="loader" style="left:0; bottom:2vh; width:2vh; height:0; animation:slide4 1s linear forwards infinite; animation-delay:0.5s"></div>
+                                </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                {# <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button> #}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Fin modal de carga ---->
+            </aside>
+        </div>
+    </section>
+</div>
+{% endblock content %}
+{% block script %}
+<script type="text/javascript">
+$('#id_fecha_nacimiento').daterangepicker({
+    singleDatePicker: true,
+    showDropdowns: true,
+    maxDate: '12/31/2020',
+    locale: {
+        format: 'YYYY-MM-DD'
+    }
+});
+
+var i = 0;
+
+function Charger() {
+     alert('Has pulsado enviar.'); 
+     return false;
+    // $('#modal1').modal('open');
+    // if (i == 0) {
+    //     i = 1;
+    //     var elem = document.getElementById("myBar");
+    //     var width = 1;
+    //     var id = setInterval(frame, 25);
+
+    //     function frame() {
+    //         if (width >= 100) {
+    //             clearInterval(id);
+    //             i = 0;
+    //         } else {
+    //             width++;
+    //             elem.style.width = width + "%";
+    //         }
+    //     }
+    // }
+
+}
+</script>
+<style>
+#background {
+    display: block;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+
+    background-color: #3c005b;
+    background: -webkit-radial-gradient(center, ellipse cover, #3c005b 1%, #0d0011 100%);
+    background: -moz-radial-gradient(center, ellipse cover, #3c005b 1%, #0d0011 100%);
+    background: -ie-radial-gradient(center, ellipse cover, #3c005b 1%, #0d0011 100%);
+}
+
+#logocontainer {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 34vh;
+    height: 34vh;
+    margin-left: -17vh;
+    margin-top: -17vh;
+    overflow: hidden;
+    transition: background-color 500ms;
+    cursor: pointer;
+}
+
+#pelogo {
+    display: block;
+    position: absolute;
+    font-size: 30px !important;
+    left: 2vh;
+    top: 2vh;
+    width: 30vh;
+    height: 30vh;
+    background: #34324b;
+    background: -moz-linear-gradient(-45deg, #34324b 0%, #161222 100%);
+    background: -webkit-linear-gradient(-45deg, #34324b 0%, #161222 100%);
+    background: linear-gradient(135deg, #34324b 0%, #161222 100%);
+    background-size: contain;
+    font-family: Trebuchet MS, sans-serif;
+    font-size: 20vh;
+    font-weight: bold;
+    color: #3ebffa;
+    text-align: center;
+    line-height: 30vh;
+}
+
+.loader {
+    display: block;
+    position: absolute;
+    background-color: #3ebffa;
+}
+
+/*Pretty complex animation, so each side needs its own @keyframes.*/
+
+@keyframes slide1 {
+    50% {
+        width: 32vh;
+        margin-left: 0;
+    }
+
+    100% {
+        margin-left: 32vh;
+    }
+}
+
+@keyframes slide2 {
+    50% {
+        height: 32vh;
+        margin-top: 0;
+    }
+
+    100% {
+        margin-top: 32vh;
+    }
+}
+
+@keyframes slide3 {
+    50% {
+        width: 32vh;
+        margin-right: 0;
+    }
+
+    100% {
+        margin-right: 32vh;
+    }
+}
+
+@keyframes slide4 {
+    50% {
+        height: 32vh;
+        margin-bottom: 0
+    }
+
+    100% {
+        margin-bottom: 32vh;
+    }
+}
+
+#myProgress {
+     width: 100%;
+      background-color: #ddd;
+  }
+
+  #myBar {
+    width: 1%;
+    height: 30px;
+    background-color: #4CAF50;
+  }
+</style>
+{% endblock script %}

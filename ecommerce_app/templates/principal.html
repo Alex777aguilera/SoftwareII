@@ -5,6 +5,7 @@ e-commerce | Cliente_
 {% load static %}
 {% block content %}
 
+
  <div class="container">
         <!-- ========================= SECTION MAIN  ========================= -->
         <section class="section-main padding-y">
@@ -439,26 +440,26 @@ e-commerce | Cliente_
         <!-- =============== SECTION REGION =============== -->
         <section class="padding-bottom">
             <header class="section-heading heading-line">
-                <h4 class="title-section text-uppercase">Envios a :</h4>
+                
             </header>
-            <ul class="row mt-4">
-                <li class="col-md col-6"><a href="#" class="icontext"> <img class="icon-flag-sm" src="{% static "images/icons/flags/CN.png" %}"> <span>China</span> </a></li>
-                <li class="col-md col-6"><a href="#" class="icontext"> <img class="icon-flag-sm" src="images/icons/flags/DE.png"> <span>Germany</span> </a></li>
-                <li class="col-md col-6"><a href="#" class="icontext"> <img class="icon-flag-sm" src="images/icons/flags/AU.png"> <span>Australia</span> </a></li>
-                <li class="col-md col-6"><a href="#" class="icontext"> <img class="icon-flag-sm" src="images/icons/flags/RU.png"> <span>Russia</span> </a></li>
-                <li class="col-md col-6"><a href="#" class="icontext"> <img class="icon-flag-sm" src="images/icons/flags/IN.png"> <span>India</span> </a></li>
-                <li class="col-md col-6"><a href="#" class="icontext"> <img class="icon-flag-sm" src="images/icons/flags/GB.png"> <span>England</span> </a></li>
-                <li class="col-md col-6"><a href="#" class="icontext"> <img class="icon-flag-sm" src="images/icons/flags/TR.png"> <span>Turkey</span> </a></li>
-                <li class="col-md col-6"><a href="#" class="icontext"> <img class="icon-flag-sm" src="images/icons/flags/UZ.png"> <span>Uzbekistan</span> </a></li>
-                <li class="col-md col-6"><a href="#" class="icontext"> <i class="mr-3 fa fa-ellipsis-h"></i> <span>More regions</span> </a></li>
-            </ul>
+            
         </section>
+
         <!-- =============== SECTION REGION .//END =============== -->
         <article class="my-4">
             <img src="{% static "images/banners/ad-sm.png" %}" class="w-100">
         </article>
+        <hr>
+        <article class="my-4">
+            {# <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3882.259376926679!2d-87.12940804969361!3d13.334134990572759!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDIwJzAyLjkiTiA4N8KwMDcnMzguMCJX!5e0!3m2!1ses-419!2shn!4v1604117665446!5m2!1ses-419!2shn"  class="w-100" height="300px" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe> #}
+           <div id="mapa" class="w-100" height="300px" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0">
+               hola
+           </div>
+            </article>
+        <hr>
     </div>
     <!-- container end.// -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmLNF_7mdep2BVrJqpuBy_CxQO6TGKqVc&callback=initMap"></script>
 {% endblock content %}
 
 {% block js %}
@@ -466,5 +467,15 @@ e-commerce | Cliente_
     $(document).ready( function () {
     $('#table_id').DataTable();
 } );
+    
+
+ function initMap() {
+        alert({{empresas.nombre}})
+        mapa = new google.maps.Map(document.getElementById("mapa"), {
+          center: { lat: 13.334135, lng: -87.127214 },
+          zoom: 8,
+        });
+      }
+
 </script>
 {% endblock js %}

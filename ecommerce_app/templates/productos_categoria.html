@@ -1,0 +1,54 @@
+ {% extends "base_cliente.html" %}
+{% block title %}
+e-commerce | productos/categoria
+{% endblock title %}
+{% load static %}
+{% block content %}
+
+ <div class="container">
+ <section class="padding-bottom">
+            <header class="section-heading heading-line">
+                <h4 class="title-section text-uppercase">{{categorias.descripcion_categoria}}</h4>
+            </header>
+            <div class="card card-home-category">
+                <div class="row no-gutters">
+                    <div class="col-md-3">
+                        <div class="home-category-banner bg-light-orange">
+                            <h5 class="title">Machinery items for manufacturers</h5>
+                            <p>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+                            <a href="#" class="btn btn-outline-primary rounded-pill">Source now</a>
+                            <img src="{% static "images/items/14.jpg" %}" class="img-bg">
+                        </div>
+                    </div> <!-- col.// -->
+                    
+                    <div class="col-md-9">
+                    	{% for c in sub_categorias %}
+                        <ul class="row no-gutters bordered-cols">
+
+                            <li class="col-6 col-lg-3 col-md-4">
+
+                                <a href="#" class="item">
+                                    <div class="card-body">
+                                        <h6 class="title">{{c.descripcion_subcategoria}} </h6>
+                                        <img class="img-sm float-right" src="{% static "images/items/7.jpg" %}">
+                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i>{{c.categoria}} |{{c.categoria.pk}} </p>
+                                    </div>
+                                </a>
+                            </li>
+                           
+                        </ul>
+ {% empty %}
+<div class="alert  mt-3">
+    <p class="icontext"><i class="icon text-success fa fa-store"></i> Aun no hay productos para esta categoria</p>
+</div>
+                    {% endfor %}
+                    </div> <!-- col.// -->
+                    
+                </div> <!-- row.// -->
+            </div> <!-- card.// -->
+        </section>
+    </div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

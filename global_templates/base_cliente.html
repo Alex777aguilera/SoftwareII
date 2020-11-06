@@ -37,7 +37,7 @@
                 <div class="row align-items-center">
                     <div class="col-xl-2 col-lg-3 col-md-12">
                         <a href="{% url 'ecommerce_app:principal' %}" class="brand-wrap ">
-                            <img class="logo" src="{% static "images/logo.png" %}">
+                            <img class="logo" src="{{empresas.imagen_logo.url}}">
                         </a> <!-- brand-wrap.// -->
                     </div>
                     <div class="col-xl-6 col-lg-5 col-md-6">
@@ -104,7 +104,8 @@
                                 </a>
                             </div>
                             {% endif %}
-                            <div class="widget-header">
+                            {% if request.user.is_authenticated %}
+                                <div class="widget-header">
                                 <a href="{% url 'ecommerce_app:carrito' %}" class="widget-view">
                                     <div class="icon-area icon icon-sm rounded-circle bg-light">
                                         <i class="fa fa-shopping-cart text-primary"></i>
@@ -112,6 +113,7 @@
                                     <small class="text"> Carrito </small>
                                 </a>
                             </div>
+                            {% endif %}
                         </div> <!-- widgets-wrap.// -->
                     </div> <!-- col.// -->
                 </div> <!-- row.// -->
@@ -185,7 +187,8 @@
     {% block content %}
     {% endblock %}
     <!-- ========================= SECTION SUBSCRIBE  ========================= -->
-    <section class="section-subscribe padding-y-lg">
+    {% if a == 1 %}
+        <section class="section-subscribe padding-y-lg">
         <div class="container">
             <p class="pb-2 text-center text-white">Delivering the latest product trends and industry news straight to your inbox</p>
             <div class="row justify-content-md-center">
@@ -203,6 +206,7 @@
             </div>
         </div>
     </section>
+    {% endif %}
     <!-- ========================= SECTION SUBSCRIBE END// ========================= -->
     <!-- ========================= FOOTER ========================= -->
     <footer class="section-footer bg-secondary">
@@ -271,6 +275,7 @@
     <script src="{% static 'datatables/dataTables.bootstrap4.min.js' %}"></script>
     <!-- Alertifyjs -->
     <script src="{% static 'alertifyjs/alertify.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 {% block js %}
 
 {% endblock js %}
