@@ -635,17 +635,40 @@ $(document).ready(function() {
 
       $('#guardar').click(function(e){
         if($('#id_categoria').val() == 0){
-            alertify.alert("<h4><strong>Advertencia</strong></h4>","Debe seleccionar la Categoría");
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Debes seleccionar la Categoría!',
+  
+})
             return false;
+            
         }else if($('#id_subcategoria').val() == 0){
-            alertify.alert("<h4><strong>Advertencia</strong></h4>","Debe seleccionar la Subcategoría");
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Debes seleccionar una sub categoria!',
+  
+})
             return false;
+           
         }else if($('#id_marca').val() == 0){
-            alertify.alert("<h4><strong>Advertencia</strong></h4>","Debe seleccionar la Marca");
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Debes seleccionar una marca!',
+  
+})
             return false;
         }else if($('#id_categoria_genero').val() == 0){
-            alertify.alert("<h4><strong>Advertencia</strong></h4>","Debe seleccionar el género del Producto");
+            Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Debes seleccionar el genero al cual esta destinado del producto!',
+  
+})
             return false;
+           
         }
     });
 </script>

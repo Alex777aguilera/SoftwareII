@@ -29,12 +29,12 @@
 						<div class="form-row">
 							<div class="col-md-4">
 								<div class="col form-group">
-									<label>Categoría:</label>
-		                          	<select class="form-control" style="width: 100%;" id="id_categoria" name="categoria">
-		                              <option value="0" disabled selected>--Seleccione--</option>
+									<label>Sub Categoria:</label>
+		                          	<select class="form-control" style="width: 100%;" id="id_subcategori" name="subcategoria">
+		                              <option value="0">--Seleccione--</option>
 		                             
-		                             {% for categoria in categorias %}
-		                                <option value='{{categoria.pk}}'>{{categoria.descripcion_categoria}}</option>
+		                             {% for subC in sub_categorias %}
+		                                <option value='{{subC.pk}}'>{{subC.descripcion_subcategoria}}</option>
 		                             {% endfor %}
 		                            </select>
 								</div> <!-- form-group end.// -->
@@ -43,19 +43,20 @@
 							<div class="col-md-4">
 								<div class="col form-group">
 									<label>Marca:</label>
-									<input type="text" class="form-control" id="id_descripcion_marca" name="descripcion_marca" placeholder="Descripción Categoría" value="{{ret_data.descripcion_marca}}">
-
 									{% if errores.descripcion_marca %}
-									<div class="alert alert-danger alert-dismissible " role="alert">
+									<div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
 										<strong>ERROR! </strong>{{errores.descripcion_marca}}
 									</div>
 									{% endif %}
+									<input type="text" class="form-control" id="id_descripcion_marca" name="descripcion_marca" placeholder="Descripción Categoría" value="{{ret_data.descripcion_marca}}">
+
+									
 								</div> <!-- form-group end.// -->
 							</div>
 						</div>
 						
 					    <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
-					        <button type="submit" class="btn btn-primary btn-block"> Guardar  </button>
+					        <button type="submit" class="btn btn-primary btn-block" id="guardar"> Guardar  </button>
 					    </div>		
  					</form>
  				</div> <!-- card-body.// -->
@@ -69,7 +70,7 @@
 		</div>
 		<article class="card-body">
 		<div class="table-responsive">
-			<table  class="table table-striped table-bordered" id="dataTable"  width="100%" cellspacing="50%">
+			<table  class="table table-striped table-bordered" id="tablaM"  width="100%" cellspacing="50%">
 				<thead>
 					<tr>
 						<th>Categoría</th>
@@ -80,7 +81,7 @@
 				<tbody>
 					{% for marca in marcas %}
 						<tr>
-							<td>{{marca.categoria.descripcion_categoria}}</td>
+							<td>{{marca.subcategoria.descripcion_subcategoria}}</td>
 							<td>{{marca.descripcion_marca}}</td>
 							<td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#id_categoria{{marca.pk}}">
 			                Ver/Editar 
@@ -105,7 +106,7 @@
 					        		<div class="form-row">
 										<div class="col-sm-6 form-group">
 											<label>Categoría:</label>
-											<select class="form-control" style="width: 100%;" id="id_categoria" name="categoria">
+											<select class="form-control" style="width: 100%;" id="su" name="categoria">
 			                              		<option value="0" disabled selected>--Seleccione--</option>
 			                              		{% for categoria in categorias %}
 			                              			{% ifequal categoria.pk marca.categoria.pk %} 
@@ -146,11 +147,28 @@
 
 {% block js %}
 <script>
-	$('#guardar').click(function(e){
-	    if($('#id_categoria').val() == null){
-	        alert("Debe seleccionar la Categoría");
-	        return false;
-	    }
-    });
+$(document).ready(function() {
+    $('#tablaM').DataTable();
+});
+
+{% if 'ok' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+
+
+$('#guardar').click(function(e) {
+    if ($('#id_subcategori').val() == 0) {
+    	Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Debes seleccionar una ubcategoria!',
+  
+})
+            return false;
+        }
+});
+
+
 </script>
 {% endblock js %}

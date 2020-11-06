@@ -31,7 +31,7 @@ urlpatterns = [
  path('delete/prudcto/carrito/<int:id_Pdelete>/', views.Eliminar_producto_carrito, name='Eliminar_producto_carrito'),
  path('productos/categoria/<int:idcategoria>/', views.productos_categoria, name='productos_categoria'),
  path('ajax/existencia', views.ajax_existencia, name='ajax_existencia'),
- path('registro/domicilio', views.registrar_domicilio, name='registrar_domicilio'),
+ path('registro/lote', views.registrar_lote, name='registrar_lote'),
  path('email', views.email, name='email'),
 
 ]

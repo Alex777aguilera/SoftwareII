@@ -112,7 +112,7 @@
                                 <a class="dropdown-item" href="#">Home and kitchen</a>
                                 <a class="dropdown-item" href="#">Service and equipment</a>
                                 <a class="dropdown-item" href="#">Healthcare items</a>
-                                <a class="dropdown-item" href="#">Toys and Hobbies</a>
+                                <a class="dropdown-item" href="{% url 'ecommerce_app:registrar_lote' %}">Registro Lote</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -191,6 +191,7 @@
     <script src="{% static 'bootstrap-select-1.13.14/bootstrap-select.js' %}"></script>
     <!-- Alertifyjs -->
     <script src="{% static 'alertifyjs/alertify.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 {% block js %}
 
 {% endblock js %}
