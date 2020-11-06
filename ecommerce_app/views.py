@@ -337,25 +337,44 @@ def registrar_producto(request):
 def modificar_producto(request,id_producto):
 	productos = Producto.objects.get(pk=id_producto)
 	ret_data,query_producto,errores = {},{},{}
+	bool_descuento = False
+	bool_nuevo_producto = True
+	bool_estado_producto= True
 
 	if request.method=='POST':
-		if int(request.POST.get('nombre_producto')) == '' or int(request.POST.get('precio')) == '':
+		if request.POST.get('nombre_producto') == '' or request.POST.get('precio') == '':
 			errores['errores'] = "HAY ERRORES!"
 
 		if not errores:
+			if int(request.POST.get('esta_descuento')) == 2:
+				bool_descuento = True
+			if int(request.POST.get('nuevo_producto')) == 2: #Por defecto es 1 que es True es un producto nuevo
+				bool_nuevo_producto = False
+			if int(request.POST.get('estado_producto')) == 2: #Por defecto es 1 que es True es un producto activo
+				bool_estado_producto = False
+
 			try: 
 				productos =Producto.objects.filter(pk=id_producto).update(
-																 nombre_producto = request.POST.get('IdFinca'),
-																 codigo_maquina = request.POST.get('CodigoMaquina'),
-																 marca_motor = request.POST.get('MarcaMotor'),
+																	nombre_producto = request.POST.get('nombre_producto'),
+																	descripcion_producto = request.POST.get('descripcion_producto'),
+																	modelo = request.POST.get('modelo'),
+																	precio = request.POST.get('precio'),
+																	porcentaje_descuento = request.POST.get('porcentaje_descuento'),
+																	proveedor = request.POST.get('nombre_producto'),
+																	esta_descuento = bool_descuento,
+																	nuevo_producto = bool_nuevo_producto,
+																	estado_producto = bool_estado_producto,
+																	marca = Marca.objects.get(pk=int(request.POST.get('marca'))),
+																	categoria_genero = Genero.objects.get(pk=int(request.POST.get('categoria_genero'))),
 																),
 
-			except Exception as e:	
-				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error")
+			except Exception as e:
+				print(e,"Este es el error");	
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error1")
 			else:
-				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))		
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?ok1")		
 		else:
-			return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error")
+			return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error1")
 		
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
@@ -374,11 +393,11 @@ def modificar_img_producto(request,id_producto):
 				producto.save() 
 
 			except Exception as e:	
-				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error1")
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error2")
 			else:
-				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?ok1")		
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?ok2")		
 		else:
-			return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error1")
+			return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error2")
 		
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))

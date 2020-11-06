@@ -22,7 +22,7 @@ e-commerce | Admin
                     {% endif %}
                     <div class="form-row">
                         <div class="col-sm-4 form-group">
-                            <label>Nombre</label>
+                            <label>Nombre</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                             <input type="text" class="form-control" placeholder="Nombre del Producto" id="id_nombre" name="nombre_producto" required>
                              {% if errores.nombre_producto %}
                                 <div class="alert alert-danger alert-dismissible">
@@ -32,7 +32,7 @@ e-commerce | Admin
                             {% endif %}
                         </div> <!-- form-group end.// -->
                         <div class="col-sm-4 form-group">
-                            <label>Precio</label>
+                            <label>Precio</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                             <input type="text" class="form-control" placeholder="Precio del Producto" id="id_precio" name="precio" required>
                                {% if errores.precio %}
                                 <div class="alert alert-danger alert-dismissible">
@@ -48,7 +48,7 @@ e-commerce | Admin
                     </div> <!-- form-row end.// -->
                     <div class="form-row">
                         <div class="col-sm-4 form-group">
-                            <label>Categoría</label>
+                            <label>Categoría</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                             <select class="form-control" data-live-search="true" id="id_categoria" name="categoria">
                                 <option value="0">-Seleccione-</option>
                                 {% for categoria in categorias %}
@@ -57,13 +57,13 @@ e-commerce | Admin
                             </select>
                         </div>
                        <div class="col-sm-4 form-group">
-                            <label>Subcategoría</label>
+                            <label>Subcategoría</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                             <select class="form-control" data-live-search="true" id="id_subcategoria" name="subcategoria" onchange="cargar_marca_principal();">
                                 <option value="0">-Seleccione-</option>
                             </select>
                         </div>
                         <div class="col-sm-4 form-group selectpicker">
-                            <label>Marca</label>
+                            <label>Marca</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                             <select class="form-control" data-live-search="true" id="id_marca" name="marca">
                                 <option value="0" selected="selected">--Seleccione--</option>
                             </select>
@@ -81,7 +81,7 @@ e-commerce | Admin
                             <input type="text" class="form-control" placeholder="Modelo del Producto" id="id_modelo" name="modelo">
                         </div> <!-- form-group end.// -->
                         <div class="col-sm-4 form-group">
-                            <label>Género</label>
+                            <label>Género</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                             <select class="form-control" id="id_categoria_genero" name="categoria_genero">
                                 <option value="0">-Seleccione-</option>
                                 {% for genero in generos %}
@@ -203,7 +203,7 @@ e-commerce | Admin
                                         </div>
                                         <!-- Modal body -->
                                         <div class="modal-body">
-                                            <form action="" method="POST">
+                                            <form action="{% url 'ecommerce_app:modificar_producto' producto.pk %}" method="POST">
                                                 {% csrf_token %}
                                                 <div class="form-row">
                                                     <div class="col-sm-4 form-group">
@@ -261,14 +261,14 @@ e-commerce | Admin
                                                         </select>
                                                     </div>
                                                     <div class="col-sm-4 form-group">
-                                                        <label>Estado del Producto</label>
+                                                        <label>Condición del Producto</label>
                                                         <select class="form-control" data-live-search="true" id="id_nuevo_producto" name="nuevo_producto">
                                                             {% if producto.nuevo_producto %}
-                                                            <option value="True" selected>Nuevo</option>
-                                                            <option value="False">Usado</option>
+                                                            <option value="1" selected>Nuevo</option>
+                                                            <option value="2">Usado</option>
                                                             {% else %}
-                                                            <option value="True">Nuevo</option>
-                                                            <option value="False" selected>Usado</option>
+                                                            <option value="1">Nuevo</option>
+                                                            <option value="2" selected>Usado</option>
                                                             {% endif %}
                                                         </select>
                                                     </div>
@@ -279,11 +279,11 @@ e-commerce | Admin
                                                         <select class="form-control clase_descuento" id="{{producto.pk}}" name="esta_descuento"><!-- agregar una clase_descuento para todas las ventanas
                                                             modales y su id unico producto para que el select sea diferente en cada modal-->
                                                             {% if producto.esta_descuento %}
-                                                            <option value="True" selected>Sí</option>
-                                                            <option value="False">No</option>
+                                                            <option value="2" selected>Sí</option>
+                                                            <option value="1">No</option>
                                                             {% else %}
-                                                            <option value="True">Sí</option>
-                                                            <option value="False" selected>No</option>
+                                                            <option value="2">Sí</option>
+                                                            <option value="1" selected>No</option>
                                                             {% endif %}
                                                         </select>
                                                     </div>
@@ -295,6 +295,18 @@ e-commerce | Admin
                                                         <input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento{{producto.pk}}" name="porcentaje_descuento" disabled>
                                                         {% endif %}
                                                     </div> <!-- form-group end.// -->
+                                                      <div class="col-sm-4 form-group">
+                                                        <label>Estado del Producto</label>
+                                                        <select class="form-control" data-live-search="true" id="id_nuevo_producto" name="estado_producto">
+                                                            {% if producto.estado_producto %}
+                                                            <option value="1" selected>Activo</option>
+                                                            <option value="2">Inactivo</option>
+                                                            {% else %}
+                                                            <option value="1">Activo</option>
+                                                            <option value="2" selected>Inactivo</option>
+                                                            {% endif %}
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div class="form-row">
                                                     <div class="col-sm-12 form-group">
@@ -331,11 +343,14 @@ e-commerce | Admin
                                         </div>
                                         <form action="{% url 'ecommerce_app:modificar_img_producto' producto.pk %}" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
-                                        <div class="col-sm-4 form-group">
+                                        <div class="col-sm-12 form-group">
+                                            
+                                            <label style="margin-left: 12.5%;"><Strong>Cargar nueva Imagen</Strong></label>
+                                            <center>
                                             <label for="exampleFormControlFile1">
-                                            Imagen
                                             <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto" required>
                                             </label>
+                                            </center>
                                         </div>
                                         <!-- Modal footer -->
                                         <div class="modal-footer">
@@ -367,12 +382,24 @@ $(document).ready(function() {
     {% endif %}
 
    {% if 'ok1' in request.GET %}
-        alertify.alert("<h4><strong>Correcto</strong></h4>","Imagen cargada con éxito.",function(){
+        alertify.alert("<h4><strong>Correcto</strong></h4>","Datos editados con éxito.",function(){
         history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
         });
     {% endif %}
 
     {% if 'error1' in request.GET %}
+        alertify.alert("<h4><strong>Error</strong></h4>","No se pudo actualizar los datos.",function(){
+        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
+        });
+    {% endif %}
+
+   {% if 'ok2' in request.GET %}
+        alertify.alert("<h4><strong>Correcto</strong></h4>","Imagen cargada con éxito.",function(){
+        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
+        });
+    {% endif %}
+
+    {% if 'error2' in request.GET %}
         alertify.alert("<h4><strong>Error</strong></h4>","No se pudo actualizar la imagen.",function(){
         history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
         });
