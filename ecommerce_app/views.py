@@ -21,12 +21,17 @@ from ecommerce_app.models import *
 
 #vista principal
 def principal(request):
-	productos = Producto.objects.all()
+	productos_recientes = Producto.objects.filter(estado_producto=True).order_by('-id')[:8]
+	productos_femeninos = Producto.objects.filter(categoria_genero=2).order_by('-id')[:8]
+	productos_masculinos = Producto.objects.filter(categoria_genero=1).order_by('-id')[:8]
+
 	categorias = Categoria.objects.get(pk=1)
 	empresas = Empresa.objects.get(pk=1)
 	a=1
 
-	data = {'productos':productos,'categorias':categorias,'a':a,'empresas':empresas}
+	data = {'productos_recientes':productos_recientes,'productos_femeninos':productos_femeninos,
+			'productos_masculinos':productos_masculinos,'categorias':categorias,'a':a,
+			'empresas':empresas}
 	if request.user.is_authenticated:
 		if request.user.is_superuser :
 			return redirect('ecommerce_app:principal_admin')

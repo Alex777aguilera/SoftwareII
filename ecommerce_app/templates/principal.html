@@ -102,7 +102,7 @@ e-commerce | Cliente_
             </header>
     
     <div class="row">
-    {% for producto in productos  %}
+    {% for producto in productos_recientes  %}
         <div class="col-md-3">
             <div href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="card card-product-grid rounded-lg">
                 <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="img-wrap"><img src="{{producto.imagen_producto.url}}"></a>
@@ -129,314 +129,61 @@ e-commerce | Cliente_
         <!-- =============== SECTION 2 =============== -->
         <section class="padding-bottom">
             <header class="section-heading heading-line">
-                <h4 class="title-section text-uppercase">Electronics</h4>
+                <h4 class="title-section text-uppercase">Para ellas</h4>
             </header>
             <div class="card card-home-category">
                 <div class="row no-gutters">
                     <div class="col-md-3">
                         <div class="home-category-banner bg-light-orange">
-                            <h5 class="title">Machinery items for manufacturers</h5>
-                            <p>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-                            <a href="#" class="btn btn-outline-primary rounded-pill">Source now</a>
-                            <img src="{% static "images/items/14.jpg" %}" class="img-bg">
+                            <h5 class="title">Lo mejor en productos femeninos</h5>
+                            <p>Aqui es cualquier cosa. </p>
+                            <a href="#" class="btn btn-outline-primary rounded-pill">Ver más</a>
+                            <img src="{% static "images/woman.png" %}" class="img-bg">
                         </div>
                     </div> <!-- col.// -->
                     <div class="col-md-9">
                         <ul class="row no-gutters bordered-cols">
+                            {% for producto in productos_femeninos %}
                             <li class="col-6 col-lg-3 col-md-4">
-                                <a href="#" class="item">
+                                <a  href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="item">
                                     <div class="card-body">
-                                        <h6 class="title">Well made electronic stuff collection </h6>
-                                        <img class="img-sm float-right" src="{% static "images/items/7.jpg" %}">
-                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i> Tokyo, Japan</p>
+                                        <h6 class="title">{{producto.nombre_producto}}</h6>
+                                        <img class="img-sm float-right" src="{{producto.imagen_producto.url}}">
+                                        <p class="text-muted"></i>{{producto.descripcion_producto}}</p>
                                     </div>
                                 </a>
                             </li>
-                            <li class="col-6 col-lg-3 col-md-4">
-                                <a href="#" class="item">
-                                    <div class="card-body">
-                                        <h6 class="title">Another demo text for item stuff goes here </h6>
-                                        <img class="img-sm float-right" src="{% static "images/items/8.jpg" %}">
-                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i> Hong Kong, China</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="col-6 col-lg-3 col-md-4">
-                                <a href="#" class="item">
-                                    <div class="card-body">
-                                        <h6 class="title">Home and kitchen electronic stuff collection </h6>
-                                        <img class="img-sm float-right" src="{% static "images/items/9.jpg" %}">
-                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i> Tashkent, Uzb</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="col-6 col-lg-3 col-md-4">
-                                <a href="#" class="item">
-                                    <div class="card-body">
-                                        <h6 class="title">Group of electronic stuff collection </h6>
-                                        <img class="img-sm float-right" src="{% static "images/items/10.jpg" %}">
-                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i> Guanjou, China</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="col-6 col-lg-3 col-md-4">
-                                <a href="#" class="item">
-                                    <div class="card-body">
-                                        <h6 class="title">Home and kitchen electronic stuff collection </h6>
-                                        <img class="img-sm float-right" src="{% static "images/items/11.jpg" %}">
-                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i> Guanjou, China</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="col-6 col-lg-3 col-md-4">
-                                <a href="#" class="item">
-                                    <div class="card-body">
-                                        <h6 class="title">Home and kitchen electronic stuff collection </h6>
-                                        <img class="img-sm float-right" src="{% static "images/items/12.jpg" %}">
-                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i> Guanjou, China</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="col-6 col-lg-3 col-md-4">
-                                <a href="#" class="item">
-                                    <div class="card-body">
-                                        <h6 class="title">Home and kitchen electronic stuff collection </h6>
-                                        <img class="img-sm float-right" src="{% static "images/items/1.jpg" %}">
-                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i> Guanjou, China</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="col-6 col-lg-3 col-md-4">
-                                <a href="#" class="item">
-                                    <div class="card-body">
-                                        <h6 class="title">Home and kitchen electronic stuff collection </h6>
-                                        <img class="img-sm float-right" src="{% static "images/items/2.jpg" %}">
-                                        <p class="text-muted"><i class="fa fa-map-marker-alt"></i> Guanjou, China</p>
-                                    </div>
-                                </a>
-                            </li>
+                            {% empty %}
+                            <h1><strong>Lo sentimos, no hay productos agregados</strong></h1>
+                          {% endfor %}
                         </ul>
                     </div> <!-- col.// -->
                 </div> <!-- row.// -->
             </div> <!-- card.// -->
         </section>
         <!-- =============== SECTION 2 END =============== -->
-        <!-- =============== SECTION REQUEST =============== -->
-        <section class="padding-bottom">
-            <header class="section-heading heading-line">
-                <h4 class="title-section text-uppercase">Request for Quotation</h4>
-            </header>
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card-banner banner-quote overlay-gradient" style="background-image: url('{% static "images/banners/banner9.jpg" %}');">
-                        <div class="card-img-overlay white">
-                            <h3 class="card-title">An easy way to send request to suppliers</h3>
-                            <p class="card-text" style="max-width: 400px">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                tempor incididunt.</p>
-                            <a href="" class="btn btn-primary rounded-pill">Learn more</a>
-                        </div>
-                    </div>
-                </div> <!-- col // -->
-                <div class="col-md-4">
-                    <div class="card card-body">
-                        <h4 class="title py-3">One Request, Multiple Quotes</h4>
-                        <form>
-                            <div class="form-group">
-                                <input class="form-control" name="" placeholder="What are you looking for?" type="text">
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="Quantity" name="" type="text">
-                                    <select class="custom-select form-control">
-                                        <option>Pieces</option>
-                                        <option>Litres</option>
-                                        <option>Tons</option>
-                                        <option>Gramms</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group text-muted">
-                                <p>Select template type:</p>
-                                <label class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" value="option1">
-                                    <div class="form-check-label">Request price</div>
-                                </label>
-                                <label class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" value="option2">
-                                    <div class="form-check-label">Request a sample</div>
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-warning">Request for quote</button>
-                            </div>
-                        </form>
-                    </div>
-                </div> <!-- col // -->
-            </div> <!-- row // -->
-        </section>
-        <!-- =============== SECTION REQUEST .//END =============== -->
         <!-- =============== SECTION ITEMS =============== -->
         <section class="padding-bottom-sm">
             <header class="section-heading heading-line">
-                <h4 class="title-section text-uppercase">Recommended items</h4>
+                <h4 class="title-section text-uppercase">Para caballeros</h4>
             </header>
             <div class="row row-sm">
+                {% for  producto in productos_masculinos %}
                 <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="{% static "images/items/1.jpg" %}"> </a>
+                    <div  href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="card card-sm card-product-grid">
+                        <a  href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="img-wrap"> <img src="{{producto.imagen_producto.url}}"> </a>
                         <figcaption class="info-wrap">
-                            <a href="#" class="title">Just another product name</a>
-                            <div class="price mt-1">$179.00</div> <!-- price-wrap.// -->
+                            <a  href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" class="title">{{producto.nombre_producto}}</a>
+                            <div class="price mt-1">{{producto.precio}}</div> <!-- price-wrap.// -->
                         </figcaption>
                     </div>
                 </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/2.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Some item name here</a>
-                            <div class="price mt-1">$280.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/3.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Great product name here</a>
-                            <div class="price mt-1">$56.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/4.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Just another product name</a>
-                            <div class="price mt-1">$179.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/5.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Just another product name</a>
-                            <div class="price mt-1">$179.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/6.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Some item name here</a>
-                            <div class="price mt-1">$280.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/7.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Great product name here</a>
-                            <div class="price mt-1">$56.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/9.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Just another product name</a>
-                            <div class="price mt-1">$179.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/4.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Just another product name</a>
-                            <div class="price mt-1">$179.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/5.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Just another product name</a>
-                            <div class="price mt-1">$179.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/6.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Some item name here</a>
-                            <div class="price mt-1">$280.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
-                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                    <div href="#" class="card card-sm card-product-grid">
-                        <a href="#" class="img-wrap"> <img src="images/items/7.jpg"> </a>
-                        <figcaption class="info-wrap">
-                            <a href="#" class="title">Great product name here</a>
-                            <div class="price mt-1">$56.00</div> <!-- price-wrap.// -->
-                        </figcaption>
-                    </div>
-                </div> <!-- col.// -->
+                {% empty %}
+                <h1><strong>Lo sentimos, no hay productos agregados</strong></h1>
+                {% endfor %}
             </div> <!-- row.// -->
         </section>
         <!-- =============== SECTION ITEMS .//END =============== -->
-        <!-- =============== SECTION SERVICES =============== -->
-        <section class="padding-bottom">
-            <header class="section-heading heading-line">
-                <h4 class="title-section text-uppercase">Trade services</h4>
-            </header>
-            <div class="row">
-                <div class="col-md-3 col-sm-6">
-                    <article class="card card-post">
-                        <img src="{% static "images/posts/1.jpg" %}" class="card-img-top">
-                        <div class="card-body">
-                            <h6 class="title">Trade Assurance</h6>
-                            <p class="small text-uppercase text-muted">Order protection</p>
-                        </div>
-                    </article> <!-- card.// -->
-                </div> <!-- col.// -->
-                <div class="col-md-3 col-sm-6">
-                    <article class="card card-post">
-                        <img src="images/posts/2.jpg" class="card-img-top">
-                        <div class="card-body">
-                            <h6 class="title">Pay anytime</h6>
-                            <p class="small text-uppercase text-muted">Finance solution</p>
-                        </div>
-                    </article> <!-- card.// -->
-                </div> <!-- col.// -->
-                <div class="col-md-3 col-sm-6">
-                    <article class="card card-post">
-                        <img src="images/posts/3.jpg" class="card-img-top">
-                        <div class="card-body">
-                            <h6 class="title">Inspection solution</h6>
-                            <p class="small text-uppercase text-muted">Easy Inspection</p>
-                        </div>
-                    </article> <!-- card.// -->
-                </div> <!-- col.// -->
-                <div class="col-md-3 col-sm-6">
-                    <article class="card card-post">
-                        <img src="images/posts/4.jpg" class="card-img-top">
-                        <div class="card-body">
-                            <h6 class="title">Ocean and Air Shipping</h6>
-                            <p class="small text-uppercase text-muted">Logistic services</p>
-                        </div>
-                    </article> <!-- card.// -->
-                </div> <!-- col.// -->
-            </div> <!-- row.// -->
-        </section>
-        <!-- =============== SECTION SERVICES .//END =============== -->
         <!-- =============== SECTION REGION =============== -->
         <section class="padding-bottom">
             <header class="section-heading heading-line">
@@ -452,7 +199,7 @@ e-commerce | Cliente_
         <hr>
         <article class="my-4">
             {# <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3882.259376926679!2d-87.12940804969361!3d13.334134990572759!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDIwJzAyLjkiTiA4N8KwMDcnMzguMCJX!5e0!3m2!1ses-419!2shn!4v1604117665446!5m2!1ses-419!2shn"  class="w-100" height="300px" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe> #}
-           <div id="mapa" class="w-100" height="300px" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0">
+           <div id="mapa" class="w-100" height="100%" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0">
                hola
            </div>
             </article>
@@ -470,7 +217,6 @@ e-commerce | Cliente_
     
 
  function initMap() {
-        alert({{empresas.nombre}})
         mapa = new google.maps.Map(document.getElementById("mapa"), {
           center: { lat: 13.334135, lng: -87.127214 },
           zoom: 8,
