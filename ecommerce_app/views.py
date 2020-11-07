@@ -453,10 +453,14 @@ def detalle_producto(request,id_producto):
 		return render(request,'inicio_admin.html')
 	else:
 		empresas = Empresa.objects.get(pk=1)
-		productos = Producto.objects.get(pk=id_producto);
-		existencias = Lote.objects.get(producto=id_producto)
+		productos = Producto.objects.get(pk=id_producto)
+
+		if Lote.objects.filter(producto=id_producto).exists() :
+			existencias = Lote.objects.get(producto=id_producto)
+			print(existencias)
+		else:
+			existencias = 0	
 		rx = 1
-		print(existencias)
 		ctx = {'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
 		return render(request,'detalle_producto.html',ctx)
 
