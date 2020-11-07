@@ -452,15 +452,13 @@ def detalle_producto(request,id_producto):
 	if request.user.is_superuser :
 		return render(request,'inicio_admin.html')
 	else:
-		return redirect('ecommerce_app:detalle_producto')
-		
-	empresas = Empresa.objects.get(pk=1)
-	productos = Producto.objects.get(pk=id_producto);
-	existencias = Lote.objects.get(producto=id_producto)
-	rx = 1
-	print(existencias)
-	ctx = {'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
-	return render(request,'detalle_producto.html',ctx)
+		empresas = Empresa.objects.get(pk=1)
+		productos = Producto.objects.get(pk=id_producto);
+		existencias = Lote.objects.get(producto=id_producto)
+		rx = 1
+		print(existencias)
+		ctx = {'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
+		return render(request,'detalle_producto.html',ctx)
 
 def ajax_existencia(request):
 	if request.method == "POST" and request.is_ajax():
