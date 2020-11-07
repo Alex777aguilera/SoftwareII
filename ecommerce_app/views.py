@@ -805,7 +805,74 @@ def modificar_genero(request,id_genero):
 			return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
+##Subcategoria
+@login_required
+def agregar_subcategoria(request):
+	categorias = Categoria.objects.all()
+	subcategorias = SubCategoria.objects.all()
+	ret_data,query_subcategoria,errores = {},{},{}
 
+	if request.method == 'POST':
+		ret_data['descripcion_subcategoria'] = request.POST.get('descripcion_subcategoria')
+		ret_data['categoria'] = Categoria.objects.get(pk=int(request.POST.get('categoria')))
+
+		if request.POST.get('descripcion_subcategoria') == '':
+			errores['descripcion_subcategoria'] = "Debe ingresar la descripcion de la subcategoria"
+		else:
+			query_subcategoria['descripcion_subcategoria'] = request.POST.get('descripcion_subcategoria')
+		
+		if request.POST.get('categoria') == '':
+			errores['categoria'] = "Debe seleccionar la Categoria"
+		else:
+			query_subcategoria['categoria'] = Categoria.objects.get(pk=int(request.POST.get('categoria')))
+
+		if not errores:
+			try:
+				subcategoria = SubCategoria(**query_subcategoria)
+				subcategoria.save()
+				pass
+			except Exception as e:
+				transaction.rollback()
+				errores['administrador'] = e
+				ctx = {'categorias':categorias,'subcategorias':subcategorias,
+						'errores':errores,'ret_data':ret_data}
+				return render(request,'agregar_subcategoria.html',ctx)
+			else:
+				transaction.commit()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria')+"?ok")
+		else:
+			ctx = {'categorias':categorias,'subcategorias':subcategorias,
+					'errores':errores,'ret_data':ret_data}
+			return render(request,'agregar_subcategoria.html',ctx)
+	else:
+		ctx = {'categorias':categorias,'subcategorias':subcategorias}
+		return render(request,'agregar_subcategoria.html',ctx)
+
+@login_required
+def modificar_subcategoria(request,id_subcategoria):
+	subcategoria = SubCategoria.objects.get(pk=id_subcategoria)
+	errores = {}
+	
+	if request.method == 'POST':
+
+		if request.POST.get('descripcion_subcategoria') == '' or int(request.POST.get('categoria')) == 0:
+			errores['error'] = "No debe dejar campos va"
+
+		if not errores:	
+			try:
+				subcategoria = SubCategoria.objects.filter(pk=id_subcategoria).update(
+															descripcion_subcategoria=request.POST.get('descripcion_subcategoria'),
+														 	categoria=request.POST.get('categoria'))
+			except Exception as e:
+				transaction.rollback()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria')+'?error1')
+			else:
+				transaction.commit()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria')+'?ok1')
+		else: 
+			return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria')+'?error1')
+	else:
+		return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria'))
 ##Marca
 @login_required
 def agregar_marca(request):

@@ -33,5 +33,7 @@ urlpatterns = [
  path('ajax/existencia', views.ajax_existencia, name='ajax_existencia'),
  path('registro/lote', views.registrar_lote, name='registrar_lote'),
  path('email', views.email, name='email'),
+ path('aregar/subcategoria', views.agregar_subcategoria, name='agregar_subcategoria'),
+ path('modificar/subcategoria/<int:id_subcategoria>/', views.modificar_subcategoria, name='modificar_subcategoria'),
 
 ]
