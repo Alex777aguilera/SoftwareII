@@ -10,7 +10,7 @@ urlpatterns = [
  # path('principal/cliente', views.principal_cliente, name='principal_cliente'),
  path('login', views.login, name='login'),
  path('registro/cliente', views.registro_cliente, name="registro_cliente"),	
- path('modificar/cliente/', views.modificar_cliente, name="modificar_cliente"),
+ path('modificar/cliente/<int:id_cliente>/', views.modificar_cliente, name="modificar_cliente"),
  path('modificar/cliente_normal/', views.modificar_normal, name="modificar_normal"),
  path('cerrar_sesion', views.cerrar_sesion, name='cerrar_sesion'),
  path('registrar/producto', views.registrar_producto, name='registrar_producto'),
@@ -33,7 +33,11 @@ urlpatterns = [
  path('ajax/existencia', views.ajax_existencia, name='ajax_existencia'),
  path('registro/lote', views.registrar_lote, name='registrar_lote'),
  path('email', views.email, name='email'),
+ path('perfil/cliente', views.perfil_cliente, name='perfil_cliente'),
+ path('modificar/imagen/cliente/<int:id_cliente>/', views.modificar_img_cliente, name='modificar_img_cliente'),
+ path('modificar/domicilio/<int:id_domicilio>/', views.modificar_domicilio, name='modificar_domicilio'),
  path('aregar/subcategoria', views.agregar_subcategoria, name='agregar_subcategoria'),
  path('modificar/subcategoria/<int:id_subcategoria>/', views.modificar_subcategoria, name='modificar_subcategoria'),
+
 
 ]
