@@ -63,17 +63,27 @@ def principal_admin(request):
 	else:
 		return render(request,'error.html')
 
-# #vista cliente
-# @login_required
-# def perfil_cliente(request):
-# 	user = request.user
-# 	if user.is_authenticated:
-# 		if request.user.is_superuser :
-# 			return redirect('ecommerce_app:principal_admin')
-# 		else:
-# 			return render(request,'perfil_cliente.html')	
-# 	else:
-# 		return render(request,'error.html')
+#vista cliente
+@login_required
+def perfil_cliente(request):
+	user = request.user
+	empresas = Empresa.objects.get(pk=1)
+	if user.is_authenticated:
+		if request.user.is_superuser :
+			return redirect('ecommerce_app:principal_admin')
+		else:
+
+			generos = Genero.objects.exclude(pk=3).exclude(pk=4)
+			cliente = Cliente.objects.get(usuario_cliente = user)
+			domicilio = Domicilio.objects.get(usuario = user)
+
+			print(cliente,"\n",domicilio)
+			data = {'cliente':cliente,'domicilio':domicilio,'generos':generos,'empresas':empresas}
+			return render(request,'perfil_cliente.html',data)	
+	else:
+		return render(request,'error.html')
+
+
 
 def login(request):
 	if request.user.is_authenticated:
@@ -118,6 +128,7 @@ def cerrar_sesion(request):
 
 def registro_cliente(request):
 	guardar_modificar = True
+	empresas = Empresa.objects.get(pk=1)
 	genero = Genero.objects.exclude(pk=3).exclude(pk=4)
 	rango = 0
 	username = ''
@@ -134,7 +145,7 @@ def registro_cliente(request):
 		nombres  = request.POST.get('nombres')
 		ret_data['apellidos'] = request.POST.get("apellidos")
 		apellidos = request.POST.get('apellidos')
-		ret_data['genero'] = int(request.POST.get("genero"))
+		
 		ret_data['numero_telefono'] = request.POST.get("telefono")
 		ret_data['fecha_nacimiento'] = request.POST.get("fecha_nacimiento")
 		ret_data['correo'] = request.POST.get("Correo")
@@ -172,7 +183,7 @@ def registro_cliente(request):
 		if request.POST.get("genero") == '':
 			errores['genero'] = "DEBES SELECIONAR UN GENERO"
 		else:
-			query_cliente["genero"] = Genero.objects.get(pk=request.POST.get("genero"))
+			query_cliente["genero"] = Genero.objects.get(pk=int(request.POST.get("genero")))
 		
 		if request.POST.get("imagen") == '':
 			errores['imagen'] = "DEBES SELECIONAR UNA IMAGEN"
@@ -220,27 +231,27 @@ def registro_cliente(request):
 				transaction.rollback()
 				
 				data = {'generos':genero,'ret_data':ret_data,
-					'errores':errores,'guardar_modificar':guardar_modificar,'errores_domicilio':errores_domicilio}
-				return render(request,'login.html',data)
+					'errores':errores,'guardar_modificar':guardar_modificar,'errores_domicilio':errores_domicilio,'empresas':empresas}
+				return render(request,'registro_cliente.html',data)
 
 			else:
 				transaction.commit()
 
-				return HttpResponseRedirect(reverse('ecommerce_app:principal')+"?ok")
+				return HttpResponseRedirect(reverse('ecommerce_app:registro_cliente')+"?ok")
 		else:
 			data = {'generos':genero,'ret_data':ret_data,
-					'errores':errores,'guardar_modificar':guardar_modificar,'errores_domicilio':errores_domicilio}
+					'errores':errores,'guardar_modificar':guardar_modificar,'errores_domicilio':errores_domicilio,'empresas':empresas}
 			return render(request,'registro_cliente.html',data)
 
 	elif request.method	== 'GET':	
-		data = {'generos':genero,'guardar_modificar':guardar_modificar}
+		data = {'generos':genero,'guardar_modificar':guardar_modificar,'empresas':empresas}
 		return render(request,'registro_cliente.html',data)
 	
 def modificar_cliente(request,id_cliente):
 	clien = Cliente.objects.get(pk=id_cliente)
 	ret_data,query_cliente,errores = {},{},{}
 	if request.method=='POST':
-		if request.POST.get('nombres') == '' or request.POST.get('apellidos') == '' or request.POST.get('num_identidad') == '' or request.POST.get('telefono') =='' or request.POST.get('fecha_nacimiento') ==''  or int(request.POST.get('genero')) == 0:
+		if request.POST.get('nombres') == '' or request.POST.get('apellidos') == '' or request.POST.get('num_identidad') == '' or request.POST.get('numero_telefono') =='' or request.POST.get('fecha_nacimiento') =='' or request.POST.get('correo') =='' or int(request.POST.get('genero')) == 0:
 			errores['nombres'] = "HAY ERRORES!"
 		if not errores:
 			try: 
@@ -248,20 +259,20 @@ def modificar_cliente(request,id_cliente):
 																			 num_identidad = request.POST.get('num_identidad'),
 																			 nombres = request.POST.get('nombres'),
 																			 apellidos = request.POST.get('apellidos'),	
-																			 telefono = request.POST.get('telefono'),																			 
+																			 numero_telefono = request.POST.get('numero_telefono'),																			 
 																			 fecha_nacimiento = request.POST.get('fecha_nacimiento'),	
-																			 imagen = request.FILES.get('imagen'),
+																			 correo = request.POST.get('correo'),
 																			 genero = request.POST.get('genero'),																			 
 																			 ),
 			except Exception as e:
 				print (e)
-				return HttpResponseRedirect(reverse('ecommerce_app:principal')+"?error")
+				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error")
 			else:
-				return HttpResponseRedirect(reverse('ecommerce_app:principal'))		
+				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?ok3")		
 		else:
-			return HttpResponseRedirect(reverse('ecommerce_app:principal')+"?error")
+			return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error")
 	else:
-		return HttpResponseRedirect(reverse('ecommerce_app:principal'))
+		return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente'))
 
 def modificar_normal(request,id_cliente):
 	cliente = Cliente.objects.get(pk=id_cliente)
@@ -290,6 +301,51 @@ def modificar_normal(request,id_cliente):
 		data = {'guardar_modificar':guardar_modificar,'id_cliente':id_cliente,'ret_data':ret_data,'generos':generos}
 		return  render(request,'registro_cliente.html',data)
 
+@login_required
+def modificar_img_cliente(request,id_cliente):
+	avatar = Cliente.objects.get(pk=id_cliente)
+	ret_data,query_cliente,errores = {},{},{}
+
+	if request.method=='POST':
+		if request.FILES.get('imagen') == None:
+			errores['errores'] = "HAY ERRORES!"
+
+		if not errores:
+			try: 
+				avatar.imagen = request.FILES.get('imagen')
+				avatar.save() 
+
+			except Exception as e:	
+				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error2")
+			else:
+				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?ok2")		
+		else:
+			return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error2")
+		
+	else:
+		return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente'))
+
+def modificar_domicilio(request,id_domicilio):
+	domicilio = Domicilio.objects.get(pk=id_domicilio)
+	ret_data,errores = {},{}
+	if request.method=='POST':
+		if request.POST.get('direccion') == '':
+			errores['direccion'] = "HAY ERRORES!"
+		if not errores:
+			try: 
+				domicilio = Domicilio.objects.filter(pk=id_domicilio).update(
+																			 direccion = request.POST.get('direccion'),
+																			 																			 
+																			 ),
+			except Exception as e:
+				print (e)
+				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?errord")
+			else:
+				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?okd")		
+		else:
+			return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?errord")
+	else:
+		return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente'))
 def email(request):
 	return render(request,'email.html')
 	
@@ -727,6 +783,7 @@ def agregar_categoria(request):
 		ctx = {'categorias':categorias}
 		return render(request,'agregar_categoria.html',ctx)
 
+@login_required
 def modificar_categoria(request,id_categoria):
 	categoria = Categoria.objects.get(pk=id_categoria)
 	errores = {}
@@ -783,7 +840,7 @@ def agregar_genero(request):
 	else:
 		ctx = {'categoria_genero':categoria_genero}
 		return render(request,'agregar_categoria_genero.html',ctx)
-
+@login_required
 def modificar_genero(request,id_genero):
 	categorias_genero = Genero.objects.get(pk=id_genero)
 	errores = {}
@@ -916,5 +973,26 @@ def registrar_lote(request):
 		ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
 		return render(request,'registrar_lote.html',ctx)
 
+# @login_required
+# def modificar_lote(request,id_lote):
+# 	lotes = Lote.objects.get(pk=id_lote)
+# 	errores = {}
+	
+# 	if request.method == 'POST':
+
+# 		if request.POST.get('existencia') == '':
+# 			errores['existencia'] = "Ingrese la Existencia "
+
+# 		if not errores:	
+# 			try:
+# 				lote = Lote.objects.filter(pk=id_lote).update(existencia=request.POST.get('existencia'))
+# 			except Exception as e:
+# 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
+# 			else:
+# 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
+# 		else: 
+# 			return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
+# 	else:
+# 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
 
 

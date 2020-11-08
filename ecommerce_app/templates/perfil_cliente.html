@@ -1,0 +1,341 @@
+{% extends "base_cliente.html" %}
+{% block title %}
+e-commerce | Cliente
+{% endblock title %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <section class="section-content padding-y bg">
+    	
+    	<article class="card card-body " style="border-radius: 10px;">
+<div class=" " style="border: 15px !important">
+	<div class="col-md-4">	
+		<figure>
+			{{empresas.nombre}}
+		</figure> <!-- iconbox // -->
+	</div><!-- col // -->
+	
+    
+</div>
+</article> <!-- card.// -->
+    	<br>
+        <div class="row">
+            <aside class="col-md-7" >
+                <div class="card mb-4" style="border-radius: 10px;">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Perfil</h4>
+                        <div class="form-group alert alert-info">
+                            
+                            <img src="{{cliente.imagen.url}}" class="img-sm rounded-circle border">
+                            <button type="submit" class="rounded-circle border"style="position: absolute;top: 58%; left: 12%; red"title="Ver"data-toggle="modal" data-target="#id_imagen{{cliente.pk}}"><i class="fa fa-camera "></i></button>
+
+                            <div style="text-align: right">
+                            	<i class="icon fa fa-user-circle"></i> {{cliente.usuario_cliente}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label>Nombre</label>
+                                <div class="alert alert-info" role="alert" style="font-size: 12px">
+                                    <strong>{{cliente.nombres}}-{{cliente.apellidos}} </strong>
+                                </div>
+                            </div> <!--  -->
+                            <div class="col form-group">
+                                <label><i class="icon fa fa-id-card"></i> # Identidad</label>
+                                <div class="alert alert-info" role="alert" style="font-size: 12px">
+                                    <strong>{{cliente.num_identidad}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                        </div> <!-- form-row.// -->
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label>
+                                	{% if cliente.genero.pk == 1 %}
+                                		<i class="icon fa fa-female"></i>
+                                	 {% elif cliente.genero.pk == 2 %}
+                                		<i class="icon fa fa-male"></i>
+                                	{% endif %}
+                                	 Genero</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{cliente.genero}} </strong>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-phone"> </i> # Telefono</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{cliente.numero_telefono}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                        </div> <!-- form-row.// -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-calendar"></i> Fecha de Nacimiento</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{cliente.fecha_nacimiento}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-envelope"> </i> Correo</label>
+                               <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{cliente.correo}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                            
+                        </div> <!-- form-row.// -->
+
+                        <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="#datos{{cliente.pk}}">Editar</button>
+                    </div>
+                </div>
+            </aside>
+        
+        <aside class="col-md-5">
+            <div class="card mb-4" style="border-radius: 10px;">
+                <div class="card-body">
+                    <h4 class="card-title mb-4"><i class="icon fa fa-map-marker"></i> Domicilio</h4>
+                    <div class="form-group alert alert-success">
+                        <img src="{% static 'images/icons/Icono-direccion.png' %}" class="img-sm rounded-circle border">
+                    </div>
+                    <hr>
+                    <div class="form-row col-md-15">
+                        <div class="col form-group ">
+                            <label>Direccion de su domicilio</label>
+                            <div class="alert alert-success alert-dismissible " role="alert" style="font-size: 12px">
+                                <strong>{{domicilio.direccion}} </strong>
+                            </div>
+                        </div> <!-- form-group end.// -->
+                        
+                    </div> <!-- form-row.// -->
+                    
+                  <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="#datos{{domicilio.pk}}">Editar</button>
+                </div> <!-- card-body.// -->
+            </div> <!-- card .// -->
+        </aside>
+         <aside class="col-md-4">
+            <div class="card mb-4 ">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Datos de Targeta</h4>
+                    
+                        <img src="{% static 'images/icons/Icono-direccion.png' %}" class="img-sm rounded-circle border">
+                    
+                    <div class="form-row col-md-15">
+                        <div class="col form-group ">
+                            <label># de targeta</label>
+                            <div class="alert alert-success alert-dismissible " role="alert" style="font-size: 12px">
+                                <strong>{{domicilio.direccion}} </strong>
+                            </div>
+                        </div> <!-- form-group end.// -->
+                        
+                    </div> <!-- form-row.// -->
+                    
+                  <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="">Editar</button>
+                </div> <!-- card-body.// -->
+            </div> <!-- card .// -->
+        </aside>
+    </div>
+
+
+
+    <!--  Modal para visualizar imgen-->
+                            <div class="modal fade" id="id_imagen{{cliente.pk}}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content alert alert-info">
+                                        <!-- Modal Header -->
+                                        <div class="modal-header ">
+                                            <h4 class="modal-title"><strong>{{cliente.nombres}}</strong></h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {% if cliente.imagen %}
+                                            <center ><img src="{{cliente.imagen.url}}" width="400" height="400" style="border-radius: 5%"></center>
+                                            {% else %} <br>
+                                            <label for="">No se encontró imagen</label>
+                                            {% endif %}
+                                        </div>
+                                        <form action="{% url 'ecommerce_app:modificar_img_cliente' cliente.pk %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="col-sm-12 form-group">
+                                            
+                                            <label style="margin-left: 12.5%;"><Strong>Subir nueva Imagen</Strong></label>
+                                            <center>
+                                            <label for="exampleFormControlFile1">
+                                            <input type="file" class="form-control-file" id="id_imagen" name="imagen" required>
+                                            </label>
+                                            </center>
+                                        </div>
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-info">Actualizar</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+    <!--  Modal para editar informacion cliente-->
+                            <div class="modal fade" id="datos{{cliente.pk}}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content alert alert-info">
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title"><strong>Modificar datos</strong></h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            
+                                        <div class="form-group alert alert-info">
+                            
+                       				     <img src="{{cliente.imagen.url}}" class="img-sm rounded-circle border">
+                      				   </div>
+                                        <form action="{% url 'ecommerce_app:modificar_cliente' cliente.pk %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="col-sm-12 form-group ">
+                                            <hr>
+                                            <div class="row">
+                                            <div class="col-sm-6 form-group">
+                                                        <label>Nombre <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="Nombres " id="id_nombres" name="nombres" value="{{cliente.nombres}}">
+                                                    </div> <!-- form-group end.// -->
+                                                    <div class="col-sm-6 form-group">
+                                                        <label>Apellido <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="Apellidos" id="id_apellidos" name="apellidos" value="{{cliente.apellidos}}">
+                                                    </div> <!-- form-group end.// -->
+                                                    
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6 form-group">
+                                                        <label><i class="icon fa fa-id-card"></i> Identidad <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="numero de identidad" id="id_num_identidad" name="num_identidad" value="{{cliente.num_identidad}}">
+                                                    </div> <!-- form-group end.// -->
+                                                    <!---->
+                                                    <div class="col-sm-5 form-group">
+                                                        <label>{% if cliente.genero.pk == 1 %}
+						                            		<i class="icon fa fa-female"></i>
+						                            	 {% elif cliente.genero.pk == 2 %}
+						                            		<i class="icon fa fa-male"></i>
+						                            	{% endif %} Género <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                     <select class="form-control" id="id_genero" name="genero">
+                                                            {% for genero in generos %}
+                                                            {% ifequal genero.pk cliente.genero.pk %}
+                                                            <option value='{{genero.pk}}' selected>{{genero.descripcion_genero}}</option>
+                                                            {% else %}
+                                                            <option value='{{genero.pk}}'>{{genero.descripcion_genero}}</option>
+                                                            {% endifequal %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <!---->
+                                                    <div class="col-sm-5 form-group">
+                                                        <label><i class="icon fa fa-phone"> </i> Telefono <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="numero_telefono" id="id_numero_telefono" name="numero_telefono" value="{{cliente.numero_telefono}}">
+                                                    </div> <!-- form-group end.// -->
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6 form-group">
+                                                        <label><i class="icon fa fa-calendar"></i> Fecha de nacimiento <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="date" class="form-control" placeholder="fecha_nacimiento" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{cliente.fecha_nacimiento}}">
+                                                    </div> <!-- form-group end.// -->
+                                                    <div class="col-sm-6 form-group">
+                                                        <label><i class="icon fa fa-envelope"> </i> Correo <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="correo" id="id_correo" name="correo" value="{{cliente.correo}}">
+                                                    </div> <!-- form-group end.// -->
+                                                </div>
+                                        </div>
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-info">Actualizar</button>
+                                        </div>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    <!--  Modal para editar el domicilio-->
+                            <div class="modal fade" id="datos{{domicilio.pk}}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content alert alert-info">
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title"><strong>Modificar Domicilio</strong></h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            
+                                        <div class="form-group alert alert-secondary">
+                            
+                       				     <img src="{% static 'images/icons/Icono-direccion.png' %}" class="img-sm rounded-circle border">
+                      				   </div>
+                                        <form action="{% url 'ecommerce_app:modificar_domicilio' domicilio.pk %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="col-sm-12 form-group ">
+                                            <hr>
+                                            <div class="col-sm-15 form-group">
+
+                                                        <label><i class="icon fa fa-map-marker"></i> Direccion de domicilio <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="Domicilio" id="id_direccion" name="direccion" value="{{domicilio.direccion}}">
+                                             </div> <!-- form-group end.// -->
+                                                    
+                                                
+                                        </div>
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-info">Actualizar</button>
+                                        </div>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+</div>
+</section>
+</div>
+{% endblock content %}
+{% block js %}
+<script>
+// validacion para la imgaen del cliente
+	{% if 'error2' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+
+ {% if 'ok2' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'success', title: 'Imagen cargada con éxito.', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+
+ // Validacion para datos del cliente
+ {% if 'error' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+
+ {% if 'ok3' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito.', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+
+ // Validacion para datos del domicilio
+ {% if 'errord' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+
+ {% if 'okd' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito.', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+</script>
+{% endblock js %}
+<style>
+.boton1{
+
+}
+	
+</style>
+

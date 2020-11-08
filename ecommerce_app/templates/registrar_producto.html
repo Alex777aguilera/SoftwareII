@@ -375,35 +375,32 @@ e-commerce | Admin
 $(document).ready(function() {
     $('#dataTable').DataTable();
 
-   {% if 'ok' in request.GET %}
-        alertify.alert("<h4><strong>Correcto</strong></h4>","Datos guardados con éxito.",function(){
-        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
-        });
-    {% endif %}
+{% if 'ok' in request.GET %}
 
-   {% if 'ok1' in request.GET %}
-        alertify.alert("<h4><strong>Correcto</strong></h4>","Datos editados con éxito.",function(){
-        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
-        });
-    {% endif %}
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
+ {% endif %}
 
-    {% if 'error1' in request.GET %}
-        alertify.alert("<h4><strong>Error</strong></h4>","No se pudo actualizar los datos.",function(){
-        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
-        });
-    {% endif %}
+ {% if 'ok1' in request.GET %}
 
-   {% if 'ok2' in request.GET %}
-        alertify.alert("<h4><strong>Correcto</strong></h4>","Imagen cargada con éxito.",function(){
-        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
-        });
-    {% endif %}
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
+ {% endif %}
 
-    {% if 'error2' in request.GET %}
-        alertify.alert("<h4><strong>Error</strong></h4>","No se pudo actualizar la imagen.",function(){
-        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
-        });
-    {% endif %}
+{% if 'ok2' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'success', title: 'Imagen cargada con éxito.', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+
+ {% if 'error1' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+ {% endif %}
+
+{% if 'error2' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 1500 })
+ {% endif %}    
+
+   
     //Esta es para habilitar descuento en registro
     $(document).on('change', '#id_esta_descuento', function() {
         var id_seleccion = $(this).val();
