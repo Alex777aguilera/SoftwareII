@@ -36,5 +36,8 @@ urlpatterns = [
  path('perfil/cliente', views.perfil_cliente, name='perfil_cliente'),
  path('modificar/imagen/cliente/<int:id_cliente>/', views.modificar_img_cliente, name='modificar_img_cliente'),
  path('modificar/domicilio/<int:id_domicilio>/', views.modificar_domicilio, name='modificar_domicilio'),
+ path('aregar/subcategoria', views.agregar_subcategoria, name='agregar_subcategoria'),
+ path('modificar/subcategoria/<int:id_subcategoria>/', views.modificar_subcategoria, name='modificar_subcategoria'),
+
 
 ]

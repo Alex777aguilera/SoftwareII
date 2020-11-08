@@ -208,15 +208,15 @@ e-commerce | Admin
                                                 <div class="form-row">
                                                     <div class="col-sm-4 form-group">
                                                         <label>Nombre</label>
-                                                        <input type="text" class="form-control" placeholder="Nombre del Producto" id="id_nombre" name="nombre_producto" value="{{producto.nombre_producto}}">
+                                                        <input type="text" class="form-control" placeholder="Nombre del Producto" id="id_nombre_{{producto.pk}}" name="nombre_producto" value="{{producto.nombre_producto}}">
                                                     </div> <!-- form-group end.// -->
                                                     <div class="col-sm-4 form-group">
                                                         <label>Precio</label>
-                                                        <input type="text" class="form-control" placeholder="Precio del Producto" id="id_precio" name="precio" value="{{producto.precio}}">
+                                                        <input type="text" class="form-control" placeholder="Precio del Producto" id="id_precio_{{producto.pk}}" name="precio" value="{{producto.precio}}">
                                                     </div> <!-- form-group end.// -->
                                                     <div class="col-sm-4 form-group">
                                                         <label>Proveedor</label>
-                                                        <input type="text" class="form-control" placeholder="Proveedor" id="id_proveedor" name="proveedor" value="{{producto.proveedor}}">
+                                                        <input type="text" class="form-control" placeholder="Proveedor" id="id_proveedor_{{producto.pk}}" name="proveedor" value="{{producto.proveedor}}">
                                                     </div> <!-- form-group end.// -->
                                                 </div> <!-- form-row end.// -->
                                                 <div class="form-row">
@@ -246,11 +246,11 @@ e-commerce | Admin
                                                 <div class="form-row">
                                                     <div class="col-sm-4 form-group">
                                                         <label>Modelo</label>
-                                                        <input type="text" class="form-control" placeholder="Modelo del Producto" id="id_modelo" name="modelo" value="{{producto.modelo}}">
+                                                        <input type="text" class="form-control" placeholder="Modelo del Producto" id="id_modelo_{{producto.pk}}" name="modelo" value="{{producto.modelo}}">
                                                     </div> <!-- form-group end.// -->
                                                     <div class="col-sm-4 form-group">
                                                         <label>Género</label>
-                                                        <select class="form-control" id="id_categoria_genero" name="categoria_genero">
+                                                        <select class="form-control" id="id_categoria_genero_{{producto.pk}}" name="categoria_genero">
                                                             {% for genero in generos %}
                                                             {% ifequal genero.pk producto.categoria_genero.pk %}
                                                             <option value='{{genero.pk}}' selected>{{genero.descripcion_genero}}</option>
@@ -262,7 +262,7 @@ e-commerce | Admin
                                                     </div>
                                                     <div class="col-sm-4 form-group">
                                                         <label>Condición del Producto</label>
-                                                        <select class="form-control" data-live-search="true" id="id_nuevo_producto" name="nuevo_producto">
+                                                        <select class="form-control" data-live-search="true" id="id_nuevo_producto_{{producto.pk}}" name="nuevo_producto">
                                                             {% if producto.nuevo_producto %}
                                                             <option value="1" selected>Nuevo</option>
                                                             <option value="2">Usado</option>
@@ -297,7 +297,7 @@ e-commerce | Admin
                                                     </div> <!-- form-group end.// -->
                                                       <div class="col-sm-4 form-group">
                                                         <label>Estado del Producto</label>
-                                                        <select class="form-control" data-live-search="true" id="id_nuevo_producto" name="estado_producto">
+                                                        <select class="form-control" data-live-search="true" id="id_estado_producto_{{producto.pk}}" name="estado_producto">
                                                             {% if producto.estado_producto %}
                                                             <option value="1" selected>Activo</option>
                                                             <option value="2">Inactivo</option>
@@ -311,7 +311,7 @@ e-commerce | Admin
                                                 <div class="form-row">
                                                     <div class="col-sm-12 form-group">
                                                         <label>Descripción</label>
-                                                        <textarea name="descripcion_producto" id="id_descripcion_producto" cols="30" rows="2" placeholder="Descripción del Producto" class="form-control">{{producto.descripcion_producto}}</textarea>
+                                                        <textarea name="descripcion_producto" id="id_descripcion_producto_{{producto.pk}}" cols="30" rows="2" placeholder="Descripción del Producto" class="form-control">{{producto.descripcion_producto}}</textarea>
                                                     </div> <!-- form-group end.// -->
                                                 </div>
                                                 <!-- Modal footer -->
@@ -348,7 +348,7 @@ e-commerce | Admin
                                             <label style="margin-left: 12.5%;"><Strong>Cargar nueva Imagen</Strong></label>
                                             <center>
                                             <label for="exampleFormControlFile1">
-                                            <input type="file" class="form-control-file" id="id_imagen_producto" name="imagen_producto" required>
+                                            <input type="file" class="form-control-file" id="id_imagen_producto_{{producto.pk}}" name="imagen_producto" required>
                                             </label>
                                             </center>
                                         </div>
@@ -374,6 +374,7 @@ e-commerce | Admin
 <script type="text/javascript">
 $(document).ready(function() {
     $('#dataTable').DataTable();
+});
 
 {% if 'ok' in request.GET %}
 
@@ -400,7 +401,7 @@ Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los
 Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 1500 })
  {% endif %}    
 
-   
+
     //Esta es para habilitar descuento en registro
     $(document).on('change', '#id_esta_descuento', function() {
         var id_seleccion = $(this).val();
@@ -431,7 +432,7 @@ Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la 
         if ($('#id_categoria').val().toString().trim() != '') {
             $.get('{% url "ecommerce_app:ajax_categoria_subcategoria" %}', { id_categoria: $('#id_categoria').val().toString().trim() }, function(data) {
                 if (data.subcategorias_categorias == 'nada') {
-                    alertify.alert("<h3><strong>Advertencia</strong></h3> "," No existe subcategorias para la categoría seleccionada");
+                      Swal.fire('Advertencia','No existe subcategorias para la categoría seleccionada','warning')
                     $('#id_marca').find('option').not('option[value=""]').remove();
                     $('#id_marca').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                     $('#id_subcategoria').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
@@ -462,7 +463,7 @@ Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la 
         if ($('#id_subcategoria').val().toString().trim() != '') {
             $.get('{% url "ecommerce_app:ajax_subcategoria_marca" %}', { id_subcategoria: $('#id_subcategoria').val().toString().trim() }, function(data) {
                 if (data.marcas_subcategorias == 'nada') {
-                    alertify.alert("<h3><strong>Advertencia</strong></h3> ","No existe marcas para la categoría seleccionada");
+                   Swal.fire('Advertencia','No existe marcas para la subcategoria seleccionada','warning')
                     $('#id_marca').append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                     //$('#id_marca').selectpicker('refresh'); 
                 } else {
@@ -577,7 +578,7 @@ Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la 
             if (id_categoria != '') {
                 $.get('{% url "ecommerce_app:ajax_categoria_subcategoria" %}', { id_categoria: id_categoria }, function(data) {
                     if (data.subcategorias_categorias == 'nada') {
-                        alertify.alert("<h3><strong>Advertencia</strong></h3> ","No existe subcategoria para la categoría seleccionada");
+                        Swal.fire('Advertencia','No existe subcategoria para la categoría seleccionada','warning')
                         $(codigo).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                         $(codigo2).empty();
                         $(codigo2).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
@@ -611,7 +612,7 @@ Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la 
             if (id_subcategoria.toString().trim() != '') {
                 $.get('{% url "ecommerce_app:ajax_subcategoria_marca" %}', { id_subcategoria: id_subcategoria }, function(data) {
                     if (data.marcas_subcategorias == 'nada') {
-                        alertify.alert("<h3><strong>Advertencia</strong></h3> ","No existe marcas para la subcategoria seleccionada");
+                        Swal.fire('Advertencia','No existe marcas para la subcategoria seleccionada','warning')
                         $(codigo).append("<option value=" + '0' + ">" + '--Seleccione-' + "</option>");
                         //$('#id_marca').selectpicker('refresh'); 
                     } else {
@@ -633,35 +634,35 @@ Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la 
       $('#guardar').click(function(e){
         if($('#id_categoria').val() == 0){
             Swal.fire({
-  icon: 'error',
+  icon: 'warning',
   title: 'Oops...',
-  text: 'Debes seleccionar la Categoría!',
+  text: 'Debe seleccionar una Categoría',
   
 })
             return false;
             
         }else if($('#id_subcategoria').val() == 0){
             Swal.fire({
-  icon: 'error',
+  icon: 'warning',
   title: 'Oops...',
-  text: 'Debes seleccionar una sub categoria!',
+  text: 'Debe seleccionar una Subcategoría',
   
 })
             return false;
            
         }else if($('#id_marca').val() == 0){
             Swal.fire({
-  icon: 'error',
+  icon: 'warning',
   title: 'Oops...',
-  text: 'Debes seleccionar una marca!',
+  text: 'Debe seleccionar una Marca',
   
 })
             return false;
         }else if($('#id_categoria_genero').val() == 0){
             Swal.fire({
-  icon: 'error',
+  icon: 'warning',
   title: 'Oops...',
-  text: 'Debes seleccionar el genero al cual esta destinado del producto!',
+  text: 'Debe seleccionar el genero al cual esta destinado el Producto',
   
 })
             return false;
