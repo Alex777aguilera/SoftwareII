@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import make_password
 from django.core import serializers
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required, permission_required
+from django.template.loader import get_template
 
 from ecommerce_app.models import *
 # Create your views here.
@@ -224,6 +225,8 @@ def registro_cliente(request):
 				domicilo = Domicilio(**query_domicilio)
 				domicilo.save()
 
+
+				print('mandara correo')
 				#Envío de correo a usuario
 				email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
 				message = get_template('email.html').render(email_data, request=request)
@@ -232,7 +235,7 @@ def registro_cliente(request):
 				msg.content_subtype = 'html'
 				msg.send(fail_silently=False)
 			except Exception as e:
-				print ("Entro aqui")
+				print (e,"Entro aqui")
 				transaction.rollback()
 				
 				data = {'generos':genero,'ret_data':ret_data,

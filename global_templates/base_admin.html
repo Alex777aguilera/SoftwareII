@@ -20,6 +20,8 @@
     <!-- custom javascript -->
     <link rel="stylesheet" href="{% static 'bootstrap-select-1.13.14/bootstrap-select.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-select-1.13.14/bootstrap-select.css' %}">
+     <!-- bootstrap-daterangepicker -->
+    <link href="{% static 'bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
      <!-- datatables -->
     <link rel="stylesheet" href="{% static 'datatables/dataTables.bootstrap4.min.css' %}">
     <!-- Style Alertify-->
@@ -185,6 +187,10 @@
     <!-- Alertifyjs -->
     <script src="{% static 'alertifyjs/alertify.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Fecha daterangepicker -->
+    <script src="{% static 'bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'bootstrap-daterangepicker/moment.min.js' %}"></script>
+
 {% block js %}
 
 {% endblock js %}
