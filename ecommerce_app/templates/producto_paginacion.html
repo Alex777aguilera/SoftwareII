@@ -1,0 +1,132 @@
+{% extends "base_cliente.html" %}
+{% block title %}
+e-commerce | Registro Lote
+{% endblock title %}
+{% load static %}
+{% load bootstrap_pagination %}
+{% block content %}
+
+<!-- ========================= SECTION PAGETOP ========================= -->
+<section class="section-pagetop bg">
+<div class="container">
+    <h2 class="title-page">Nuestros productos</h2>
+    <nav>
+    <ol class="breadcrumb text-white">
+        <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="#">Categoría</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Subcategoría</li>
+    </ol>  
+    </nav>
+</div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION INTRO END// ========================= -->
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+<div class="container">
+
+<div class="row">
+    <aside class="col-md-3">
+        
+<div class="card">
+    <article class="filter-group">
+        <header class="card-header">
+                <h6 class="title">Categorías</h6>
+        </header>
+        <div class="filter-content collapse show" id="collapse_1" style="">
+            <div class="card-body">
+                <form class="pb-3">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Search">
+                  <div class="input-group-append">
+                    <button class="btn btn-light" type="button"><i class="fa fa-search"></i></button>
+                  </div>
+                </div>
+                </form>
+                
+                <ul class="list-menu">
+                {% for categoria in categorias  %}
+                <aside class="col-lg col-md-3 flex-lg-grow-0">
+                    <nav class="nav-home-aside">
+                        <ul class="menu-category">
+                            <li class="has-submenu"><a href="#">{{categoria.descripcion_categoria}}</a>
+                                <ul class="submenu">
+                                    {% for subcategoria in subcategorias %}
+                                        {% ifequal subcategoria.categoria.pk categoria.pk  %} 
+                                            <li><a href="#">{{subcategoria.descripcion_subcategoria}}</a></li>
+                                        {% endifequal %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside> <!-- col.// -->
+                {% endfor %}
+                </ul>
+
+            </div> <!-- card-body.// -->
+        </div>
+</div> <!-- card.// -->
+
+    </aside> <!-- col.// -->
+    <main class="col-md-9">
+
+<header class="border-bottom mb-4 pb-3">
+        <div class="form-inline">
+            <span class="mr-md-auto">32 Productos econtrados </span>
+            <select class="mr-2 form-control">
+                <option>Latest items</option>
+                <option>Trending</option>
+                <option>Most Popular</option>
+                <option>Cheapest</option>
+            </select>
+            <div class="btn-group">
+                <a href="#" class="btn btn-outline-secondary" data-toggle="tooltip" title="List view"> 
+                    <i class="fa fa-bars"></i></a>
+                <a href="#" class="btn  btn-outline-secondary active" data-toggle="tooltip" title="Grid view"> 
+                    <i class="fa fa-th"></i></a>
+            </div>
+        </div>
+</header><!-- sect-heading -->
+
+<div class="row">
+    {% for producto in productos  %}
+    <div class="col-md-4">
+        <figure class="card card-product-grid rounded-lg">
+            <div class="img-wrap"> 
+                <img src="{{producto.imagen_producto.url}}">
+            </div> <!-- img-wrap.// -->
+            <figcaption class="info-wrap">
+                <div class="fix-height">
+                    <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}"  class="title">{{producto.nombre_producto}}</a>
+                    <div class="price-wrap mt-2">
+                        <span class="price">L{{producto.precio}}0</span>
+                    </div> <!-- price-wrap.// -->
+                </div>
+                <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}"  class="btn btn-block btn-primary">Add to cart </a>  
+            </figcaption>
+        </figure>
+    </div> <!-- col.// -->
+    {% empty %}
+    <h4>Lo sentimos, no hay productos</h4>
+    {% endfor %}
+</div> <!-- row end.// -->
+
+
+<hr>
+{% bootstrap_paginate productos range=6 show_first_last="true" extra_pagination_classes="justify-content-left" %}
+
+
+    </main> <!-- col.// -->
+
+</div>
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+<br>
+{% endblock content %}
+{% block js %}
+<script>
+
+</script>
+{% endblock js %}

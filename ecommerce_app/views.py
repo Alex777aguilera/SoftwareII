@@ -12,7 +12,7 @@ from datetime import datetime
 from django.core.mail import EmailMessage
 from django.contrib.auth.hashers import make_password
 from django.core import serializers
-
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required, permission_required
 
 from ecommerce_app.models import *
@@ -1071,3 +1071,13 @@ def registrar_lote(request):
 # 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
 
 
+def productos_paginacion(request):
+    productos =  Producto.objects.get_queryset().order_by('id')
+    categorias = Categoria.objects.all()
+    subcategorias = SubCategoria.objects.all()
+    paginator = Paginator(productos, 6)
+
+    page_number = request.GET.get('page')
+    productos = paginator.get_page(page_number)
+    data = {'productos':productos,'categorias':categorias,'subcategorias':subcategorias}
+    return render(request, 'producto_paginacion.html', data)
