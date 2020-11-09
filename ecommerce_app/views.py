@@ -666,8 +666,6 @@ def ajax_subcategoria_marca(request):
 			else:
 				return JsonResponse({'marcas_subcategorias':'nada'})
 
-
-
 @login_required
 def agregar_empresa(request):
 	guardar_editar = True
@@ -755,8 +753,6 @@ def agregar_empresa(request):
 	else:
 		ctx = {'empresas':empresas}
 		return render(request,'agregar_empresa.html',ctx)
-
-
 
 ##Categoria Producto
 @login_required
@@ -851,6 +847,7 @@ def agregar_genero(request):
 	else:
 		ctx = {'categoria_genero':categoria_genero}
 		return render(request,'agregar_categoria_genero.html',ctx)
+
 @login_required
 def modificar_genero(request,id_genero):
 	categorias_genero = Genero.objects.get(pk=id_genero)
@@ -872,6 +869,7 @@ def modificar_genero(request,id_genero):
 			return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
+
 ##Subcategoria
 @login_required
 def agregar_subcategoria(request):
@@ -1074,6 +1072,7 @@ def registrar_lote(request):
 # 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
 
 
+
 def productos_paginacion(request):
     productos =  Producto.objects.get_queryset().order_by('id')
     categorias = Categoria.objects.all()
@@ -1084,3 +1083,18 @@ def productos_paginacion(request):
     productos = paginator.get_page(page_number)
     data = {'productos':productos,'categorias':categorias,'subcategorias':subcategorias}
     return render(request, 'producto_paginacion.html', data)
+
+@login_required
+def datos_clientes_admin(request):
+	user = request.user
+	empresas = Empresa.objects.get(pk=1)
+	if user.is_authenticated:
+		if request.user.is_superuser :
+			clientes = Cliente.objects.all()
+			domicilios = Domicilio.objects.all()
+			data = {'empresas':empresas,'clientes':clientes,'domicilios':domicilios}
+			return render(request,'datos_clientes_admin.html',data)
+		else:
+			return redirect('ecommerce_app:principal')	
+	else:
+		return render(request,'error.html')
