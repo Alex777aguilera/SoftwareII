@@ -375,30 +375,38 @@ e-commerce | Admin
 $(document).ready(function() {
     $('#dataTable').DataTable();
 });
+   function history_push(){
+        history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
+    }
 
 {% if 'ok' in request.GET %}
 
 Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
+    history_push();
  {% endif %}
 
  {% if 'ok1' in request.GET %}
 
 Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
+    history_push();
  {% endif %}
 
 {% if 'ok2' in request.GET %}
 
 Swal.fire({ position: 'center', icon: 'success', title: 'Imagen cargada con éxito.', showConfirmButton: false, timer: 1500 })
+    history_push();
  {% endif %}
 
  {% if 'error1' in request.GET %}
 
 Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+    history_push();
  {% endif %}
 
 {% if 'error2' in request.GET %}
 
 Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 1500 })
+    history_push();
  {% endif %}    
 
 

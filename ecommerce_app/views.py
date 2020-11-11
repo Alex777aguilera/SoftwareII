@@ -1093,7 +1093,8 @@ def registrar_lote(request):
 
 
 def productos_categorias(request,id_categoria):
-    productos = Producto.objects.filter(marca__subcategoria__categoria=id_categoria)
+    productos = Producto.objects.filter(marca__subcategoria__categoria = id_categoria,
+										estado_producto = True)
     categoria = Categoria.objects.get(pk=id_categoria)
     categorias = Categoria.objects.all()
     subcategorias = SubCategoria.objects.all()
@@ -1107,7 +1108,8 @@ def productos_categorias(request,id_categoria):
 
 
 def productos_subcategoria(request,id_categoria,id_subcategoria):
-    productos = Producto.objects.filter(marca__subcategoria=id_subcategoria)
+    productos = Producto.objects.filter(marca__subcategoria=id_subcategoria,
+    									estado_producto = True)
     categoria = Categoria.objects.get(pk=id_categoria)
     subcategoria = SubCategoria.objects.get(pk=id_subcategoria)
     categorias = Categoria.objects.all()
