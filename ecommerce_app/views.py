@@ -965,7 +965,7 @@ def agregar_marca(request):
 	ret_data,query_marca,errores = {},{},{}
 
 	if request.method == 'POST':
-
+		print(request.POST.get('subcategoria'),"Esto trae")
 		ret_data['descripcion_marca'] = request.POST.get('descripcion_marca')
 		# ret_data['subcategoria'] = SubCategoria.objects.get(pk=int(request.POST.get('subcategoria')))
 		
@@ -1008,19 +1008,21 @@ def modificar_marca(request,id_marca):
 	
 	if request.method == 'POST':
 
-		if request.POST.get('descripcion_marca') == '' or int(request.POST.get('categoria')) == 0:
+		if request.POST.get('descripcion_marca') == '' or int(request.POST.get('subcategoria')) == 0:
 			errores['descripcion_marca'] = "Ingrese la Marca del Producto"
 
 		if not errores:	
 			try:
 				marca = Marca.objects.filter(pk=id_marca).update(descripcion_marca=request.POST.get('descripcion_marca'),
-																 categoria=request.POST.get('categoria'))
+																 subcategoria=request.POST.get('subcategoria'))
 			except Exception as e:
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca'))
+				transaction.rollback()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca')+'?error1')
 			else:
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca'))
+				transaction.commit()
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca')+'?ok1')
 		else: 
-			return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca'))
+			return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca')+'?error1')
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca'))
 

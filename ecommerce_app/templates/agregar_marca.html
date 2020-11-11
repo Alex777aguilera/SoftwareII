@@ -19,18 +19,11 @@
  					<form role="form" method="post" enctype="multipart/form-data" action="{% url 'ecommerce_app:agregar_marca' %}" >
 
  						{% csrf_token %}
-
- 						{% if errores.administrador %}
- 						<div class="alert alert-danger alert-dismissible " role="alert">
- 							<strong>ERROR! </strong>{{errores.administrador}}
- 							{% endif %}
- 						</div>
-
 						<div class="form-row">
 							<div class="col-md-4">
 								<div class="col form-group">
 									<label>Subcategoria:</label>
-		                          	<select class="form-control" style="width: 100%;" id="id_subcategori" name="subcategoria">
+		                          	<select name="subcategoria" class="selectpicker form-control" data-live-search="true" id="id_subcategori"  >
 		                              <option value="0">--Seleccione--</option>
 		                             
 		                             {% for subC in sub_categorias %}
@@ -53,6 +46,11 @@
 									
 								</div> <!-- form-group end.// -->
 							</div>
+						{% if errores.administrador %}
+						<div class="alert alert-danger alert-dismissible " role="alert">
+ 							<strong>ERROR! </strong>{{errores.administrador}}
+ 							{% endif %}
+ 						</div>
 						</div>
 						
 					    <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
@@ -105,21 +103,21 @@
 				        			{% csrf_token %}
 					        		<div class="form-row">
 										<div class="col-sm-6 form-group">
-											<label>Categoría:</label>
-											<select class="form-control" style="width: 100%;" id="su" name="categoria">
-			                              		<option value="0" disabled selected>--Seleccione--</option>
-			                              		{% for categoria in categorias %}
-			                              			{% ifequal categoria.pk marca.categoria.pk %} 
-											  		<option value='{{categoria.pk}}' selected>{{categoria.descripcion_categoria}}</option>
+											<label>Subcategoría:</label>
+											<select class="form-control" style="width: 100%;" id="su{{marca.pk}}" name="subcategoria">
+			                              		<option value="0" disabled>--Seleccione--</option>
+			                              		{% for subC in sub_categorias %}
+			                              			{% ifequal subC.pk marca.subcategoria.pk %} 
+											  		<option value='{{subC.pk}}' selected>{{subC.descripcion_subcategoria}}</option>
 												  	{% else %}
-												  		<option value='{{categoria.pk}}'>{{categoria.descripcion_categoria}}</option>
+												  		<option value='{{subC.pk}}'>{{subC.descripcion_subcategoria}}</option>
 												  	{% endifequal %}
 			                              		{% endfor %}
 		                                	</select>
 										</div> <!-- form-group end.// -->
 										<div class="col-sm-6 form-group">
 											<label>Descripción Marca:</label>
-										  	<input type="text" class="form-control" id="id_descripcion_marca" name="descripcion_marca" value="{{marca.descripcion_marca}}">
+										  	<input type="text" class="form-control" id="id_descripcion_marca{{marca.pk}}" name="descripcion_marca" value="{{marca.descripcion_marca}}">
 										</div>
 									</div> <!-- form-row end.// -->
 					        		 <!-- Modal footer -->
@@ -151,10 +149,28 @@ $(document).ready(function() {
     $('#tablaM').DataTable();
 });
 
-{% if 'ok' in request.GET %}
+$("select#id_subcategori").change(function(){
+	var valor = $(this).val();
+    $('.selectpicker').selectpicker('toggle');
+});
 
-Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
-	 history.pushState(null,"","{% url 'ecommerce_app:agregar_marca' %}");
+function history_push(){
+	history.pushState(null,"","{% url 'ecommerce_app:agregar_marca' %}");
+}
+
+{% if 'ok' in request.GET %}
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 2100 })
+	history_push();
+ {% endif %}
+
+ {% if 'ok1' in request.GET %}
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito', showConfirmButton: false, timer: 2100 })
+ 	history_push();
+ {% endif %}
+
+ {% if 'error1' in request.GET %}
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos', showConfirmButton: false, timer: 2100 })
+ 	history_push();
  {% endif %}
 
 
