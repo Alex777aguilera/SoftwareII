@@ -12,11 +12,14 @@ e-commerce | Registro Lote
     <div class=" mb-3">
         <div class="body">
             <ol class="breadcrumb float-left">
-                <li class="breadcrumb-item"><a  href="{% url 'ecommerce_app:principal' %}"> Inicio</a></li>
+               <li class="breadcrumb-item"><a  href="{% url 'ecommerce_app:principal' %}"> Inicio</a></li> 
                 {% if request.GET.busqueda %}
                 <li class="breadcrumb-item"><a>Resultados de búsqueda para: '{{request.GET.busqueda}}'</a></li>
                 {% else %}
-                <li class="breadcrumb-item active" aria-current="page">Subcategoría</li>
+                <li class="breadcrumb-item"><a  href="{% url 'ecommerce_app:productos_categorias' categoria.pk %}"> {{categoria.descripcion_categoria}}</a></li>
+                {% endif %}
+                {% if subcategoria %}
+                <li class="breadcrumb-item"><a> {{subcategoria.descripcion_subcategoria}}</a></li>
                 {% endif %}
             </ol>
         </div> <!-- card-body .// -->
@@ -39,18 +42,21 @@ e-commerce | Registro Lote
                 <aside class="col-lg col-md-3 flex-lg-grow-0">
                     <nav class="nav-home-aside">
                         <ul class="menu-category">
-                            <li class="has-submenu"><a href="#">{{categoria.descripcion_categoria}}</a>
+                            <li class="has-submenu"><a href="{% url 'ecommerce_app:productos_categorias' categoria.pk %}" >{{categoria.descripcion_categoria}}</a>
                                 <ul class="submenu">
                                     {% for subcategoria in subcategorias %}
                                         {% ifequal subcategoria.categoria.pk categoria.pk  %} 
-                                            <li><a href="#">{{subcategoria.descripcion_subcategoria}}</a></li>
+                                            <li><a href="{% url 'ecommerce_app:productos_subcategoria' categoria.pk subcategoria.pk %}" >{{subcategoria.descripcion_subcategoria}}</a></li>
                                         {% endifequal %}
                                     {% endfor %}
+
                                 </ul>
                             </li>
                         </ul>
                     </nav>
                 </aside> <!-- col.// -->
+                {% empty %}
+                <h3>No hay categorias agregadas</h3>
                 {% endfor %}
                 </ul>
             </div> <!-- inner.// -->

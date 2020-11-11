@@ -38,7 +38,9 @@ urlpatterns = [
  path('modificar/domicilio/<int:id_domicilio>/', views.modificar_domicilio, name='modificar_domicilio'),
  path('aregar/subcategoria', views.agregar_subcategoria, name='agregar_subcategoria'),
  path('modificar/subcategoria/<int:id_subcategoria>/', views.modificar_subcategoria, name='modificar_subcategoria'),
- path('productos/busqueda/', views.productos_busqueda, name='productos_busqueda'),
  path('datos/clientes', views.datos_clientes_admin, name='datos_clientes_admin'),
+ path('productos/categorias/<int:id_categoria>/', views.productos_categorias, name='productos_categorias'),
+ path('productos/subcategoria/<int:id_categoria>,<int:id_subcategoria>/', views.productos_subcategoria, name='productos_subcategoria'),
+
 
 ]

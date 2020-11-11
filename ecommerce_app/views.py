@@ -1092,16 +1092,33 @@ def registrar_lote(request):
 
 
 
-def productos_busqueda(request):
-    productos =  Producto.objects.get_queryset().order_by('id')
+def productos_categorias(request,id_categoria):
+    productos = Producto.objects.filter(marca__subcategoria__categoria=id_categoria)
+    categoria = Categoria.objects.get(pk=id_categoria)
     categorias = Categoria.objects.all()
     subcategorias = SubCategoria.objects.all()
     paginator = Paginator(productos, 6)
 
     page_number = request.GET.get('page')
     productos = paginator.get_page(page_number)
-    data = {'productos':productos,'categorias':categorias,'subcategorias':subcategorias}
-    return render(request, 'producto_busqueda.html', data)
+    data = {'productos':productos,'categorias':categorias,'categoria':categoria,
+    		'subcategorias':subcategorias}
+    return render(request, 'productos_busqueda.html', data)
+
+
+def productos_subcategoria(request,id_categoria,id_subcategoria):
+    productos = Producto.objects.filter(marca__subcategoria=id_subcategoria)
+    categoria = Categoria.objects.get(pk=id_categoria)
+    subcategoria = SubCategoria.objects.get(pk=id_subcategoria)
+    categorias = Categoria.objects.all()
+    subcategorias = SubCategoria.objects.all()
+    paginator = Paginator(productos, 6)
+
+    page_number = request.GET.get('page')
+    productos = paginator.get_page(page_number)
+    data = {'productos':productos,'categorias':categorias,'categoria':categoria,
+    		'subcategoria':subcategoria,'subcategorias':subcategorias}
+    return render(request, 'productos_busqueda.html', data)
 
 @login_required
 def datos_clientes_admin(request):

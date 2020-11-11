@@ -50,9 +50,9 @@
                                     <option value="comments">Only best</option>
                                     <option value="content">Latest</option>
                                 </select>-->
-                                <input type="text" name="busqueda" class="form-control" placeholder="¿Qué está buscando?" value="{{ request.GET.busqueda }}">
+                                <input type="text" name="busqueda" class="form-control" placeholder="¿Qué está buscando?" value="{{ request.GET.busqueda }}" id="id_busqueda">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary" type="submit">
+                                    <button class="btn btn-primary" type="submit" id="id_boton">
                                         <i class="fa fa-search"></i> Buscar
                                     </button>
                                 </div>
@@ -251,6 +251,16 @@
     <script src="{% static 'bootstrap-daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'bootstrap-daterangepicker/moment.min.js' %}"></script>
 
+<script>
+    $( "#id_boton" ).click(function() {
+        var contenido = $('#id_busqueda').val();
+        if(contenido){
+            history.pushState(null,"","{% url 'ecommerce_app:principal' %}");
+        }else{
+            return false;
+        }
+    });
+</script>
 {% block js %}
 
 {% endblock js %}
