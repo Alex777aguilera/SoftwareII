@@ -6,44 +6,35 @@ e-commerce | Registro Lote
 {% load bootstrap_pagination %}
 {% block content %}
 
-<!-- ========================= SECTION PAGETOP ========================= -->
-<section class="section-pagetop bg">
-<div class="container">
-    <h2 class="title-page">Nuestros productos</h2>
-    <nav>
-    <ol class="breadcrumb text-white">
-        <li class="breadcrumb-item"><a  href="{% url 'ecommerce_app:principal' %}">Inicio</a></li>
-        <li class="breadcrumb-item"><a href="#">Categoría</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Subcategoría</li>
-    </ol>  
-    </nav>
-</div> <!-- container //  -->
-</section>
-<!-- ========================= SECTION INTRO END// ========================= -->
-<!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-content padding-y">
 <div class="container">
+    <section class="py-3 bg-light">
+    <div class=" mb-3">
+        <div class="body">
+            <ol class="breadcrumb float-left">
+                <li class="breadcrumb-item"><a  href="{% url 'ecommerce_app:principal' %}"> Inicio</a></li>
+                {% if request.GET.busqueda %}
+                <li class="breadcrumb-item"><a>Resultados de búsqueda para: '{{request.GET.busqueda}}'</a></li>
+                {% else %}
+                <li class="breadcrumb-item active" aria-current="page">Subcategoría</li>
+                {% endif %}
+            </ol>
+        </div> <!-- card-body .// -->
+    </div> <!-- card.// -->
+</section>  <br>
+<!-- ========================= SECTION INTRO END// ========================= -->
 
+<!-- ========================= SECTION CONTENT ========================= -->
 <div class="row">
     <aside class="col-md-3">
         
-<div class="card">
-    <article class="filter-group">
-        <header class="card-header">
-                <h6 class="title">Categorías</h6>
-        </header>
+     <article class="filter-group">
+        <h6 class="title">
+            <a href="#" class="dropdown-toggle" data-toggle="collapse" data-target="#collapse_1">    Categorías </a>
+        </h6>
         <div class="filter-content collapse show" id="collapse_1" style="">
-            <div class="card-body">
-                <form class="pb-3">
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Search">
-                  <div class="input-group-append">
-                    <button class="btn btn-light" type="button"><i class="fa fa-search"></i></button>
-                  </div>
-                </div>
-                </form>
-                
-                <ul class="list-menu">
+            <div class="inner">
+               <ul class="list-menu">
                 {% for categoria in categorias  %}
                 <aside class="col-lg col-md-3 flex-lg-grow-0">
                     <nav class="nav-home-aside">
@@ -62,17 +53,16 @@ e-commerce | Registro Lote
                 </aside> <!-- col.// -->
                 {% endfor %}
                 </ul>
-
-            </div> <!-- card-body.// -->
+            </div> <!-- inner.// -->
         </div>
-</div> <!-- card.// -->
+    </article> <!-- filter-group  .// -->
 
     </aside> <!-- col.// -->
     <main class="col-md-9">
 
 <header class="border-bottom mb-4 pb-3">
         <div class="form-inline">
-            <span class="mr-md-auto">32 Productos econtrados </span>
+            <span class="mr-md-auto">{{productos|length}} Productos econtrados </span>
             <select class="mr-2 form-control">
                 <option>Latest items</option>
                 <option>Trending</option>
@@ -107,7 +97,7 @@ e-commerce | Registro Lote
         </figure>
     </div> <!-- col.// -->
     {% empty %}
-    <h4>Lo sentimos, no hay productos</h4>
+    <h4>Lo sentimos no encontramos lo que busca</h4>
     {% endfor %}
 </div> <!-- row end.// -->
 

@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect,JsonResponse, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.models import *
 from django.conf import settings
-from django.db.models import Sum 
+from django.db.models import Sum,Q 
 from django.db import transaction,connections #manejo de base de datos
 import json, re, telegram, os 
 from datetime import datetime
@@ -22,24 +22,43 @@ from ecommerce_app.models import *
 
 #vista principal
 def principal(request):
-	productos_recientes = Producto.objects.filter(estado_producto=True).order_by('-id')[:8]
-	productos_femeninos = Producto.objects.filter(categoria_genero=2).order_by('-id')[:8]
-	productos_masculinos = Producto.objects.filter(categoria_genero=1).order_by('-id')[:8]
+	consulta = request.GET.get('busqueda')
+	if consulta:
+		productos = Producto.objects.filter(
+			Q(nombre_producto__icontains=consulta)	|
+			Q(descripcion_producto__icontains=consulta) |
+			Q(marca__subcategoria__descripcion_subcategoria__icontains=consulta) |
+			Q(marca__subcategoria__categoria__descripcion_categoria__icontains=consulta) |
+			Q(marca__descripcion_marca__icontains=consulta),
+			estado_producto = True 
+		).distinct()
+		categorias = Categoria.objects.all()
+		subcategorias = SubCategoria.objects.all()
+		paginator = Paginator(productos, 6)
 
-	categorias = Categoria.objects.get(pk=1)
-	empresas = Empresa.objects.get(pk=1)
-	a=1
+		page_number = request.GET.get('page')
+		productos = paginator.get_page(page_number)
+		data = {'productos':productos,'categorias':categorias,'subcategorias':subcategorias}
+		return render(request, 'productos_busqueda.html', data)
+	else:
+		productos_recientes = Producto.objects.filter(estado_producto=True).order_by('-id')[:8]
+		productos_femeninos = Producto.objects.filter(categoria_genero=2).order_by('-id')[:8]
+		productos_masculinos = Producto.objects.filter(categoria_genero=1).order_by('-id')[:8]
 
-	data = {'productos_recientes':productos_recientes,'productos_femeninos':productos_femeninos,
-			'productos_masculinos':productos_masculinos,'categorias':categorias,'a':a,
-			'empresas':empresas}
-	if request.user.is_authenticated:
-		if request.user.is_superuser :
-			return redirect('ecommerce_app:principal_admin')
+		categorias = Categoria.objects.get(pk=1)
+		empresas = Empresa.objects.get(pk=1)
+		a=1
+
+		data = {'productos_recientes':productos_recientes,'productos_femeninos':productos_femeninos,
+				'productos_masculinos':productos_masculinos,'categorias':categorias,'a':a,
+				'empresas':empresas}
+		if request.user.is_authenticated:
+			if request.user.is_superuser :
+				return redirect('ecommerce_app:principal_admin')
+			else:
+				return render(request,'principal.html',data)
 		else:
 			return render(request,'principal.html',data)
-	else:
-		return render(request,'principal.html',data)
 
 # def ajax_gelocalizacion(request):
 # 	if request.method == "POST" and request.is_ajax():
@@ -1073,7 +1092,7 @@ def registrar_lote(request):
 
 
 
-def productos_paginacion(request):
+def productos_busqueda(request):
     productos =  Producto.objects.get_queryset().order_by('id')
     categorias = Categoria.objects.all()
     subcategorias = SubCategoria.objects.all()
@@ -1082,7 +1101,7 @@ def productos_paginacion(request):
     page_number = request.GET.get('page')
     productos = paginator.get_page(page_number)
     data = {'productos':productos,'categorias':categorias,'subcategorias':subcategorias}
-    return render(request, 'producto_paginacion.html', data)
+    return render(request, 'producto_busqueda.html', data)
 
 @login_required
 def datos_clientes_admin(request):
