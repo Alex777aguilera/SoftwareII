@@ -62,7 +62,7 @@ e-commerce | Admin
                                 <option value="0">-Seleccione-</option>
                             </select>
                         </div>
-                        <div class="col-sm-4 form-group selectpicker">
+                        <div class="col-sm-4 form-group">
                             <label>Marca</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                             <select class="form-control" data-live-search="true" id="id_marca" name="marca">
                                 <option value="0" selected="selected">--Seleccione--</option>
@@ -378,34 +378,32 @@ $(document).ready(function() {
    function history_push(){
         history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
     }
+function alerta(titulo,icono){
+Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: false, timer: 2300 })
+}
 
 {% if 'ok' in request.GET %}
-
-Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
+    alerta('Datos guardados con éxito','success');
     history_push();
  {% endif %}
 
  {% if 'ok1' in request.GET %}
-
-Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
+    alerta('Datos guardados con éxito','success');
     history_push();
  {% endif %}
 
 {% if 'ok2' in request.GET %}
-
-Swal.fire({ position: 'center', icon: 'success', title: 'Imagen cargada con éxito.', showConfirmButton: false, timer: 1500 })
+    alerta('Imagen cargada con éxito','success');
     history_push();
  {% endif %}
 
  {% if 'error1' in request.GET %}
-
-Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+    alerta('No se pudo actualizar los datos','error');
     history_push();
  {% endif %}
 
 {% if 'error2' in request.GET %}
-
-Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 1500 })
+    alerta('No se pudo actualizar la imagen','error');
     history_push();
  {% endif %}    
 

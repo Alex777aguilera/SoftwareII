@@ -19,18 +19,11 @@
  					<form role="form" method="post" action="{% url 'ecommerce_app:agregar_subcategoria' %}" >
 
  						{% csrf_token %}
-
- 						{% if errores.administrador %}
- 						<div class="alert alert-danger alert-dismissible " role="alert">
- 							<strong>ERROR! </strong>{{errores.administrador}}
- 							{% endif %}
- 						</div>
-
 						<div class="form-row">
 							<div class="col-md-4">
 								<div class="col form-group">
 									<label>Categoria:</label>
-		                          	<select class="form-control" style="width: 100%;" id="id_categoria" name="categoria">
+		                          	<select class="selectpicker form-control" data-live-search="true"style="width: 100%;" id="id_categoria" name="categoria">
 		                              <option value="0">--Seleccione--</option>
                              			{% for categoria in categorias %}
 	                             	 	{% ifequal categoria.pk ret_data.categoria %}
@@ -56,6 +49,11 @@
 									
 								</div> <!-- form-group end.// -->
 							</div>
+							{% if errores.administrador %}
+							<div class="alert alert-danger alert-dismissible " role="alert">
+ 								<strong>ERROR! </strong>{{errores.administrador}}
+ 							{% endif %}
+ 							</div>
 						</div>
 						
 					    <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
@@ -152,36 +150,41 @@
 <script>
 $(document).ready(function() {
     $('#tablaM').DataTable();
+});
 
+    $("select#id_categoria").change(function(){
+	var valor = $(this).val();
+    $('.selectpicker').selectpicker('toggle');
+});
 
-    function history_push(){
-        history.pushState(null,"","{% url 'ecommerce_app:agregar_subcategoria' %}");
-    }
+   function alerta(titulo,icono){
+	Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: false, timer: 2100 })
+	history.pushState(null,"","{% url 'ecommerce_app:agregar_marca' %}");
+}
 
-   {% if 'ok' in request.GET %}
-        Swal.fire('Correcto','Datos guardados con éxito','success')
-        history_push();
+   	{% if 'ok' in request.GET %}
+    	alerta('Datos guardados con éxito','success');
     {% endif %}
 
  	{% if 'ok1' in request.GET %}
-        Swal.fire('Correcto','Datos actualizados con éxito','success')
-        history_push();
+    	alerta('Datos actualizados con éxito','success');
     {% endif %}
 
-
  	{% if 'error1' in request.GET %}
-        Swal.fire('Error','No se ha podido actualizar los datos','error')
-        history_push();
+    	alerta('No se ha podido actualizar los datos','error');
     {% endif %}
 
 	$('#guardar').click(function(e) {
 	    if ($('#id_categoria').val() == 0) {
  			Swal.fire('Advertencia','Debe seleccionar la Categoría','warning')
         	return false;
+	    }else if($('#id_descripcion_subcategoria').val() == ''){
+	    	Swal.fire('Advertencia','Debe ingresar la descripcion de la Subcategoría','warning')
+        	return false;
 	    }
 	});
 
-});
+
 
 </script>
 {% endblock js %}

@@ -41,7 +41,7 @@
 										<strong>ERROR! </strong>{{errores.descripcion_marca}}
 									</div>
 									{% endif %}
-									<input type="text" class="form-control" id="id_descripcion_marca" name="descripcion_marca" placeholder="Descripción Categoría" value="{{ret_data.descripcion_marca}}">
+									<input type="text" class="form-control" id="id_descripcion_marca" name="descripcion_marca" placeholder="Descripción Marca" value="{{ret_data.descripcion_marca}}">
 
 									
 								</div> <!-- form-group end.// -->
@@ -154,23 +154,22 @@ $("select#id_subcategori").change(function(){
     $('.selectpicker').selectpicker('toggle');
 });
 
-function history_push(){
-	history.pushState(null,"","{% url 'ecommerce_app:agregar_marca' %}");
+
+function alerta(titulo,icono){
+Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: false, timer: 2100 })
+history.pushState(null,"","{% url 'ecommerce_app:agregar_marca' %}");
 }
 
 {% if 'ok' in request.GET %}
-Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 2100 })
-	history_push();
+	alerta('Datos guardados con éxito','success');
  {% endif %}
 
  {% if 'ok1' in request.GET %}
-Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito', showConfirmButton: false, timer: 2100 })
- 	history_push();
+	alerta('Datos modificados con éxito','success');
  {% endif %}
 
  {% if 'error1' in request.GET %}
-Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos', showConfirmButton: false, timer: 2100 })
- 	history_push();
+	alerta('No se pudo actualizar los datos','error');
  {% endif %}
 
 
@@ -179,7 +178,15 @@ $('#guardar').click(function(e) {
     	Swal.fire({
   icon: 'error',
   title: 'Oops...',
-  text: 'Debes seleccionar una ubcategoria!',
+  text: 'Debes seleccionar una Subcategoria',
+  
+})
+            return false;
+        }else if($('#id_descripcion_marca').val() == ''){
+	 	Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Debe ingresar la descripcion de la Marca',
   
 })
             return false;
