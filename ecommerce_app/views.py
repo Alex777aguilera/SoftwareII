@@ -19,7 +19,7 @@ from django.template.loader import get_template
 from ecommerce_app.models import *
 # Create your views here.
 
-
+existe = ''
 #vista principal
 def principal(request):
 	consulta = request.GET.get('busqueda')
@@ -31,7 +31,7 @@ def principal(request):
 			Q(marca__subcategoria__categoria__descripcion_categoria__icontains=consulta) |
 			Q(marca__descripcion_marca__icontains=consulta),
 			estado_producto = True 
-		).distinct()
+		).distinct().order_by('id')
 		categorias = Categoria.objects.all()
 		subcategorias = SubCategoria.objects.all()
 		paginator = Paginator(productos, 6)
@@ -1138,3 +1138,34 @@ def datos_clientes_admin(request):
 			return redirect('ecommerce_app:principal')	
 	else:
 		return render(request,'error.html')
+
+
+def cambio_contrasena(request):
+	if request.user.is_authenticated():
+		username = request.user.username
+		contrasenia = request.POST.get('contrasena_actual')
+		user = authenticate(username=username,password=contrasenia)
+		ret_data = {}
+
+		global existe
+		if request.method == 'POST':
+			if user is not None :
+				user = User.objects.get(pk=request.user.pk)
+				password = request.POST.get('contrasena_nueva')
+				contrasena_confirma = request.POST.get('contrasena_confirma')
+				if password == contrasena_confirma:
+					if validar_password(password):
+						user.set_password(password)
+						user.save()
+						return HttpResponseRedirect(reverse('sumacua_app:cerrar_sesion'))
+					else:
+						return HttpResponseRedirect(reverse('sumacua_app:cambio_contrasena')+"?error3")
+				else:
+					return HttpResponseRedirect(reverse('sumacua_app:cambio_contrasena')+"?error2")
+			else:
+				return HttpResponseRedirect(reverse('sumacua_app:cambio_contrasena')+"?error")
+		else:
+			data = {'existe':existe}	
+			return render(request,'cambio_contrasena.html',data) 
+	else:
+		return render(request,'error.html') 
