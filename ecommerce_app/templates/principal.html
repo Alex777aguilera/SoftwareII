@@ -214,15 +214,22 @@ e-commerce | Cliente_
     $(document).ready( function () {
     $('#table_id').DataTable();
 });
-     
+     var lat = "{{empresas.latitude_empresa}}"
+     var lng = "{{empresas.longitude_empresa}}" 
      //var image = "{{empresas.imagen_logo.url}}" este funciona
    
       function initMap() {
           const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 17,
-            center: { lat: {{empresas.latitude_empresa}}, lng: {{empresas.longitude_empresa}} },
+            center: { lat: 13.3090129, lng: -87.1893522 },
           });
 
+       /* var icon = {
+            url: '{% static "images/logo_market.png" %}', // url
+            scaledSize: new google.maps.Size(40, 70), // scaled size
+            origin: new google.maps.Point(0,0), // origin
+            anchor: new google.maps.Point(0, 0) // anchor
+        };  */
 
           map.setOptions({draggable: false});
           new google.maps.Marker({
