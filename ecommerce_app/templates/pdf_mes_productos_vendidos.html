@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Factura Cliente</title>
+	<link rel="stylesheet" href="">
+	<style>
+		.td-header{
+	      border:none;
+	    }
+
+	    td{
+	      font-size: 10px;
+	      padding-left:0;
+	      padding: 3px 0 0 0;
+	    }
+
+	    th{
+	    	font-size: 10px;
+	    	padding: 2px 0 0 0;
+	    }
+
+	    .titulo{
+	      margin: 0;
+	      text-align:center;
+	      font-size: 12px;
+	    }
+	</style>
+</head>
+<body>
+	<div style="width:100%" id="header_content" style="margin-bottom: 5px;">
+		<h1 class="titulo" style="font-size:16px;">Reporte de Productos Vendidos</h1>
+		<table style="width:70%;">
+	      <tr>
+	        <td class="td-header" style="width:400px; text-align:center;">
+	            <img src="media/{{empresa_logo}}" alt="" width="180px">
+	        </td>
+	        <td class="td-header" style="width:500px;">
+	          <h2>Empresa: {{empresa_nombre | upper}}</h2>
+	        </td>
+	        <td class="td-header" style="width:400px;"><h2>Mes: {{mes}} {{anio}}</h2></td>
+	      </tr>
+	    </table>
+	</div><hr>
+
+	<table style="width:100%; margin-top: 10px">
+		<thead>
+			<tr>
+				<th colspan="6" style="text-align:center; border-bottom: 1px solid #8B8B8B; border-top: 1px solid #8B8B8B; ">Detalle de Productos Vendidos</th>
+			</tr>
+			<tr>
+				<th>Fecha</th>
+				<th>Nº Factura</th>
+				<th>Producto</th>
+				<th>Cantidad</th>
+				<th>Precio Unit.</th>
+				<th>Subtotal</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for clave, detalle_prod in reporte_productos.items %}
+			{% for detalle in detalle_prod %}
+			<tr>
+				{% for dt in detalle %}
+					{% if foorlop.last %}
+						<td style="text-align:center; border-bottom: 1px solid #8B8B8B;">{{dt}}</td>
+					{% else %}
+						<td style="text-align:center;">{{dt}}</td>
+					{% endif %}
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		{% endfor %}
+
+		<!--{% for detalle_prod in reporte_productos %}
+		<tr>
+			{% for detalle in detalle_prod %}
+				{% if foorlop.last %}
+					<td style="text-align:center; border-bottom: 1px solid #8B8B8B;">{{detalle}}</td>
+				{% else %}
+					<td style="text-align:center;">{{detalle}}</td>
+				{% endif %}
+			{% endfor %}
+		</tr>
+		{% endfor %}-->
+		<tr style="border-top: 1px solid #8B8B8B; "></tr>
+		</tbody>
+	</table>
+</body>
+</html>
