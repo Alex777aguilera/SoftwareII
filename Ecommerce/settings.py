@@ -49,9 +49,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Ecommerce.urls'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
+
 
 TEMPLATES = [
     {
@@ -75,16 +80,14 @@ WSGI_APPLICATION = 'Ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-        
-DATABASES = {'default': {
-       'ENGINE': 'django.db.backends.postgresql_psycopg2',
-       'NAME': 'e_commerce',
-       'USER':'postgres',
-       'PASSWORD':'04623256',
-       'HOST':'localhost',
-       'PORT':'5432',
-    }
+import dj_database_url
+from decouple import config
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
+
  
 
 
@@ -134,6 +137,8 @@ LOGIN_URL = '/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'global_static'),
 )
+
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
