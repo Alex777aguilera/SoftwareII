@@ -1,4 +1,3 @@
-Ecommerce/settings.py
 ecommerce_app/media/*
 Ecommerce/media/imagen_producto/.DS_Store
 media/*
