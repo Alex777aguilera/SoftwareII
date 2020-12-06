@@ -42,5 +42,7 @@ urlpatterns = [
  path('productos/categorias/<int:id_categoria>/', views.productos_categorias, name='productos_categorias'),
  path('productos/subcategoria/<int:id_categoria>,<int:id_subcategoria>/', views.productos_subcategoria, name='productos_subcategoria'),
 
+ path('productos/facturacion', views.facturacion_producto, name='facturacion_producto'),
+
 
 ]
