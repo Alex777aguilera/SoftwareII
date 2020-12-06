@@ -1179,6 +1179,7 @@ def facturacion_producto(request):
 	cliente = Cliente.objects.filter(usuario_cliente=request.user)
 	productos_carrito = Carrito.objects.filter(usuario=request.user)
 	empresa = Empresa.objects.filter(pk=1)
+	logo_emp = Empresa.objects.get(pk=1)
 
 	query_orden = {}
 	lista = []
@@ -1248,7 +1249,8 @@ def facturacion_producto(request):
 	'total' : total_factura,
 	'cliente' : cliente,
 	'orden_factura' : orden_factura,
-	'empresa' : empresa
+	'empresa' : empresa,
+	'logo_emp' : logo_emp.imagen_logo
 	}
 	pp.pprint(ctx)
 
@@ -1259,4 +1261,66 @@ def facturacion_producto(request):
 	return response
 
 	return render(request,'factura_cliente.html',ctx)
+
+#vista para que el admin vea el pdf de todos los productos vendidos seleccionando un mes en especifico
+def pdf_mes_productos_vendidos(request):
+	if request.method == 'POST':
+		fecha = request.POST.get('mes')
+		date = fecha.split('-')
+		#fecha_reporte = datetime.now()
+
+		if date[1] == '01':
+			mes = 'Enero'
+
+		elif date[1] == '02':
+			mes = 'Febrero'
+
+		elif date[1] == '03':
+			mes = 'Marzo'
+
+		elif date[1] == '04':
+			mes = 'Abril'
+
+		elif date[1] == '05':
+			mes = 'Mayo'
+
+		elif date[1] == '06':
+			mes = 'Junio'
+
+		elif date[1] == '07':
+			mes = 'Julio'
+
+		elif date[1] == '08':
+			mes = 'Agosto'
+
+		elif date[1] == '09':
+			mes = 'Septiembre'
+
+		elif date[1] == '10':
+			mes = 'Octubre'
+
+		elif date[1] == '11':
+			mes = 'Noviembre'
+
+		elif date[1] == '12':
+			mes = 'Diciembre'
+
+		#obteniendo las facturas vendidas en el mes
+		facturas = Orden.objects.filter(fecha_compra__year=date[0], fecha_compra__month=date[1]).order_by('fecha_compra')
+
+		for factura in facturas:
+			#obteniendo todos los productos vendidos de esa factura en el mes
+			productos_vendidos = DetalleOrden.objects.filter(orden=factura.pk)
+
+			for producto in productos_vendidos:
+				lista_producto = []
+
+				lista_producto.append(producto.orden.fecha_compra.strftime("%d/%m/%Y"))
+				lista_producto.append(producto.orden.pk)
+				lista_producto.append(producto.producto.nombre_producto)
+				lista_producto.append(producto.cantidad)
+				lista_producto.append(producto.precio)
+				lista_producto.append(producto.total_producto)
+	else:
+		return render(request,'mes_productos_vendidos.html')
 
