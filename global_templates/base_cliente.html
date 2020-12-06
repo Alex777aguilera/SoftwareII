@@ -7,7 +7,7 @@
     <meta http-equiv="pragma" content="no-cache" />
     <meta http-equiv="cache-control" content="max-age=604800" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title></title>
+    <title>{% block title %}{% endblock %}</title>
     <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
     <!-- jQuery -->
     <!-- Bootstrap4 files-->
@@ -71,6 +71,7 @@
                                 </a>
                             </div>
                             {% else %}
+
                                 <div class="widget-header">
                                   <a href="{% url 'ecommerce_app:login' %}" class="widget-view">
                                     <div class="icon-area">
@@ -79,7 +80,7 @@
                                     <small class="text"> Ingresar </small>
                               </div>
                             {% endif %}
-                            
+                            <a href="#" class="widget-view">
                             {% if request.user.is_authenticated %}
                            
                                 <div class="widget-header">
