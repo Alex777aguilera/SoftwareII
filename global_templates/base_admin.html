@@ -124,9 +124,9 @@
                             <a class="nav-link" href="{% url 'ecommerce_app:agregar_marca' %}">Registrar Marca</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Demo pages</a>
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Reportes PDF</a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="page-index.html">Main</a>
+                                <a class="dropdown-item" href="{% url 'ecommerce_app:pdf_mes_productos_vendidos' %}">Productos vendidos</a>
                                 <a class="dropdown-item" href="page-category.html">All category</a>
                                 <a class="dropdown-item" href="page-listing-large.html">Listing list</a>
                                 <a class="dropdown-item" href="page-listing-grid.html">Listing grid</a>

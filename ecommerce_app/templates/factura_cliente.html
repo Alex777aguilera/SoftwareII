@@ -25,15 +25,19 @@
 <body>
 	<div style="width:100%" class="encabezado" id="header_content">
 		<div style="width:250px;">
-			<center><img src="media/logo_empresa/logo.jpeg" alt=""></center>
+			<center><img src="media/{{logo_emp}}" alt=""></center>
 		</div>
 	    <table style="width:100%;">
 	    	<thead>
-	    		<th colspan="2" style="text-align:center; border-bottom: 1px solid #8B8B8B; border-top: 1px solid #8B8B8B; ">FACTURA Nº 130</th>
+	    	{% for orden in orden_factura %}
+	    		<th colspan="2" style="text-align:center; border-bottom: 1px solid #8B8B8B; border-top: 1px solid #8B8B8B; ">FACTURA Nº {{orden.pk}}</th>
+	    	{% endfor %}
 	    	</thead>
 	      <tr>
 	      	<td class="td-header">RTN: 190281938102</td>
-	      	<td class="td-header">Fecha: 5/11/2020</td>
+	      	{% for orden in orden_factura %}
+	      		<td class="td-header">Fecha: {{orden.fecha_compra}}</td>
+	      	{% endfor %}
 	      </tr>
 	      <tr>
 	      	{% for emp in empresa %}
