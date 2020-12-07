@@ -1,10 +1,8 @@
-ecommerce_app/media/*
+
 Ecommerce/media/imagen_producto/.DS_Store
 media/*
 media/.DS_Store
 *.pyc
-*.jpg
-*.jpeg
 db.sqlite3
 ecommerce_app/media/imagen_producto/.DS_Store
 media/.DS_Store
