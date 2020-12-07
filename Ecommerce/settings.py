@@ -148,6 +148,7 @@ AWS_SECRET_ACCESS_KEY = 'vWdCl+JuGwIJnYtPDc+jwHbulC/K0w8FhaI/aAn7'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_STORAGE_BUCKET_NAME = 'bucketdjangohn'
 AWS_S3_REGION_NAME = 'us-east-2'
+AWS_S3_ADDRESSING_STYLE  =  "virtual"
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
