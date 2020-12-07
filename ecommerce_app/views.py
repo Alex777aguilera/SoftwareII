@@ -426,7 +426,7 @@ def registrar_producto(request):
 			query_producto['precio'] = request.POST.get('precio')
 		#3	
 		if request.FILES.get('imagen_producto') == None:
-			query_producto['imagen_producto'] = 'logo_proyecto.jpg'
+			query_producto['imagen_producto'] = 'logo_empresa/logo_r.png'
 		else:
 			query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
 		#4
