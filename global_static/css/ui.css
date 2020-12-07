@@ -313,11 +313,6 @@ article:after,
   -webkit-transition: .5s;
   transition: .5s; }
 
-.bg-pattern {
-  background-image: url(../images/banners/bg-pattern.svg), linear-gradient(135deg, #ff6a00, #12225b);
-  background-size: cover, auto;
-  background-repeat: no-repeat, repeat;
-  background-position: 0px 0px, 50% 50%; }
 
 .bg-img {
   overflow: hidden;
