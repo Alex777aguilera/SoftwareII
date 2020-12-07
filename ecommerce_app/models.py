@@ -52,7 +52,7 @@ class Domicilio(models.Model):
 
 class Empresa(models.Model):
 	nombre = models.CharField(max_length=200)
-	imagen_logo = models.ImageField(upload_to='logo_empresa')#upload_to carga un archivo en MEDIA_ROOT creando una carpeta con el nombre entre comillas
+	imagen_logo = models.ImageField(upload_to='Media/')#upload_to carga un archivo en MEDIA_ROOT creando una carpeta con el nombre entre comillas
 	telefono = models.CharField(max_length=50, blank = False, null = False)
 	fecha_registro = models.DateField(auto_now_add=True)
 	direccion = models.TextField()
@@ -68,7 +68,7 @@ class Empresa(models.Model):
 		return "{}-{} " .format(self.nombre,self.telefono)
 
 class Producto(models.Model): 
-	imagen_producto = models.ImageField(upload_to='imagen_producto')
+	imagen_producto = models.ImageField(upload_to='Media/')
 	nombre_producto = models.CharField(max_length=200,blank=True,null=True)
 	# existencia = models.IntegerField(default=0,blank = True, null = True)
 	descripcion_producto = models.CharField(max_length=500,blank=True,null=True)
@@ -139,7 +139,7 @@ class Cliente(models.Model):
 	fecha_nacimiento = models.DateField(auto_now_add=False)
 	fecha_registro = models.DateField(auto_now_add=True)
 	correo = models.CharField(max_length=100,blank=True,null=True)
-	imagen = models.ImageField(upload_to='avatar',blank=True,null=True)
+	imagen = models.ImageField(upload_to='Media/',blank=True,null=True)
 	usuario_cliente = models.ForeignKey(User, on_delete=models.CASCADE)
 	def __str__(self):
 		return "{}-{} |{}".format(self.nombres,self.apellidos,self.usuario_cliente.username)
