@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'ecommerce_app',
     'bootstrap_pagination',
 ]
@@ -131,7 +132,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/'
 
@@ -142,6 +142,12 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+AWS_ACCESS_KEY_ID = 'AKIAQ6K4QSV72FW42GXH'
+AWS_SECRET_ACCESS_KEY = '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'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_STORAGE_BUCKET_NAME = 'bucketdjangohn'
+AWS_S3_REGION_NAME = 'us-east-2'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

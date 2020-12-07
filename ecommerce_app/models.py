@@ -68,7 +68,7 @@ class Empresa(models.Model):
 		return "{}-{} " .format(self.nombre,self.telefono)
 
 class Producto(models.Model): 
-	imagen_producto = models.ImageField(upload_to='imagen_producto')
+	imagen_producto = models.ImageField(upload_to='Media/')
 	nombre_producto = models.CharField(max_length=200,blank=True,null=True)
 	# existencia = models.IntegerField(default=0,blank = True, null = True)
 	descripcion_producto = models.CharField(max_length=500,blank=True,null=True)
