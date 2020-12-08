@@ -76,7 +76,7 @@ Easy-buy | Productos
     <div class="col-md-4">
         <figure class="card card-product-grid rounded-lg">
             <div class="img-wrap"> 
-                <img src="{{producto.imagen_producto.url}}">
+                <a  href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" ><img src="{{producto.imagen_producto.url}}"></a>
             </div> <!-- img-wrap.// -->
             <figcaption class="info-wrap">
                 <div class="fix-height">

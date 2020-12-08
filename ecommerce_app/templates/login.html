@@ -11,7 +11,7 @@ Easy-buy | Login
 <!-- ============================ Inicio de login ================================= -->
 	<div class="card mx-auto" style="max-width: 380px; margin-top: 20px;">
       <div class="card-body">
-      <h4 class="card-title mb-4">Iniciar sesion</h4>
+      <center><h3 class="card-title mb-4">Iniciar sesión</h3></center>
       <hr> 
           <center>
             <div style="color:#FF0000;"><strong>{{mensaje}}</strong>
@@ -20,29 +20,24 @@ Easy-buy | Login
             <hr>
       <form class="user" method="post">
         {% csrf_token %}
-      	  <a href="#" class="btn btn-facebook btn-block mb-2"> <i class="fab fa-facebook-f"></i> &nbsp  Iniciar con Facebook</a>
-          
-      	  <a href="#" class="btn btn-google btn-block mb-4"> <i class="fab fa-google"></i> &nbsp  Iniciar con Google</a>
           <div class="form-group">
-			 <input  class="form-control" placeholder="Username" type="text" name="username">
+			 <input  class="form-control" placeholder="Usuario" type="text" name="username">
           </div> <!-- form-group// -->
           <div class="form-group">
-			<input  class="form-control" placeholder="Password" type="password" name="pass">
+			<input  class="form-control" placeholder="Contraseña" type="password" name="pass">
           </div> <!-- form-group// -->
-          
-          <div class="form-group">
-          	<a href="#" class="float-right">Forgot password?</a> 
-            <label class="float-left custom-control custom-checkbox"> <input type="checkbox" class="custom-control-input" checked=""> <div class="custom-control-label"> Recordar </div> </label>
-          </div> <!-- form-group form-check .// -->
           <div class="form-group">
               <button type="submit" class="btn btn-primary btn-block"> Ingresar  </button>
           </div> <!-- form-group// -->    
       </form>
+      <div>
+         <p class="text-center mt-4"><strong>¿No tiene cuenta?</strong><a href="{% url 'ecommerce_app:registro_cliente' %}"><strong> Crear</strong></a></p>
+      </div>
       </div> <!-- card-body.// -->
     </div> <!-- card .// -->
+    <br><br>
 
-     <p class="text-center mt-4">No tienenes cuenta? <a href="{% url 'ecommerce_app:registro_cliente' %}">Crear</a></p>
-     <br><br>
+    
 <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
 
 
