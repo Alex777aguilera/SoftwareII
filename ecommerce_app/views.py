@@ -549,7 +549,6 @@ def detalle_producto(request,id_producto):
 
 def ajax_existencia(request):
 	if request.method == "POST" and request.is_ajax():
-		print(1)
 		if request.POST.get('id_producto') is not None:
 			print("id ",request.POST.get('id_producto'))
 			existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
@@ -559,7 +558,24 @@ def ajax_existencia(request):
 				return JsonResponse(otra_variable,safe=False)
 			else:
 				return JsonResponse({'otra_variable':'nada'})
+	else :
+		print("no es ajax")
+		
+		
+    	
 
+
+# def ajax_existencia2(request):
+# 	if is_ajax():
+		
+# 		print("id ",request.POST.get('id_producto'))
+# 		existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
+# 		otra_variable = serializers.serialize('json', [ existencia_p ])
+# 		print("AJAX : ",type(existencia_p))
+# 		if existencia_p:
+# 			return JsonResponse(otra_variable,safe=False)
+# 		else:
+# 			return JsonResponse({'otra_variable':'nada'})
 
 #vista carrito
 @login_required

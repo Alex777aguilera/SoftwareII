@@ -18,10 +18,11 @@ e-commerce | Login
             </div>
           </center>
             <hr>
-      <form class="user" method="post">
+      <form class="user" method="POST">
         {% csrf_token %}
       	  <a href="#" class="btn btn-facebook btn-block mb-2"> <i class="fab fa-facebook-f"></i> &nbsp  Iniciar con Facebook</a>
           
+          <a href="#" class="btn btn-youtube btn-block  mb-4 "> <i class="fab fa-github"></i> &nbsp  Iniciar con GitHub</a>
       	  <a href="#" class="btn btn-google btn-block mb-4"> <i class="fab fa-google"></i> &nbsp  Iniciar con Google</a>
           <div class="form-group">
 			 <input  class="form-control" placeholder="Username" type="text" name="username">
@@ -52,4 +53,5 @@ e-commerce | Login
 {% endblock content %}
 
 {% block js %}
+
 {% endblock js %}
