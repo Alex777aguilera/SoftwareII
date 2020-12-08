@@ -214,7 +214,7 @@ def registro_cliente(request):
 			query_cliente["genero"] = Genero.objects.get(pk=int(request.POST.get("genero")))
 		
 		if request.POST.get("imagen") == None:
-			query_cliente["imagen"] = 'img_default/cliente_default.png'
+			query_cliente["imagen"] = 'Media/imagen_cliente/cliente_default.png'
 		else:
 			query_cliente["imagen"] = request.FILES.get("imagen")
 
@@ -426,7 +426,7 @@ def registrar_producto(request):
 			query_producto['precio'] = request.POST.get('precio')
 		#3	
 		if request.FILES.get('imagen_producto') == None:
-			query_producto['imagen_producto'] = 'img_default/producto_default.png'
+			query_producto['imagen_producto'] = 'Media/productos_empresa/producto_default.png'
 		else:
 			query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
 		#4
@@ -519,10 +519,14 @@ def modificar_img_producto(request,id_producto):
 			errores['errores'] = "HAY ERRORES!"
 
 		if not errores:
-			try: 
-				producto.imagen_producto.delete()
-				producto.imagen_producto = request.FILES.get('imagen_producto')
-				producto.save() 
+			try:
+				if producto.imagen_producto.url == 'Media/productos_empresa/producto_default.png':
+					producto.imagen_producto = request.FILES.get('imagen_producto')
+					producto.save()
+				else:
+					producto.imagen_producto.delete()
+					producto.imagen_producto = request.FILES.get('imagen_producto')
+					producto.save() 
 
 			except Exception as e:
 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error2")
