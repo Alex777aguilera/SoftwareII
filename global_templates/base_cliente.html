@@ -124,9 +124,14 @@
                                 {% for categoria in ctx_categorias  %}
                                      <a class="dropdown-item" href="{% url 'ecommerce_app:productos_categorias' categoria.pk %}">{{categoria.descripcion_categoria}}</a>
                                 {% endfor %}
-
                             </div>
                         </li>
+
+                         {% for subcategoria in ctx_subcategorias  %}
+                         <li class="nav-item">
+                                <a class="nav-link" href="{% url 'ecommerce_app:productos_subcategoria' subcategoria.categoria.pk subcategoria.pk %}" >{{subcategoria.descripcion_subcategoria}}</a>
+                        </li>
+                          {% endfor %}
                     </ul>
 
                 </div> <!-- collapse .// -->

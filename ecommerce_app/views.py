@@ -519,7 +519,7 @@ def modificar_img_producto(request,id_producto):
 			errores['errores'] = "HAY ERRORES!"
 
 		if not errores:
-			try:
+			try: 
 				if producto.imagen_producto == 'Media/productos_empresa/producto_default.png':
 					producto.imagen_producto = request.FILES.get('imagen_producto')
 					producto.save()
