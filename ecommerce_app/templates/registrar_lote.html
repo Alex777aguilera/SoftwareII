@@ -117,7 +117,11 @@ Easy-buy | Registro Lote
 {% block js %}
 <script>
 $(document).ready(function() {
-    $('#tablaL').DataTable();
+    $('#tablaL').DataTable({
+        language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
 }); 
 {% if 'ok' in request.GET %}
 

@@ -7,10 +7,11 @@ Easy-buy | Admin
 <br>
 <div class="container">
 	<section class="content">
-		<h4><strong>Seleccione el mes para ver Reporte de Productos Vendidos</strong></h4><br>
+		
 		<form action="{% url 'ecommerce_app:pdf_mes_productos_vendidos' %}" method="POST" target="_blank">
 		    {% csrf_token %}
 		    <div class="input-group col-sm-4">
+		    	<h5><strong>Seleccione el mes para ver Reporte de Productos Vendidos</strong></h5>
 		      <input type="month" class="form-control" name="mes" value="{% now 'Y-m' %}">
 		      <div class="input-group-append">
 		        <button  class="btn btn-primary" type="submit">Generar Reporte</button>

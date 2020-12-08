@@ -4,15 +4,65 @@ Easy-buy | Admin
 {% endblock title %}
 {% load static %}
 {% block content %}
+<br>
 <div class="container">
-<h2>Este es el admin</h2>
-</div>
+	<section class="content">
+		<h4><strong> Seleccione el mes para ver Reporte de Productos Vendidos</strong></h4><br>
+		<form action="{% url 'ecommerce_app:pdf_mes_productos_vendidos' %}" method="POST" target="_blank">
+		    {% csrf_token %}
+		    <div class="input-group col-sm-4">
+		      <input type="month" class="form-control" name="mes" value="{% now 'Y-m' %}">
+		      <div class="input-group-append">
+		        <button  class="btn btn-primary" type="submit">Generar Reporte</button>
+		      </div>
+		    </div>
+	  	</form>
+	</section><br><br>
+
+
+<div class="card shadow mb-4">
+        <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">Ventas Easy-buy</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" id="tabla_orden" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Nº Orden</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                    <th>Generar Detalle/PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for orden in ordenes %}
+                                <tr>
+                                    <td>{{orden.pk}}</td>
+                                    <td>{{orden.fecha_compra}}</td>
+                                    <td>{{orden.usuario.}}</td>
+                                    <td>{{orden.total}}</td>
+                                    <td><a href="">Generar</a></td>
+                                </tr>
+
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+		</div>
 {% endblock content %}
 
 {% block js %}
 <script type="text/javascript">
 	$(document).ready( function () {
-    $('#table_id').DataTable();
+    $('#tabla_orden').DataTable({
+    	  language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
 } );
 </script>
 {% endblock js %}

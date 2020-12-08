@@ -88,7 +88,10 @@ def principal_admin(request):
 	print (user.pk)
 	if user.is_authenticated:
 		if request.user.is_superuser :
-			return render(request,'inicio_admin.html')
+			ordenes = Orden.objects.all()
+			clientes = Cliente.objects.all()
+			data= {'ordenes':ordenes,'clientes':clientes}
+			return render(request,'inicio_admin.html',data)
 		else:
 			return redirect('ecommerce_app:principal')
 			

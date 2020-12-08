@@ -373,7 +373,11 @@ Easy-buy | Admin
 {% block js %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#dataTable').DataTable();
+    $('#dataTable').DataTable({
+        language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
 });
    function history_push(){
         history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");

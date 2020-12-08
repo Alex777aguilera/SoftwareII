@@ -119,7 +119,11 @@ Easy-buy | Admin
 {% block js %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#tablaC').DataTable();
+    $('#tablaC').DataTable({
+	  	language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
 });
 </script>
 {% endblock js %}

@@ -149,7 +149,11 @@
 {% block js %}
 <script>
 $(document).ready(function() {
-    $('#tablaM').DataTable();
+    $('#tablaM').DataTable({
+	  	language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
 });
 
     $("select#id_categoria").change(function(){
