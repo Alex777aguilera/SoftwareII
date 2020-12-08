@@ -520,7 +520,7 @@ def modificar_img_producto(request,id_producto):
 
 		if not errores:
 			try:
-				if producto.imagen_producto.url == 'Media/productos_empresa/producto_default.png':
+				if producto.imagen_producto.url == '/Media/productos_empresa/producto_default.png':
 					producto.imagen_producto = request.FILES.get('imagen_producto')
 					producto.save()
 				else:
