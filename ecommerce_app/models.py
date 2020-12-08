@@ -123,6 +123,7 @@ class DetalleOrden(models.Model):
 	precio = models.DecimalField(max_digits=10,decimal_places=2)
 	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 	orden = models.ForeignKey(Orden, on_delete=models.CASCADE)
+	descuento = models.DecimalField(max_digits=10,decimal_places=2, null=True)
 	total_producto = models.DecimalField(max_digits=10,decimal_places=2, null=True)
 
 	def __str__(self):
