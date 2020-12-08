@@ -520,9 +520,13 @@ def modificar_img_producto(request,id_producto):
 
 		if not errores:
 			try: 
-				producto.imagen_producto.delete()
-				producto.imagen_producto = request.FILES.get('imagen_producto')
-				producto.save() 
+				if producto.imagen_producto == 'Media/productos_empresa/producto_default.png':
+					producto.imagen_producto = request.FILES.get('imagen_producto')
+					producto.save()
+				else:
+					producto.imagen_producto.delete()
+					producto.imagen_producto = request.FILES.get('imagen_producto')
+					producto.save() 
 
 			except Exception as e:
 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error2")
