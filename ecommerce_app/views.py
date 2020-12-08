@@ -213,8 +213,8 @@ def registro_cliente(request):
 		else:
 			query_cliente["genero"] = Genero.objects.get(pk=int(request.POST.get("genero")))
 		
-		if request.POST.get("imagen") == '':
-			errores['imagen'] = "DEBES SELECIONAR UNA IMAGEN"
+		if request.POST.get("imagen") == None:
+			query_cliente["imagen"] = 'Media/imagen_cliente/img_default.png'
 		else:
 			query_cliente["imagen"] = request.FILES.get("imagen")
 
@@ -426,7 +426,7 @@ def registrar_producto(request):
 			query_producto['precio'] = request.POST.get('precio')
 		#3	
 		if request.FILES.get('imagen_producto') == None:
-			query_producto['imagen_producto'] = 'logo_empresa/logo_r.png'
+			query_producto['imagen_producto'] = 'Media/productos_empresa/img_default.png'
 		else:
 			query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
 		#4
