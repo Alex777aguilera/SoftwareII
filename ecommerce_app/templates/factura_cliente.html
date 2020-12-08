@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Factura Cliente</title>
+	<link rel="stylesheet" href="">
+	<style>
+		.td-header{
+	      border:none;
+	    }
+
+	    td{
+	      font-size: 12px;
+	      padding-left:0;
+	      padding: 3px 0 0 0;
+	    }
+
+	    th{
+	    	font-size: 14px;
+	    	padding: 5px 0 0 0;
+	    }
+	</style>
+</head>
+<body>
+	<div style="width:100%" class="encabezado" id="header_content">
+		<div style="width:250px;">
+			<center><img src="media/{{logo_emp}}" alt=""></center>
+		</div>
+	    <table style="width:100%;">
+	    	<thead>
+	    	{% for orden in orden_factura %}
+	    		<th colspan="2" style="text-align:center; border-bottom: 1px solid #8B8B8B; border-top: 1px solid #8B8B8B; ">FACTURA Nº {{orden.pk}}</th>
+	    	{% endfor %}
+	    	</thead>
+	      <tr>
+	      	<td class="td-header">RTN: 190281938102</td>
+	      	{% for orden in orden_factura %}
+	      		<td class="td-header">Fecha: {{orden.fecha_compra}}</td>
+	      	{% endfor %}
+	      </tr>
+	      <tr>
+	      	{% for emp in empresa %}
+	      		<td class="td-header">Dirección: {{emp.direccion}}</td>
+	      	{% endfor %}
+	      	{% for cl in cliente %}
+	      		<td class="td-header">Cliente: {{cl.nombres}} {{cl.apellidos}}</td>
+	      	{% endfor %}
+	      </tr>
+	      <tr>
+	      	{% for emp in empresa %}
+	      		<td class="td-header">Email: {{emp.correo}}</td>
+	      	{% endfor %}
+	      	
+	      	{% for orden in orden_factura %}
+	      		<td class="td-header">Enviar a: {{orden.domicilio.direccion}}</td>
+	      	{% endfor %}
+	      </tr>
+	      <tr>
+	      	{% for emp in empresa %}
+	      		<td class="td-header">Contacto: {{emp.telefono}}</td>
+	      	{% endfor %}
+	      </tr>
+	    </table>
+	</div>
+  	<br>
+
+	<table style="width:100%; margin-top: 10px">
+		<thead>
+			<tr>
+				<th colspan="5" style="text-align:center; border-bottom: 1px solid #8B8B8B; border-top: 1px solid #8B8B8B; ">Detalle de Productos</th>
+			</tr>
+			<tr>
+				<th>Cantidad</th>
+				<th>Descripción</th>
+				<th>Precio Unit.</th>
+				<th>Descuento</th>
+				<th>Subtotal</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for clave, detalle_fact in factura.items %}
+			{% for detalle in detalle_fact %}
+			<tr>
+				{% for dt in detalle %}
+					{% if foorlop.last %}
+						<td style="text-align:center; border-bottom: 1px solid #8B8B8B;">{{dt}}</td>
+					{% else %}
+						<td style="text-align:center;">{{dt}}</td>
+					{% endif %}
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		{% endfor %}
+		<tr style="border-top: 1px solid #8B8B8B; "></tr>
+		</tbody>
+		<tfoot>
+            <tr >
+                <th colspan="4" style="text-align:right;">Subtotal</th>
+                <td style="text-align:center;">Lps {{subtotal}}</td>
+            </tr>
+            <tr>
+                <th colspan="4" style="text-align:right;">Descuento</th>
+                <td style="text-align:center;">Lps {{descuento}}</td>
+            </tr>
+            <tr>
+                <th colspan="4" style="text-align:right;">ISV (15%)</th>
+                <td style="text-align:center;">Lps {{isv}}</td>
+            </tr>
+            <tr>
+                <th colspan="4" style="text-align:right;">Total</th>
+                <td style="text-align:center;">Lps {{total}}</td>
+            </tr>
+        </tfoot>
+	</table>
+
+	<table style="margin-top: 10px;">
+		<th style="text-align:center;">**GRACIAS POR SU COMPRA**</th>
+	</table>
+	
+</body>
+</html>

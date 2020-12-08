@@ -1,6 +1,6 @@
  {% extends "base_cliente.html" %}
 {% block title %}
-e-commerce | Cliente_
+e-commerce | Cliente
 {% endblock title %}
 {% load static %}
 {% block content %}
@@ -13,24 +13,14 @@ e-commerce | Cliente_
                 <div class="card-body">
                     <div class="row">
                         <aside class="col-lg col-md-3 flex-lg-grow-0">
-                            <h6>Estos son mis productos</h6>
+                            <h6>Productos en descuento</h6>
                             <nav class="nav-home-aside">
                                 <ul class="menu-category">
-                                    <li><a href="#">Fashion and clothes</a></li>
-                                    <li><a href="#">Automobile and motors</a></li>
-                                    <li><a href="#">Gardening and agriculture</a></li>
-                                    <li><a href="#">Electronics and tech</a></li>
-                                    <li><a href="#">Packaginf and printing</a></li>
-                                    <li><a href="#">Home and kitchen</a></li>
-                                    <li><a href="#">Digital goods</a></li>
-                                    <li class="has-submenu"><a href="#">More items</a>
-                                        <ul class="submenu">
-                                            <li><a href="#">Submenu name</a></li>
-                                            <li><a href="#">Great submenu</a></li>
-                                            <li><a href="#">Another menu</a></li>
-                                            <li><a href="#">Some others</a></li>
-                                        </ul>
-                                    </li>
+                                    {% for producto in ctx_productos_descuento %}
+                                        <li><a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}">{{producto.nombre_producto}}</a></li>
+                                     {% empty %}
+                                    <h1><strong>No hay productos en descuento</strong></h1>
+                                    {% endfor %}
                                 </ul>
                             </nav>
                         </aside> <!-- col.// -->
@@ -66,25 +56,25 @@ e-commerce | Cliente_
                         </div> <!-- col.// -->
                         <div class="col-md d-none d-lg-block flex-grow-1">
                             <aside class="special-home-right">
-                                <h6 class="bg-blue text-center text-white mb-0 p-2">Popular category</h6>
+                                <h6 class="bg-blue text-center text-white mb-0 p-2">Categorías Populares</h6>
                                 <div class="card-banner border-bottom">
                                     <div class="py-3" style="width:80%">
-                                        <h6 class="card-title">Men clothing</h6>
-                                        <a href="#" class="btn btn-secondary btn-sm"> Source now </a>
+                                        <h6 class="card-title">Artículos Navideños</h6>
+                                        <a href="#" class="btn btn-secondary btn-sm"> Visualizar </a>
                                     </div>
                                     <img src="{% static "images/items/1.jpg" %}" height="80" class="img-bg">
                                 </div>
                                 <div class="card-banner border-bottom">
                                     <div class="py-3" style="width:80%">
-                                        <h6 class="card-title">Winter clothing </h6>
-                                        <a href="#" class="btn btn-secondary btn-sm"> Source now </a>
+                                        <h6 class="card-title">Ropa </h6>
+                                        <a href="#" class="btn btn-secondary btn-sm"> Visualizar </a>
                                     </div>
                                     <img src="{% static "images/items/2.jpg" %}" height="80" class="img-bg">
                                 </div>
                                 <div class="card-banner border-bottom">
                                     <div class="py-3" style="width:80%">
-                                        <h6 class="card-title">Home inventory</h6>
-                                        <a href="#" class="btn btn-secondary btn-sm"> Source now </a>
+                                        <h6 class="card-title">Hogar</h6>
+                                        <a href="#" class="btn btn-secondary btn-sm"> Visualizar </a>
                                     </div>
                                     <img src="{% static "images/items/6.jpg" %}" height="80" class="img-bg">
                                 </div>
@@ -214,15 +204,22 @@ e-commerce | Cliente_
     $(document).ready( function () {
     $('#table_id').DataTable();
 });
-     
+     var lat = "{{empresas.latitude_empresa}}"
+     var lng = "{{empresas.longitude_empresa}}" 
      //var image = "{{empresas.imagen_logo.url}}" este funciona
    
       function initMap() {
           const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 17,
-            center: { lat: {{empresas.latitude_empresa}}, lng: {{empresas.longitude_empresa}} },
+            center: { lat: 13.3090129, lng: -87.1893522 },
           });
 
+       /* var icon = {
+            url: '{% static "images/logo_market.png" %}', // url
+            scaledSize: new google.maps.Size(40, 70), // scaled size
+            origin: new google.maps.Point(0,0), // origin
+            anchor: new google.maps.Point(0, 0) // anchor
+        };  */
 
           map.setOptions({draggable: false});
           new google.maps.Marker({

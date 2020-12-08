@@ -8,7 +8,11 @@ e-commerce | Producto
     <div class="container">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'ecommerce_app:principal' %}">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'ecommerce_app:principal' %}">{{productos.marca.categoria.descripcion_categoria}}</a></li>
+           
+            <li class="breadcrumb-item"><a  href="{% url 'ecommerce_app:productos_categorias' productos.marca.subcategoria.categoria.pk %}">{{productos.marca.subcategoria.categoria.descripcion_categoria}}</a></li>
+           
+            <li class="breadcrumb-item"><a href="{% url 'ecommerce_app:productos_subcategoria' productos.marca.subcategoria.categoria.pk productos.marca.subcategoria.pk %}">{{productos.marca.subcategoria.descripcion_subcategoria}}</a></li>
+            
             <li class="breadcrumb-item active" aria-current="page">{{productos.nombre_producto}}</li>
         </ol>
     </div>

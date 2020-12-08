@@ -17,6 +17,14 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.template.loader import get_template
 
 from ecommerce_app.models import *
+from decimal import Decimal
+from pprint import PrettyPrinter
+
+#Librerias para PDF
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from io import StringIO
+from io import BytesIO
 # Create your views here.
 
 existe = ''
@@ -1185,3 +1193,204 @@ def cambio_contrasena(request):
 			return render(request,'cambio_contrasena.html',data) 
 	else:
 		return render(request,'error.html') 
+
+def facturacion_producto(request):
+	pp = PrettyPrinter(indent=4)
+	#if request.method == 'POST':
+	cliente = Cliente.objects.filter(usuario_cliente=request.user)
+	productos_carrito = Carrito.objects.filter(usuario=request.user)
+	empresa = Empresa.objects.filter(pk=1)
+	logo_emp = Empresa.objects.get(pk=1)
+
+	query_orden = {}
+	lista = []
+
+	query_orden['metodo_pago'] = MetodoPago.objects.get(pk=1)
+	query_orden['domicilio'] = Domicilio.objects.get(usuario=request.user)
+	query_orden['usuario'] = request.user
+	query_orden['subtotal'] = 0
+	query_orden['descuento'] = 0
+	query_orden['impuesto'] = 0
+	query_orden['total'] = 0
+
+	orden = Orden(**query_orden)
+	orden.save()
+
+	dic_data = {}
+	subtotal_factura, desc_factura, sub_x_producto = 0, 0, 0
+
+	for prod in productos_carrito:
+		lista_data_prod = []
+
+		sub_x_producto = prod.cantidad * Decimal(prod.producto.precio)
+
+		if prod.producto.porcentaje_descuento == 0 or prod.producto.porcentaje_descuento == None:
+			desc_prod = 0
+		else:
+			desc_prod = prod.producto.porcentaje_descuento * sub_x_producto
+
+		desc_factura += desc_prod
+
+		total_x_prod = sub_x_producto - desc_prod
+		subtotal_factura += total_x_prod
+
+		lista_data_prod.append(prod.cantidad)
+		lista_data_prod.append(prod.producto.nombre_producto)
+		lista_data_prod.append(f'Lps {prod.producto.precio}')
+		lista_data_prod.append(f'Lps {desc_prod}')
+		lista_data_prod.append(f'Lps {total_x_prod}')
+
+		lista.append(lista_data_prod)
+
+		detalle = DetalleOrden(cantidad=prod.cantidad,
+								precio=prod.producto.precio,
+								producto=Producto.objects.get(pk=prod.producto.pk),
+								orden=Orden.objects.get(pk=orden.pk),
+								descuento=desc_prod,
+								total_producto=total_x_prod)
+		detalle.save()
+
+	isv = round((subtotal_factura * Decimal(0.15)),2)
+	total_factura = round(((subtotal_factura + isv) - desc_factura),2)
+
+	dic_data['detalle'] = lista
+
+	orden.subtotal = subtotal_factura
+	orden.impuesto = isv
+	orden.descuento = desc_factura
+	orden.total = total_factura
+	orden.save()
+
+	orden_factura = Orden.objects.filter(pk=orden.pk)
+
+	ctx = {
+	'factura' : dic_data,
+	'subtotal' : subtotal_factura,
+	'descuento' : desc_factura,
+	'isv' : isv,
+	'total' : total_factura,
+	'cliente' : cliente,
+	'orden_factura' : orden_factura,
+	'empresa' : empresa,
+	'logo_emp' : logo_emp.imagen_logo
+	}
+
+	template = get_template('factura_cliente.html')
+	html = template.render(ctx)
+	response = HttpResponse(content_type='application/pdf')  
+	pisaStatus = pisa.CreatePDF(html,dest=response)
+	return response
+
+	return render(request,'factura_cliente.html',ctx)
+
+#vista para que el admin vea el pdf de todos los productos vendidos seleccionando un mes en especifico
+def pdf_mes_productos_vendidos(request):
+	if request.method == 'POST':
+		fecha = request.POST.get('mes')
+		date = fecha.split('-')
+		empresa = Empresa.objects.get(pk=1)
+		lista = []
+		dic_productos, dic, dic_total = {}, {}, {}
+		no_ventas = False
+		#fecha_reporte = datetime.now()
+
+		if date[1] == '01':
+			mes = 'Enero'
+
+		elif date[1] == '02':
+			mes = 'Febrero'
+
+		elif date[1] == '03':
+			mes = 'Marzo'
+
+		elif date[1] == '04':
+			mes = 'Abril'
+
+		elif date[1] == '05':
+			mes = 'Mayo'
+
+		elif date[1] == '06':
+			mes = 'Junio'
+
+		elif date[1] == '07':
+			mes = 'Julio'
+
+		elif date[1] == '08':
+			mes = 'Agosto'
+
+		elif date[1] == '09':
+			mes = 'Septiembre'
+
+		elif date[1] == '10':
+			mes = 'Octubre'
+
+		elif date[1] == '11':
+			mes = 'Noviembre'
+
+		elif date[1] == '12':
+			mes = 'Diciembre'
+
+		#obteniendo el total de los productos vendidos filtrado por el mes
+		facturas = Orden.objects.filter(fecha_compra__year=date[0], fecha_compra__month=date[1]).order_by('fecha_compra')
+		total_cantidad = DetalleOrden.objects.filter(orden__fecha_compra__year=date[0], 
+													orden__fecha_compra__month=date[1]
+													).aggregate(total = Sum('cantidad'))['total']
+
+		total_descuento = DetalleOrden.objects.filter(orden__fecha_compra__year=date[0], 
+													orden__fecha_compra__month=date[1]
+													).aggregate(total = Sum('descuento'))['total']
+
+		total_precio = DetalleOrden.objects.filter(orden__fecha_compra__year=date[0], 
+													orden__fecha_compra__month=date[1]
+													).aggregate(total = Sum('precio'))['total']
+
+		total_prod = DetalleOrden.objects.filter(orden__fecha_compra__year=date[0], 
+													orden__fecha_compra__month=date[1]
+													).aggregate(total = Sum('total_producto'))['total']
+
+
+		if facturas.count() > 0:#validar que hay facturas realizadas en ese mes
+
+			for factura in facturas:
+				#obteniendo cada uno de los productos vendidos de esa factura en el mes
+				productos_vendidos = DetalleOrden.objects.filter(orden=factura.pk)
+
+				for producto in productos_vendidos:
+					lista_producto = []
+
+					lista_producto.append(producto.orden.fecha_compra.strftime("%d/%m/%Y"))
+					lista_producto.append(producto.orden.pk)
+					lista_producto.append(producto.producto.nombre_producto)
+					lista_producto.append(producto.cantidad)
+					lista_producto.append(f'Lps {producto.precio}')
+					lista_producto.append(f'Lps {producto.descuento}')
+					lista_producto.append(f'Lps {producto.total_producto}')
+
+					lista.append(lista_producto)
+
+			dic_total['total'] = [total_cantidad, f'Lps {total_precio}', f'Lps {total_descuento}', f'Lps {total_prod}']
+
+			dic_productos['productos'] = lista
+		else:
+			dic_productos = {}
+			dic_total = {}
+			no_ventas = True
+
+		ctx = {'reporte_productos' : dic_productos,
+				'dic_total' : dic_total,
+				'empresa_nombre' : empresa.nombre,
+				'empresa_logo' : empresa.imagen_logo,
+				'mes': mes,
+				'anio' : date[0],
+				'no_ventas' : no_ventas}
+
+
+		template = get_template('pdf_mes_productos_vendidos.html')
+		html = template.render(ctx)
+		response = HttpResponse(content_type='application/pdf')  
+		pisaStatus = pisa.CreatePDF(html,dest=response)
+		return response
+
+	else:
+		return render(request,'mes_productos_vendidos.html')
+

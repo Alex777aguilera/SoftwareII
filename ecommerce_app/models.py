@@ -54,7 +54,6 @@ class Empresa(models.Model):
 	nombre = models.CharField(max_length=200)
 	imagen_logo = models.ImageField(upload_to='logo_empresa')#upload_to carga un archivo en MEDIA_ROOT creando una carpeta con el nombre entre comillas
 	telefono = models.CharField(max_length=50, blank = False, null = False)
-	correo = models.CharField(max_length=100)
 	fecha_registro = models.DateField(auto_now_add=True)
 	direccion = models.TextField()
 	latitude_empresa = models.CharField(max_length=30,null=False)
@@ -90,7 +89,8 @@ class Producto(models.Model):
 #Cambiar el precio del producto, en caso haya descuento o este en promocion, precio anterior, precio actual
 class Carrito(models.Model):
 	"""docstring for lote"""
-	cantidad = models.CharField(max_length=50)
+	
+	cantidad = models.DecimalField(max_digits=10,decimal_places=2, null=True)
 	producto =  models.ForeignKey(Producto, on_delete=models.CASCADE)
 	usuario = models.ForeignKey(User,on_delete=models.CASCADE, null=True)
 
@@ -106,10 +106,15 @@ class Lote(models.Model):
 #opcional,  dejar en los datos de la empresa
 
 class Orden(models.Model):
-	total = models.DecimalField(max_digits=10,decimal_places=2)
+	fecha_compra = models.DateField(auto_now_add=True)
+	total = models.DecimalField(max_digits=10,decimal_places=2, null=True)
 	metodo_pago = models.ForeignKey(MetodoPago, on_delete=models.CASCADE)
 	domicilio = models.ForeignKey(Domicilio, on_delete=models.CASCADE)
 	usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+	descuento = models.DecimalField(max_digits=10,decimal_places=2, null=True)
+	impuesto = models.DecimalField(max_digits=10,decimal_places=2, null=True)
+	subtotal = models.DecimalField(max_digits=10,decimal_places=2, null=True)
+
 	def __str__(self):
 		return "{}-{} " .format(self.pk,self.total)
 
@@ -118,6 +123,8 @@ class DetalleOrden(models.Model):
 	precio = models.DecimalField(max_digits=10,decimal_places=2)
 	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 	orden = models.ForeignKey(Orden, on_delete=models.CASCADE)
+	descuento = models.DecimalField(max_digits=10,decimal_places=2, null=True)
+	total_producto = models.DecimalField(max_digits=10,decimal_places=2, null=True)
 
 	def __str__(self):
 		return "{}-{} |{} " .format(self.pk,self.cantidad,self.precio,self.producto.nombre_producto)
@@ -160,5 +167,6 @@ class Telegram(models.Model):
 
 	def __str__(self):
 		return "{}" .format(self.pk)
+
 
 
