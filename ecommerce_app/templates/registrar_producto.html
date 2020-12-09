@@ -96,7 +96,7 @@ Easy-buy | Admin
                             {% endif %}
                         </div>
                         <div class="col-sm-4 form-group">
-                            <label>Estado del Producto</label>
+                            <label>Condición del Producto</label>
                             <select class="form-control" data-live-search="true" id="id_nuevo_producto" name="nuevo_producto">
                                 <option value="1" selected="selected">Nuevo</option>
                                 <option value="2">Usado</option>
@@ -645,7 +645,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         if($('#id_categoria').val() == 0){
             Swal.fire({
   icon: 'warning',
-  title: 'Oops...',
+  title: 'Advertencia',
   text: 'Debe seleccionar una Categoría',
   
 })
@@ -654,7 +654,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         }else if($('#id_subcategoria').val() == 0){
             Swal.fire({
   icon: 'warning',
-  title: 'Oops...',
+  title: 'Advertencia',
   text: 'Debe seleccionar una Subcategoría',
   
 })
@@ -663,7 +663,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         }else if($('#id_marca').val() == 0){
             Swal.fire({
   icon: 'warning',
-  title: 'Oops...',
+  title: 'Advertencia',
   text: 'Debe seleccionar una Marca',
   
 })
@@ -671,7 +671,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         }else if($('#id_categoria_genero').val() == 0){
             Swal.fire({
   icon: 'warning',
-  title: 'Oops...',
+  title: 'Advertencia',
   text: 'Debe seleccionar el genero al cual esta destinado el Producto',
   
 })
