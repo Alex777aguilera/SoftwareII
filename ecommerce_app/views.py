@@ -221,8 +221,8 @@ def registro_cliente(request):
 		else:
 			query_cliente["genero"] = Genero.objects.get(pk=int(request.POST.get("genero")))
 		
-		if request.POST.get("imagen") == None:
-			query_cliente["imagen"] = 'Media/imagen_cliente/cliente_default.png'
+		if request.FILES.get("imagen") == None:
+			query_cliente["imagen"] =  'Media/imagen_cliente/cliente_default.jpg'
 		else:
 			query_cliente["imagen"] = request.FILES.get("imagen")
 
