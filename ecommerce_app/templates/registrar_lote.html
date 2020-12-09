@@ -31,17 +31,17 @@ Easy-buy | Registro Lote
                                 <div class="col-md-4">
                                     <div class="col form-group">
                                         <label>Existencia:</label>
-                                        {% if errores.existencia %}
-                                        <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
-                                            <strong>ERROR! </strong>{{errores.existencia}}
-                                        </div>
-                                        {% endif %}
                                         <input type="text" class="form-control" id="id_existencia" name="existencia" placeholder="existencia" value="{{ret_data.existencia}}">
                                     </div> <!-- form-group end.// -->
                                 </div>
                                 {% if errores.administrador %}
                                 <div class="alert alert-danger alert-dismissible " role="alert">
                                 <strong>ERROR! </strong>{{errores.administrador}}
+                                {% endif %}
+                                 {% if errores.existencia %}
+                                    <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
+                                        <strong>ERROR! </strong>{{errores.existencia}}
+                                        </div>
                                 {% endif %}
                             </div>
                             <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
