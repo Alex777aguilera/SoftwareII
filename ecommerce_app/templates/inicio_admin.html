@@ -30,7 +30,7 @@ Easy-buy | Admin
                             <thead>
                                 <tr>
                                     <th>Nº Orden</th>
-                                    <th>Fecha</th>
+                                    <th>Fecha de Orden</th>
                                     <th>Cliente</th>
                                     <th>Total</th>
                                     <th>Generar Detalle/PDF</th>
@@ -41,9 +41,15 @@ Easy-buy | Admin
                                 <tr>
                                     <td>{{orden.pk}}</td>
                                     <td>{{orden.fecha_compra}}</td>
-                                    <td>{{orden.usuario.}}</td>
+
+                                    {% for cliente in clientes  %}
+                                    	{% ifequal  orden.username.pk cliente.username.pk %} 
+                                		  	<td>{{cliente.nombres}} {{cliente.apellidos}}</td>
+                                    	{% endifequal %}
+                                    {% endfor %}
+                                  
                                     <td>{{orden.total}}</td>
-                                    <td><a href="">Generar</a></td>
+                                    <td><button class="btn btn-danger">Generar <i class="fas fa-file-pdf"></i></button></td>
                                 </tr>
 
                                 {% endfor %}

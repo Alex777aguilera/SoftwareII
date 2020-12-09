@@ -99,6 +99,7 @@ class Carrito(models.Model):
 
 class Lote(models.Model):
 	"""docstring for lote"""
+	fecha_creacion = models.DateField(auto_now_add=True)
 	existencia = models.CharField(max_length=50)
 	producto =  models.ForeignKey(Producto, on_delete=models.CASCADE)
 	def __str__(self):

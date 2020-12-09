@@ -96,7 +96,7 @@
 
 						      <!-- Modal Header -->
 						      <div class="modal-header">
-						        <h4 class="modal-title">Subcategoria: {{subcategoria.descripcion_subcategoria}}</h4>
+						        <h4 class="modal-title">Subcategoría: {{subcategoria.descripcion_subcategoria}}</h4>
 						        <button type="button" class="close" data-dismiss="modal">&times;</button>
 						      </div>
 
@@ -163,7 +163,7 @@ $(document).ready(function() {
 
    function alerta(titulo,icono){
 	Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: false, timer: 2100 })
-	history.pushState(null,"","{% url 'ecommerce_app:agregar_marca' %}");
+	history.pushState(null,"","{% url 'ecommerce_app:agregar_subcategoria' %}");
 }
 
    	{% if 'ok' in request.GET %}
@@ -183,7 +183,7 @@ $(document).ready(function() {
  			Swal.fire('Advertencia','Debe seleccionar la Categoría','warning')
         	return false;
 	    }else if($('#id_descripcion_subcategoria').val() == ''){
-	    	Swal.fire('Advertencia','Debe ingresar la descripcion de la Subcategoría','warning')
+	    	Swal.fire('Advertencia','Debe ingresar la descripción de la Subcategoría','warning')
         	return false;
 	    }
 	});

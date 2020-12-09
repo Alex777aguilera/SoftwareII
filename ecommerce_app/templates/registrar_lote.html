@@ -16,16 +16,11 @@ Easy-buy | Registro Lote
                     <div class="card-body">
                         <form role="form" method="post" enctype="multipart/form-data" action="{% url 'ecommerce_app:registrar_lote' %}">
                             {% csrf_token %}
-                            {% if errores.administrador %}
-                            <div class="alert alert-danger alert-dismissible " role="alert">
-                                <strong>ERROR! </strong>{{errores.administrador}}
-                                {% endif %}
-                            </div>
                             <div class="form-row">
                                 <div class="col-md-4">
                                     <div class="col form-group">
-                                        <label>Categoría:</label>
-                                        <select class="form-control" style="width: 100%;" id="id_producto" name="producto">
+                                        <label>Producto:</label>
+                                        <select class="selectpicker form-control" data-live-search="true" style="width: 100%;" id="id_producto" name="producto">
                                             <option value="0">--Seleccione--</option>
                                             {% for pro in productos %}
                                             <option value='{{pro.pk}}'>{{pro.nombre_producto}}-{{pro.marca}}</option>
@@ -44,11 +39,16 @@ Easy-buy | Registro Lote
                                         <input type="text" class="form-control" id="id_existencia" name="existencia" placeholder="existencia" value="{{ret_data.existencia}}">
                                     </div> <!-- form-group end.// -->
                                 </div>
+                                {% if errores.administrador %}
+                                <div class="alert alert-danger alert-dismissible " role="alert">
+                                <strong>ERROR! </strong>{{errores.administrador}}
+                                {% endif %}
                             </div>
                             <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
                                 <button type="submit" class="btn btn-primary btn-block" id="guardar"> Guardar </button>
                             </div>
                         </form>
+                       </div>
                     </div> <!-- card-body.// -->
                 </div>
                 <div class="card shadow mb-4">
@@ -60,6 +60,7 @@ Easy-buy | Registro Lote
                             <table class="table table-striped table-bordered" id="tablaL" width="100%" cellspacing="50%">
                                 <thead>
                                     <tr>
+                                        <th>Fecha de Creción</th>
                                         <th>Porducto</th>
                                         <th>Existencia</th>
                                         <th>Modificar</th>
@@ -68,6 +69,7 @@ Easy-buy | Registro Lote
                                 <tbody>
                                     <tr>
                                         {% for lol in lotes %}
+                                        <td>{{lol.fecha_creacion}}</td>
                                         <td>{{lol.producto}}-{{lol.producto.marca}}</td>
                                         <td>{{lol.existencia}}</td>
                                         <td><button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#lote{{lol.pk}}">
@@ -84,7 +86,7 @@ Easy-buy | Registro Lote
                                                 </div>
                                                 <!-- Modal body -->
                                                 <div class="modal-body">
-                                                    <form action="{% url 'ecommerce_app:modificar_categoria' lol.pk %}" method="POST">
+                                                    <form action="{% url 'ecommerce_app:modificar_lote' lol.pk %}" method="POST">
                                                         {% csrf_token %}
                                                         <div class="form-row">
                                                             <div class="col-sm-12 form-group">
@@ -123,17 +125,36 @@ $(document).ready(function() {
         }
     });
 }); 
-{% if 'ok' in request.GET %}
 
-Swal.fire({ position: 'center', icon: 'success', title: 'Datos guardados con éxito', showConfirmButton: false, timer: 1500 })
- {% endif %}
+    $("select#id_producto").change(function(){
+        var valor = $(this).val();
+        $('.selectpicker').selectpicker('toggle');
+    });
+
+
+    function alerta(titulo,icono){
+        Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: false, timer: 2100 })
+        history.pushState(null,"","{% url 'ecommerce_app:registrar_lote' %}");
+    }
+
+    {% if 'ok' in request.GET %}
+        alerta('Datos guardados con éxito','success');
+    {% endif %}
+
+    {% if 'ok1' in request.GET %}
+        alerta('Datos modificados con éxito','success');
+    {% endif %}
+
+    {% if 'error1' in request.GET %}
+        alerta('No se pudo actualizar los datos','error');
+     {% endif %}
 
 $('#guardar').click(function(e) {
     if ($('#id_producto').val() == 0) {
     	Swal.fire({
-  icon: 'error',
-  title: 'Oops...',
-  text: 'Debes seleccionar un producto!',
+  icon: 'warning',
+  title: 'Advertencia',
+  text: 'Debes seleccionar un Producto',
   
 })
             return false;

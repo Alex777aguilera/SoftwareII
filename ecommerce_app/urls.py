@@ -32,6 +32,7 @@ urlpatterns = [
  path('productos/categoria/<int:idcategoria>/', views.productos_categoria, name='productos_categoria'),
  path('ajax/existencia', views.ajax_existencia, name='ajax_existencia'),
  path('registro/lote', views.registrar_lote, name='registrar_lote'),
+ path('modificar/lote/<int:id_lote>/', views.modificar_lote, name="modificar_lote"),
  path('email', views.email, name='email'),
  path('perfil/cliente', views.perfil_cliente, name='perfil_cliente'),
  path('modificar/imagen/cliente/<int:id_cliente>/', views.modificar_img_cliente, name='modificar_img_cliente'),
