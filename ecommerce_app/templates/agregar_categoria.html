@@ -43,7 +43,7 @@ Easy-buy | Admin
 					</div>
 					
 				    <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
-				        <button type="submit" class="btn btn-primary btn-block"> Guardar  </button>
+				        <button type="submit" class="btn btn-primary btn-block" id="guardar"> Guardar  </button>
 				    </div>	
 					</form>
 				</div> <!-- card-body.// -->
@@ -119,7 +119,34 @@ Easy-buy | Admin
 {% block js %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#tablaC').DataTable();
+    $('#tablaC').DataTable({
+	  	language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
 });
+   	function alerta(titulo,icono){
+	Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: false, timer: 2100 })
+	history.pushState(null,"","{% url 'ecommerce_app:agregar_categoria' %}");
+	}
+
+ 	{% if 'ok' in request.GET %}
+    	alerta('Datos guardados con éxito','success');
+    {% endif %}
+
+    {% if 'ok1' in request.GET %}
+    	alerta('Datos actualizados con éxito','success');
+    {% endif %}
+
+    {% if 'error1' in request.GET %}
+    	alerta('No se ha podido actualizar los datos','error');
+    {% endif %}
+    
+	$('#guardar').click(function(e) {
+	   	if($('#id_descripcion_categoria').val() == ''){
+	    	Swal.fire('Advertencia','Debe ingresar la descripción de la Categoría','warning')
+        	return false;
+	    }
+	});
 </script>
 {% endblock js %}

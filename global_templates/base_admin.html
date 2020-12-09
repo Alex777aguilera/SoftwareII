@@ -34,9 +34,9 @@
         <section class="header-main border-bottom">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-xl-2 col-lg-3 col-md-12">
+                    <div class="col-xl-2 col-lg-6 col-md-12">
                         <a href="{% url 'ecommerce_app:principal' %}" class="brand-wrap ">
-                           <img class="logo" src="{{ctx_empresa.imagen_logo.url}}">
+                           <img src="{{ctx_empresa.imagen_logo.url}}" style="width: 75%; height: 50%;">
                         </a> <!-- brand-wrap.// -->
                     </div>
                     <div class="col-xl-6 col-lg-5 col-md-6">
@@ -45,51 +45,15 @@
                     <div class="col-xl-4 col-lg-4 col-md-6">
                         <div class="widgets-wrap float-md-right">
                             <div class="widget-header mr-3">
-                                
-                                <a href="#" class="widget-view  dropdown-toggle " data-toggle="dropdown">
-                                    <div class="icon-area">
-                                        <i class="fa fa-user-tie"></i>
-                                    </div>
-                                    <div class="dropdown-menu">
-                                        
-                                            <i class="fa fa-user dropdown-item"> {{request.user}}</i>
-                                        
-                                        
-                                        <a class="dropdown-item" href="{% url 'ecommerce_app:cerrar_sesion' %}">Salir</a>
-                                    </div>
-                                </a>
-                                
-                                    
+                                <a href="#" class="icontext mr-2 dropdown-toggle" data-toggle="dropdown">
+                                     <div class="icon-area">
+                                        <i class="fa fa-user-tie"></i>      
+                                    </div>{{request.user|upper}}
+                                </a> <!-- iconbox // -->
+                                <div class="dropdown-menu dropdown-menu-right ">
+                                    <a class="dropdown-item" href="{% url 'ecommerce_app:cerrar_sesion' %}">Salir</a>
+                                </div>
                             </div>
-                            
-                            <div class="widget-header mr-3">
-                                <a href="#" class="widget-view">
-                                    <div class="icon-area">
-                                        <i class="fa fa-comment-dots"></i>
-                                        <span class="notify">1</span>
-                                    </div>
-                                    <small class="text"> Message </small>
-                                </a>
-                            </div>
-                            <div class="widget-header mr-3">
-                                <a href="#" class="widget-view">
-                                    <div class="icon-area">
-                                        <i class="fa fa-store"></i>
-                                    </div>
-                                    <small class="text"> Orders </small>
-                                </a>
-                            </div>
-
-                            <div class="widget-header">
-                                <a href="#" class="widget-view">
-                                    <div class="icon-area icon icon-sm rounded-circle bg-light">
-                                        <i class="fa fa-shopping-cart text-primary"></i>
-                                    </div>
-                                    <small class="text"> Carrito </small>
-                                </a>
-                            </div>
-
-                            
                             </div>
                         </div> <!-- widgets-wrap.// -->
                     </div> <!-- col.// -->
@@ -106,52 +70,25 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"> <i class="fa fa-bars text-muted mr-2"></i> Registros </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{% url 'ecommerce_app:agregar_empresa' %}">Empresa</a>
-                                <a class="dropdown-item" href="{% url 'ecommerce_app:agregar_subcategoria' %}">Registro Subcategoría</a>
-                                <a class="dropdown-item" href="{% url 'ecommerce_app:registrar_lote' %}">Registro Lote</a>
-                                <a class="dropdown-item" href="{% url 'ecommerce_app:datos_clientes_admin' %}">Datos cliente</a>
+                                <a class="dropdown-item" href="{% url 'ecommerce_app:registrar_producto' %}">Registrar Productos</a>
+                                <a class="dropdown-item" href="{% url 'ecommerce_app:agregar_categoria' %}">Registrar Categoría</a>
+                                <a class="dropdown-item" href="{% url 'ecommerce_app:agregar_subcategoria' %}">Registrar Subcategoría</a>
+                                 <a class="dropdown-item" href="{% url 'ecommerce_app:agregar_marca' %}">Registrar Marca</a>
+                                  <a class="dropdown-item" href="{% url 'ecommerce_app:agregar_genero' %}">Registrar Género</a>
+                                <a class="dropdown-item" href="{% url 'ecommerce_app:registrar_lote' %}">Registrar Lote</a>
+                                
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'ecommerce_app:registrar_producto' %}">Registrar Productos</a>
+                            <a class="nav-link" href="{% url 'ecommerce_app:agregar_empresa' %}">Empresa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'ecommerce_app:agregar_categoria' %}">Registrar Categoría</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'ecommerce_app:agregar_genero' %}">Registrar Género</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'ecommerce_app:agregar_marca' %}">Registrar Marca</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Reportes PDF</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{% url 'ecommerce_app:pdf_mes_productos_vendidos' %}">Productos vendidos</a>
-                                <a class="dropdown-item" href="page-category.html">All category</a>
-                                <a class="dropdown-item" href="page-listing-large.html">Listing list</a>
-                                <a class="dropdown-item" href="page-listing-grid.html">Listing grid</a>
-                                <a class="dropdown-item" href="page-shopping-cart.html">Shopping cart</a>
-                                <a class="dropdown-item" href="page-detail-product.html">Item detail</a>
-                                <a class="dropdown-item" href="page-content.html">Info content</a>
-                                <a class="dropdown-item" href="page-user-login.html">Page login</a>
-                                <a class="dropdown-item" href="page-user-register.html">Page register</a>
-                                <a class="dropdown-item disabled text-muted" href="#">More components</a>
-                            </div>
+                            <a class="nav-link" href="{% url 'ecommerce_app:datos_clientes_admin' %}">Datos de Clientes</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-md-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Get the app</a>
-                        </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="http://example.com" data-toggle="dropdown">English</a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#">Russian</a>
-                                <a class="dropdown-item" href="#">French</a>
-                                <a class="dropdown-item" href="#">Spanish</a>
-                                <a class="dropdown-item" href="#">Chinese</a>
-                            </div>
+                           <h4 style="color: #FB6A00">Easy-buy Admin</h4>
                         </li>
                     </ul>
                 </div> <!-- collapse .// -->

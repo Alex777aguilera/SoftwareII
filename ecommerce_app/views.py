@@ -88,7 +88,10 @@ def principal_admin(request):
 	print (user.pk)
 	if user.is_authenticated:
 		if request.user.is_superuser :
-			return render(request,'inicio_admin.html')
+			ordenes = Orden.objects.all()
+			clientes = Cliente.objects.all()
+			data= {'ordenes':ordenes,'clientes':clientes}
+			return render(request,'inicio_admin.html',data)
 		else:
 			return redirect('ecommerce_app:principal')
 			
@@ -813,7 +816,7 @@ def agregar_categoria(request):
 				return render(request,'agregar_categoria.html',ctx)
 			else:
 				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?ok')
 		else:
 			ctx = {'categorias':categorias,'errores':errores,'ret_data':ret_data}
 			return render(request,'agregar_categoria.html',ctx)
@@ -835,11 +838,11 @@ def modificar_categoria(request,id_categoria):
 			try:
 				categoria = Categoria.objects.filter(pk=id_categoria).update(descripcion_categoria=request.POST.get('descripcion_categoria'))
 			except Exception as e:
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?error1')
 			else:
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?ok1')
 		else: 
-			return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+			return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?error1')
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
 
@@ -1043,12 +1046,11 @@ def modificar_marca(request,id_marca):
 def registrar_lote(request):
 	productos = Producto.objects.all()
 	lotes = Lote.objects.all()
-	print(lotes)
-
+	
 	ret_data,query_lote,errores = {},{},{}
 	if request.method == 'POST':
 		ret_data['existencia'] = request.POST.get('existencia')
-		
+		print(request.POST.get('existencia'),"Esto contiene")
 		if request.POST.get('existencia') == '':
 			errores['existencia'] = "DEBE IGRESAR LA EXISTENCIA DEL PRODUCTO!!"
 			
@@ -1073,7 +1075,7 @@ def registrar_lote(request):
 				return render(request,'registrar_lote.html',ctx)
 			else:
 				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+"?ok")
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?ok')
 		else:
 			ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
 			return render(request,'registrar_lote.html',ctx)
@@ -1082,28 +1084,25 @@ def registrar_lote(request):
 		ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
 		return render(request,'registrar_lote.html',ctx)
 
-# @login_required
-# def modificar_lote(request,id_lote):
-# 	lotes = Lote.objects.get(pk=id_lote)
-# 	errores = {}
+@login_required
+def modificar_lote(request,id_lote):
+	lotes = Lote.objects.get(pk=id_lote)
+	errores = {}
 	
-# 	if request.method == 'POST':
-
-# 		if request.POST.get('existencia') == '':
-# 			errores['existencia'] = "Ingrese la Existencia "
-
-# 		if not errores:	
-# 			try:
-# 				lote = Lote.objects.filter(pk=id_lote).update(existencia=request.POST.get('existencia'))
-# 			except Exception as e:
-# 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
-# 			else:
-# 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
-# 		else: 
-# 			return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
-# 	else:
-# 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
-
+	if request.method == 'POST':
+		if request.POST.get('existencia') == '':
+			errores['existencia'] = "Ingrese la Existencia "
+		if not errores:	
+			try:
+				lote = Lote.objects.filter(pk=id_lote).update(existencia=request.POST.get('existencia'))
+			except Exception as e:
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?error1')
+			else:
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?ok1')
+		else: 
+			return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?error1')
+	else:
+		return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
 
 
 def productos_categorias(request,id_categoria):
