@@ -132,10 +132,10 @@ def login(request):
 		user = authenticate(username=username,password=contrasenia)
 		
 		if user is not None:
-			print(1)
+			
 			if user.is_active:
 				auth_login(request,user)
-				print(2)
+				
 				if request.user.is_superuser :
 					return redirect('ecommerce_app:principal_admin')
 				else:

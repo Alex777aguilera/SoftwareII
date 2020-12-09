@@ -7,11 +7,6 @@ app_name = 'ecommerce_app'
 urlpatterns = [
  path('', views.principal, name='principal'),
  path('principal/admin', views.principal_admin, name='principal_admin'),
- ## Social 
- # path('accounts/', include('django.contrib.auth.urls')),
- # path('social-auth/', include('social_django.urls', namespace='social')),
- 
- ##
  path('login', views.login, name='login'),
  path('registro/cliente', views.registro_cliente, name="registro_cliente"),	
  path('modificar/cliente/<int:id_cliente>/', views.modificar_cliente, name="modificar_cliente"),
