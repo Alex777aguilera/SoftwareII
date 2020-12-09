@@ -31,7 +31,7 @@ Easy-buy | Registro Lote
                                 <div class="col-md-4">
                                     <div class="col form-group">
                                         <label>Existencia:</label>
-                                        <input type="text" class="form-control" id="id_existencia" name="existencia" placeholder="existencia" value="{{ret_data.existencia}}">
+                                        <input type="text" class="form-control" id="id_existencia" name="existencia" placeholder="Existencia" value="{{ret_data.existencia}}">
                                     </div> <!-- form-group end.// -->
                                 </div>
                                 {% if errores.administrador %}
@@ -154,7 +154,15 @@ $('#guardar').click(function(e) {
     	Swal.fire({
   icon: 'warning',
   title: 'Advertencia',
-  text: 'Debes seleccionar un Producto',
+  text: 'Debe seleccionar un Producto',
+  
+})
+            return false;
+        }else if($('#id_existencia').val() == ''){
+        Swal.fire({
+  icon: 'warning',
+  title: 'Advertencia',
+  text: 'Debe ingresar la cantidad en existencia',
   
 })
             return false;
