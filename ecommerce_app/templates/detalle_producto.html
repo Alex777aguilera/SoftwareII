@@ -38,6 +38,7 @@ Easy-buy | Producto
                 </div> <!-- card.// -->
             </aside>
             <main class="col-md-6">
+                {% csrf_token %}
                 <article class="product-info-aside">
                     <h2 class="title mt-3">{{productos.marca}}-{{productos.nombre_producto}}</h2>
                     <div class="rating-wrap my-3">
@@ -53,17 +54,12 @@ Easy-buy | Producto
                                 <i class="fa fa-star"></i>
                             </li>
                         </ul>
-                        <small class="label-rating text-muted">132 reviews</small>
-                        <small class="label-rating text-success"> <i class="fa fa-clipboard-check"></i> 154 orders </small>
                     </div> <!-- rating-wrap.// -->
                     <div class="mb-3">
                         <var class="price h4">L. {{productos.precio}}</var>
-                        <span class="text-muted">L. 562.65 incl. ISV</span>
                     </div> <!-- price-detail-wrap .// -->
                     <p>{{productos.descripcion_producto}} </p>
                     <dl class="row">
-                        <dt class="col-sm-3">Manufacturer</dt>
-                        <dd class="col-sm-9"><a href="#">Great textile Ltd.</a></dd>
                         <dt class="col-sm-3">Marca</dt>
                         <dd class="col-sm-9">{{productos.marca.descripcion_marca}}</dd>
                         <dt class="col-sm-3">Modelo</dt>
@@ -115,9 +111,6 @@ Easy-buy | Producto
                     <button class="btn btn-primary sweet-2" onclick="User_Nologin();" value="{{productos.pk}}" name="producto_id" id="id_producto">Agregar</button>
                     {% endif %}
                     
-                    <a href="#" class="btn btn-light">
-                        <i class="fas fa-envelope"></i> <span class="text">Contact supplier</span>
-                    </a>
         </div> <!-- col.// -->
     </div> <!-- row.// -->
     </article> <!-- product-info-aside .// -->
@@ -130,8 +123,7 @@ Easy-buy | Producto
 <!-- ========================= SECTION  ========================= -->
 <section class="section-name padding-y bg">
     <div class="container">
-        Acerca de este producto:
-        xdxdxD
+    
     </div> <!-- container .//  -->
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
@@ -140,10 +132,10 @@ Easy-buy | Producto
 <script type="text/javascript">
 function User_Nologin() {
  Swal.fire({
-  icon: 'error',
+  icon: 'warning',
   title: 'Oops...<br><hr>',
-  text: 'Debes iniciar seccion para poder comprar!!',
-  footer: '<a href="{% url 'ecommerce_app:login' %}">Iniciar seccion?</a>'
+  text: 'Debe iniciar sesión para agregar al carrito',
+  footer: '<a href="{% url 'ecommerce_app:login' %}">Iniciar sesión</a>'
 })
 }
 
@@ -156,11 +148,17 @@ function User_Nologin() {
             'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
         },
         success: function(json_data) {
-            var obj = JSON.parse(json_data);
-            var exitencia_producto =parseInt(obj[0].fields.existencia)
-            stock_id.value = parseInt(exitencia_producto);
-            $('#stock_id').html('<dd class="col-sm-9">{{existencias.existencia}}</dd>')
-            
+            if(json_data.otra_variable){
+                //Si entra aqui es que ese producto no tiene lote
+                $('#id_producto').attr("disabled", true);
+                $('#stock_id').html('<strong>Producto agotado</strong>')
+                $("#stock_id").css("color","red");
+            }else{
+                var obj = JSON.parse(json_data);
+                var exitencia_producto =parseInt(obj[0].fields.existencia)
+                stock_id.value = parseInt(exitencia_producto);
+                $('#stock_id').html('<dd class="col-sm-9">{{existencias.existencia}}</dd>')
+            }
             
         }
     });
