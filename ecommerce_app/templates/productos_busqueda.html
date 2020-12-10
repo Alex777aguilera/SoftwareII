@@ -82,7 +82,7 @@ Easy-buy | Productos
                 <div class="fix-height">
                     <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}"  class="title">{{producto.nombre_producto}}</a>
                     <div class="price-wrap mt-2">
-                        <span class="price">L{{producto.precio}}0</span>
+                        <span class="price">L. {{producto.precio}}0</span>
                     </div> <!-- price-wrap.// -->
                 </div>
                 <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}"  class="btn btn-block btn-primary">Ver </a>  

@@ -179,9 +179,9 @@ Swal.fire({ position: 'center', icon: 'success', title: 'Usuario creado con éxi
 $('#guardar').click(function(e) {
     if ($('#id_genero').val() == 0) {
         Swal.fire({
-  icon: 'error',
+  icon: 'warning',
   title: 'Oops...',
-  text: 'Debes seleccionar un genero!',
+  text: 'Debe seleccionar un Género',
   
 })
             return false;
