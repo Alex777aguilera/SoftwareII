@@ -350,8 +350,13 @@ def modificar_img_cliente(request,id_cliente):
 
 		if not errores:
 			try: 
-				avatar.imagen = request.FILES.get('imagen')
-				avatar.save() 
+				if avatar.imagen == 'Media/imagen_cliente/cliente_default.jpg':
+					avatar.imagen = request.FILES.get('imagen')
+					avatar.save()
+				else:
+					avatar.imagen.delete()
+					avatar.imagen = request.FILES.get('imagen')
+					avatar.save()  
 
 			except Exception as e:	
 				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error2")
@@ -563,17 +568,22 @@ def detalle_producto(request,id_producto):
 		return render(request,'detalle_producto.html',ctx)
 
 def ajax_existencia(request):
+	existencia_p = 0
 	if request.method == "POST" and request.is_ajax():
 		print(1)
 		if request.POST.get('id_producto') is not None:
 			print("id ",request.POST.get('id_producto'))
-			existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
-			otra_variable = serializers.serialize('json', [ existencia_p ])
-			print("AJAX : ",type(existencia_p))
+			try:
+				existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
+			except Exception as e:
+				otra_variable = '0'
+			else:
+				otra_variable = serializers.serialize('json', [ existencia_p ])
+				
 			if existencia_p:
 				return JsonResponse(otra_variable,safe=False)
 			else:
-				return JsonResponse({'otra_variable':'nada'})
+				return JsonResponse({'otra_variable':'0'})
 
 
 #vista carrito
