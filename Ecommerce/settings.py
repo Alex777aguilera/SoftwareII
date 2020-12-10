@@ -142,8 +142,8 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-AWS_ACCESS_KEY_ID = 'AKIAQ6K4QSV7VRYXCTXS'
-AWS_SECRET_ACCESS_KEY = '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'
+from boto.s3.connection import S3Connection
+s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_STORAGE_BUCKET_NAME = 'bucketdjangohn'
