@@ -1,6 +1,6 @@
 {% extends "base_cliente.html" %}
 {% block title %}
-e-commerce | Registro
+Easy-buy | Registro
 {% endblock title %}
 {% load static %}
 {% block content %}
@@ -92,7 +92,7 @@ e-commerce | Registro
                                                         <i class="far fa-calendar-alt"></i>
                                                     </span>
                                                 </div>
-                                                <input type="text" class="form-control float-right" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{ret_data.fecha_nacimiento|date:'Y-m-d'}}">
+                                                <input type="date" class="form-control float-right" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{ret_data.fecha_nacimiento|date:'Y-m-d'}}">
                                             </div>
                                         </div>
                                     </div>
@@ -179,9 +179,9 @@ Swal.fire({ position: 'center', icon: 'success', title: 'Usuario creado con éxi
 $('#guardar').click(function(e) {
     if ($('#id_genero').val() == 0) {
         Swal.fire({
-  icon: 'error',
+  icon: 'warning',
   title: 'Oops...',
-  text: 'Debes seleccionar un genero!',
+  text: 'Debe seleccionar un Género',
   
 })
             return false;

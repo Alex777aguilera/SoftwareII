@@ -29,6 +29,8 @@
     <link href="{% static 'alertifyjs/css/alertify.min.css' %}" rel="stylesheet">
     <link href="{% static 'alertifyjs/css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'alertifyjs/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link  rel="icon"   href="{% static 'images/logo.png' %}" type="image/png">
+
 </head>
 
 <body>
@@ -38,7 +40,7 @@
                 <div class="row align-items-center">
                     <div class="col-xl-2 col-lg-3 col-md-12">
                         <a href="{% url 'ecommerce_app:principal' %}" class="brand-wrap ">
-                            <img class="logo" src="{{ctx_empresa.imagen_logo.url}}">
+                            <img src="{{ctx_empresa.imagen_logo.url}}" style="width: 75%; height: 50%;">
                         </a> <!-- brand-wrap.// -->
                     </div>
                     <div class="col-xl-6 col-lg-5 col-md-6">
@@ -122,9 +124,14 @@
                                 {% for categoria in ctx_categorias  %}
                                      <a class="dropdown-item" href="{% url 'ecommerce_app:productos_categorias' categoria.pk %}">{{categoria.descripcion_categoria}}</a>
                                 {% endfor %}
-
                             </div>
                         </li>
+
+                         {% for subcategoria in ctx_subcategorias  %}
+                         <li class="nav-item">
+                                <a class="nav-link" href="{% url 'ecommerce_app:productos_subcategoria' subcategoria.categoria.pk subcategoria.pk %}" >{{subcategoria.descripcion_subcategoria}}</a>
+                        </li>
+                          {% endfor %}
                     </ul>
 
                 </div> <!-- collapse .// -->
@@ -133,75 +140,43 @@
     </header> <!-- section-header.// -->
     {% block content %}
     {% endblock %}
-    <!-- ========================= SECTION SUBSCRIBE  ========================= -->
-    {% if a == 1 %}
-        <section class="section-subscribe padding-y-lg">
-        <div class="container">
-            <p class="pb-2 text-center text-white">Delivering the latest product trends and industry news straight to your inbox</p>
-            <div class="row justify-content-md-center">
-                <div class="col-lg-5 col-md-6">
-                    <form class="form-row">
-                        <div class="col-md-8 col-7">
-                            <input class="form-control border-0" placeholder="Your Email" type="email">
-                        </div> <!-- col.// -->
-                        <div class="col-md-4 col-5">
-                            <button type="submit" class="btn btn-block btn-warning"> <i class="fa fa-envelope"></i> Subscribe </button>
-                        </div> <!-- col.// -->
-                    </form>
-                    <small class="form-text text-white-50">We’ll never share your email address with a third-party. </small>
-                </div> <!-- col-md-6.// -->
-            </div>
-        </div>
-    </section>
-    {% endif %}
-    <!-- ========================= SECTION SUBSCRIBE END// ========================= -->
     <!-- ========================= FOOTER ========================= -->
     <footer class="section-footer bg-secondary">
         <div class="container">
             <section class="footer-top padding-y-lg text-white">
                 <div class="row">
-                    <aside class="col-md col-7">
-                        <h6 class="title">Brands</h6>
-                        <ul class="list-unstyled">
-                            <li> <a href="#">Adidas</a></li>
-                            <li> <a href="#">Puma</a></li>
-                            <li> <a href="#">Reebok</a></li>
-                            <li> <a href="#">Nike</a></li>
-                        </ul>
-                    </aside>
-                    <aside class="col-md col-7">
-                        <h6 class="title">Company</h6>
-                        <ul class="list-unstyled">
-                            <li> <a href="#">About us</a></li>
-                            <li> <a href="#">Mision</a></li>
-                            <li> <a href="#">Vision</a></li>
-                            <li> <a href="#">Rules and terms</a></li>
-                            <li> <a href="#">About</a></li>
-                        </ul>
-                    </aside>
-                    <aside class="col-md col-7">
-                        <h6 class="title">Help</h6>
-                        <ul class="list-unstyled">
-                            <li> <a href="#">Contact us</a></li>
-                            <li> <a href="#">Suggestion</a></li>
-                            <li> <a href="#">Report Problem</a></li>
-                        </ul>
-                    </aside>
-                   
-                    <aside class="col-md">
-                        <h6 class="title">Social</h6>
-                        <ul class="list-unstyled">
-                            <li><a href="#"> <i class="fab fa-facebook"></i> Facebook </a></li>
-                            <li><a href="#"> <i class="fab fa-twitter"></i> Twitter </a></li>
-                            <li><a href="#"> <i class="fab fa-instagram"></i> Instagram </a></li>
-                            <li><a href="#"> <i class="fab fa-youtube"></i> Youtube </a></li>
-                        </ul>
-                    </aside>
+                <aside class="col-md-4 col-12">
+                    <div class="card rounded" style="width: 85%; height: 85%;">
+                      <div class="card-body">
+                       <center><img src="{{ctx_empresa.imagen_logo.url}}" style="width: 75%; height: 75%; margin-bottom: 10%;"></center> 
+                      </div>
+                    </div>
+                </aside>
+
+                <aside class="col-md col-12">
+                    <center><h5 class="title">Nuestro Contacto</h></center>
+                        <p>{{ctx_empresa.descripcion}}</p>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <i class="fas fa-map-marker"> </i> {{ctx_empresa.direccion}}
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fas fa-envelope"></i> {{ctx_empresa.correo}}
+                        </div>
+                        <div class="col-md-2">
+                            <i  class="fas fa-phone"></i> </i> {{ctx_empresa.telefono}}
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fas fa-clock"></i> </i>Lun-Sa 9:00am-6:00pm
+                        </div>
+                    </div> 
+                </aside>
+                
                 </div> <!-- row.// -->
             </section> <!-- footer-top.// -->
             <section class="footer-bottom text-center">
-                <p class="text-white">Privacy Policy - Terms of Use - User Information Legal Enquiry Guide</p>
-                <p class="text-muted"> &copy Proyecto e-commerce derechos reservados </p>
+                <p class="text-white">Politicas de Privacidad - Términos de uso - Información del Usuario</p>
+                <p class="text-muted"> &copy 2020 DAYCAJ, Todos los derechos reservados </p>
                 <br>
             </section>
         </div><!-- //container -->
@@ -225,11 +200,11 @@
 
 <script>
     $( "#id_boton" ).click(function() {
-        var contenido = $('#id_busqueda').val();
+        var contenido = $('#id_busqueda').val(); //Obtenemos el contenido del input de busqueda
         if(contenido){
-            history.pushState(null,"","{% url 'ecommerce_app:principal' %}");
+            history.pushState(null,"","{% url 'ecommerce_app:principal' %}");//Si desea buscar limpiamos la url
         }else{
-            return false;
+            return false; //Si esta vacio y presiona buscar evitamos el evento 
         }
     });
 </script>

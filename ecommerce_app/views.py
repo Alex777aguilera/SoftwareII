@@ -18,8 +18,13 @@ from django.template.loader import get_template
 
 from ecommerce_app.models import *
 from decimal import Decimal
-from xhtml2pdf import pisa
 from pprint import PrettyPrinter
+
+#Librerias para PDF
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from io import StringIO
+from io import BytesIO
 # Create your views here.
 
 existe = ''
@@ -83,7 +88,10 @@ def principal_admin(request):
 	print (user.pk)
 	if user.is_authenticated:
 		if request.user.is_superuser :
-			return render(request,'inicio_admin.html')
+			ordenes = Orden.objects.all()
+			clientes = Cliente.objects.all()
+			data= {'ordenes':ordenes,'clientes':clientes}
+			return render(request,'inicio_admin.html',data)
 		else:
 			return redirect('ecommerce_app:principal')
 			
@@ -213,8 +221,8 @@ def registro_cliente(request):
 		else:
 			query_cliente["genero"] = Genero.objects.get(pk=int(request.POST.get("genero")))
 		
-		if request.POST.get("imagen") == '':
-			errores['imagen'] = "DEBES SELECIONAR UNA IMAGEN"
+		if request.FILES.get("imagen") == None:
+			query_cliente["imagen"] =  'Media/imagen_cliente/cliente_default.jpg'
 		else:
 			query_cliente["imagen"] = request.FILES.get("imagen")
 
@@ -342,8 +350,13 @@ def modificar_img_cliente(request,id_cliente):
 
 		if not errores:
 			try: 
-				avatar.imagen = request.FILES.get('imagen')
-				avatar.save() 
+				if avatar.imagen == 'Media/imagen_cliente/cliente_default.jpg':
+					avatar.imagen = request.FILES.get('imagen')
+					avatar.save()
+				else:
+					avatar.imagen.delete()
+					avatar.imagen = request.FILES.get('imagen')
+					avatar.save()  
 
 			except Exception as e:	
 				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error2")
@@ -520,9 +533,13 @@ def modificar_img_producto(request,id_producto):
 
 		if not errores:
 			try: 
-				producto.imagen_producto.delete()
-				producto.imagen_producto = request.FILES.get('imagen_producto')
-				producto.save() 
+				if producto.imagen_producto == 'Media/productos_empresa/producto_default.png':
+					producto.imagen_producto = request.FILES.get('imagen_producto')
+					producto.save()
+				else:
+					producto.imagen_producto.delete()
+					producto.imagen_producto = request.FILES.get('imagen_producto')
+					producto.save() 
 
 			except Exception as e:
 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error2")
@@ -551,17 +568,22 @@ def detalle_producto(request,id_producto):
 		return render(request,'detalle_producto.html',ctx)
 
 def ajax_existencia(request):
+	existencia_p = 0
 	if request.method == "POST" and request.is_ajax():
 		print(1)
 		if request.POST.get('id_producto') is not None:
 			print("id ",request.POST.get('id_producto'))
-			existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
-			otra_variable = serializers.serialize('json', [ existencia_p ])
-			print("AJAX : ",type(existencia_p))
+			try:
+				existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
+			except Exception as e:
+				otra_variable = '0'
+			else:
+				otra_variable = serializers.serialize('json', [ existencia_p ])
+				
 			if existencia_p:
 				return JsonResponse(otra_variable,safe=False)
 			else:
-				return JsonResponse({'otra_variable':'nada'})
+				return JsonResponse({'otra_variable':'0'})
 
 
 #vista carrito
@@ -804,7 +826,7 @@ def agregar_categoria(request):
 				return render(request,'agregar_categoria.html',ctx)
 			else:
 				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?ok')
 		else:
 			ctx = {'categorias':categorias,'errores':errores,'ret_data':ret_data}
 			return render(request,'agregar_categoria.html',ctx)
@@ -826,11 +848,11 @@ def modificar_categoria(request,id_categoria):
 			try:
 				categoria = Categoria.objects.filter(pk=id_categoria).update(descripcion_categoria=request.POST.get('descripcion_categoria'))
 			except Exception as e:
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?error1')
 			else:
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?ok1')
 		else: 
-			return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
+			return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?error1')
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria'))
 
@@ -1034,12 +1056,11 @@ def modificar_marca(request,id_marca):
 def registrar_lote(request):
 	productos = Producto.objects.all()
 	lotes = Lote.objects.all()
-	print(lotes)
-
+	
 	ret_data,query_lote,errores = {},{},{}
 	if request.method == 'POST':
 		ret_data['existencia'] = request.POST.get('existencia')
-		
+		print(request.POST.get('existencia'),"Esto contiene")
 		if request.POST.get('existencia') == '':
 			errores['existencia'] = "DEBE IGRESAR LA EXISTENCIA DEL PRODUCTO!!"
 			
@@ -1064,7 +1085,7 @@ def registrar_lote(request):
 				return render(request,'registrar_lote.html',ctx)
 			else:
 				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+"?ok")
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?ok')
 		else:
 			ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
 			return render(request,'registrar_lote.html',ctx)
@@ -1073,28 +1094,25 @@ def registrar_lote(request):
 		ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
 		return render(request,'registrar_lote.html',ctx)
 
-# @login_required
-# def modificar_lote(request,id_lote):
-# 	lotes = Lote.objects.get(pk=id_lote)
-# 	errores = {}
+@login_required
+def modificar_lote(request,id_lote):
+	lotes = Lote.objects.get(pk=id_lote)
+	errores = {}
 	
-# 	if request.method == 'POST':
-
-# 		if request.POST.get('existencia') == '':
-# 			errores['existencia'] = "Ingrese la Existencia "
-
-# 		if not errores:	
-# 			try:
-# 				lote = Lote.objects.filter(pk=id_lote).update(existencia=request.POST.get('existencia'))
-# 			except Exception as e:
-# 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
-# 			else:
-# 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
-# 		else: 
-# 			return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
-# 	else:
-# 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
-
+	if request.method == 'POST':
+		if request.POST.get('existencia') == '':
+			errores['existencia'] = "Ingrese la Existencia "
+		if not errores:	
+			try:
+				lote = Lote.objects.filter(pk=id_lote).update(existencia=request.POST.get('existencia'))
+			except Exception as e:
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?error1')
+			else:
+				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?ok1')
+		else: 
+			return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?error1')
+	else:
+		return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
 
 
 def productos_categorias(request,id_categoria):
@@ -1225,6 +1243,7 @@ def facturacion_producto(request):
 								precio=prod.producto.precio,
 								producto=Producto.objects.get(pk=prod.producto.pk),
 								orden=Orden.objects.get(pk=orden.pk),
+								descuento=desc_prod,
 								total_producto=total_x_prod)
 		detalle.save()
 
@@ -1252,7 +1271,6 @@ def facturacion_producto(request):
 	'empresa' : empresa,
 	'logo_emp' : logo_emp.imagen_logo
 	}
-	pp.pprint(ctx)
 
 	template = get_template('factura_cliente.html')
 	html = template.render(ctx)
@@ -1267,6 +1285,10 @@ def pdf_mes_productos_vendidos(request):
 	if request.method == 'POST':
 		fecha = request.POST.get('mes')
 		date = fecha.split('-')
+		empresa = Empresa.objects.get(pk=1)
+		lista = []
+		dic_productos, dic, dic_total = {}, {}, {}
+		no_ventas = False
 		#fecha_reporte = datetime.now()
 
 		if date[1] == '01':
@@ -1305,22 +1327,67 @@ def pdf_mes_productos_vendidos(request):
 		elif date[1] == '12':
 			mes = 'Diciembre'
 
-		#obteniendo las facturas vendidas en el mes
+		#obteniendo el total de los productos vendidos filtrado por el mes
 		facturas = Orden.objects.filter(fecha_compra__year=date[0], fecha_compra__month=date[1]).order_by('fecha_compra')
+		total_cantidad = DetalleOrden.objects.filter(orden__fecha_compra__year=date[0], 
+													orden__fecha_compra__month=date[1]
+													).aggregate(total = Sum('cantidad'))['total']
 
-		for factura in facturas:
-			#obteniendo todos los productos vendidos de esa factura en el mes
-			productos_vendidos = DetalleOrden.objects.filter(orden=factura.pk)
+		total_descuento = DetalleOrden.objects.filter(orden__fecha_compra__year=date[0], 
+													orden__fecha_compra__month=date[1]
+													).aggregate(total = Sum('descuento'))['total']
 
-			for producto in productos_vendidos:
-				lista_producto = []
+		total_precio = DetalleOrden.objects.filter(orden__fecha_compra__year=date[0], 
+													orden__fecha_compra__month=date[1]
+													).aggregate(total = Sum('precio'))['total']
 
-				lista_producto.append(producto.orden.fecha_compra.strftime("%d/%m/%Y"))
-				lista_producto.append(producto.orden.pk)
-				lista_producto.append(producto.producto.nombre_producto)
-				lista_producto.append(producto.cantidad)
-				lista_producto.append(producto.precio)
-				lista_producto.append(producto.total_producto)
+		total_prod = DetalleOrden.objects.filter(orden__fecha_compra__year=date[0], 
+													orden__fecha_compra__month=date[1]
+													).aggregate(total = Sum('total_producto'))['total']
+
+
+		if facturas.count() > 0:#validar que hay facturas realizadas en ese mes
+
+			for factura in facturas:
+				#obteniendo cada uno de los productos vendidos de esa factura en el mes
+				productos_vendidos = DetalleOrden.objects.filter(orden=factura.pk)
+
+				for producto in productos_vendidos:
+					lista_producto = []
+
+					lista_producto.append(producto.orden.fecha_compra.strftime("%d/%m/%Y"))
+					lista_producto.append(producto.orden.pk)
+					lista_producto.append(producto.producto.nombre_producto)
+					lista_producto.append(producto.cantidad)
+					lista_producto.append(f'Lps {producto.precio}')
+					lista_producto.append(f'Lps {producto.descuento}')
+					lista_producto.append(f'Lps {producto.total_producto}')
+
+					lista.append(lista_producto)
+
+			dic_total['total'] = [total_cantidad, f'Lps {total_precio}', f'Lps {total_descuento}', f'Lps {total_prod}']
+
+			dic_productos['productos'] = lista
+		else:
+			dic_productos = {}
+			dic_total = {}
+			no_ventas = True
+
+		ctx = {'reporte_productos' : dic_productos,
+				'dic_total' : dic_total,
+				'empresa_nombre' : empresa.nombre,
+				'empresa_logo' : empresa.imagen_logo,
+				'mes': mes,
+				'anio' : date[0],
+				'no_ventas' : no_ventas}
+
+
+		template = get_template('pdf_mes_productos_vendidos.html')
+		html = template.render(ctx)
+		response = HttpResponse(content_type='application/pdf')  
+		pisaStatus = pisa.CreatePDF(html,dest=response)
+		return response
+
 	else:
 		return render(request,'mes_productos_vendidos.html')
 

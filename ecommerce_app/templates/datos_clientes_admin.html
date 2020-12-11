@@ -1,6 +1,6 @@
 {% extends "base_admin.html" %}
 {% block title %}
-e-commerce | Clientes registrados
+Easy-buy | Clientes registrados
 {% endblock title %}
 {% load static %}
 {% block content %}
@@ -156,7 +156,11 @@ e-commerce | Clientes registrados
 {% block js %}
 <script>
 $(document).ready(function() {
-    $('#tablaC').DataTable();
+    $('#tablaC').DataTable({
+        language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
 });
 </script>
 {% endblock js %}
