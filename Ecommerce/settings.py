@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '2e=5*7jtu(poyd&(yj89fc!7%w(tg)3$1iu*k(=i39=d2&%jcv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['easy-buyuth.herokuapp.com']
 
@@ -153,6 +153,6 @@ AWS_S3_ADDRESSING_STYLE  =  "virtual"
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = 'easybuyhn2020@gmail.com'
+EMAIL_HOST_PASSWORD = 'zFLPrVPjgkPJC7'
 EMAIL_PORT = 587
