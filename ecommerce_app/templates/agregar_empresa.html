@@ -10,137 +10,178 @@ e-commerce | Admin
         <div class="card shadow mb-4">
             <aside>
                 <!-- ============================ COMPONENT PROFILE  ================================= -->
-                <div class="card mb-4">
-                    <div class="card-header py-3">
-                        <h5 class="m-0 font-weight-bold text-primary">Registro de Empresa</h5>
-                    </div>
+                <div class="row">
+            <aside class="col-md-7" >
+                <div class="card mb-4" style="border-radius: 10px;">
                     <div class="card-body">
-                        <form role="form" method="post" enctype="multipart/form-data" action="{% url 'ecommerce_app:agregar_empresa' %}">
-                            {% csrf_token %}
-                            {% if errores.administrador %}
-                            <div class="alert alert-danger alert-dismissible " role="alert">
-                                <strong>ERROR! </strong>{{errores.administrador}}
-                                {% endif %}
-                                <div class="form-row">
-                                    <div class="form-group col-md-4">
-                                        <label>Logo de la Empresa</label>
-                                        <br>
-                                        <label for="exampleFormControlFile1">
-                                            <input type="file" class="form-control-file" id="imagen_logo" name="imagen_logo" value="{{ret_data.imagen_logo}}">
-                                        </label>
-                                        {% if errores.imagen_logo %}
-                                        <div class="alert alert-danger alert-dismissible " role="alert">
-                                            <strong>ERROR! </strong>{{errores.imagen_logo}}
+                        <h4 class="card-title mb-4">Empresa</h4>
+                        <div class="form-group alert alert-info">
+                            
+                            <img src="{{ctx_empresa.imagen_logo.url}}" class="img-sm rounded-circle border">
+                            <button type="submit" class="rounded-circle border"style="position: absolute;top: 58%; left: 12%; red"title="Ver"data-toggle="modal" data-target="#id_imagen{{ctx_empresa.pk}}"><i class="fa fa-camera "></i></button>
+
+                        </div>
+                        <hr>
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label>Nombre</label>
+                                <div class="alert alert-info" role="alert" style="font-size: 12px">
+                                    <strong>{{ctx_empresa.nombre}}</strong>
+                                </div>
+                            </div> <!--  -->
+                            <div class="col form-group">
+                                <label><i class="icon fa fa-id-card"></i> # Descripcion</label>
+                                <div class="alert alert-info" role="alert" style="font-size: 12px">
+                                    <strong>{{ctx_empresa.descripcion}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                        </div> <!-- form-row.// -->
+                        <div class="form-row">
+                            
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-phone"> </i> # Telefono</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{ctx_empresa.telefono}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-phone"> </i> # Telefono</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{ctx_empresa.direccion}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                        </div> <!-- form-row.// -->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-calendar"></i> Fecha de Registro</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{ctx_empresa.fecha_registro}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-envelope"> </i> Correo</label>
+                               <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{ctx_empresa.correo}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                            
+                        </div> <!-- form-row.// -->
+
+                        <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="#datos{{ctx_empresa.pk}}">Editar</button>
+                    </div>
+                </div>
+            </aside>
+        
+        
+         
+    </div>
+
+    <!--  Modal para visualizar imgen-->
+                            <div class="modal fade" id="id_imagen{{ctx_empresa.pk}}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content alert alert-info">
+                                        <!-- Modal Header -->
+                                        <div class="modal-header ">
+                                            <h4 class="modal-title"><strong>{{ctx_empresa.nombre}}</strong></h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         </div>
-                                        {% endif %}
-                                    </div> <!-- form-group end.// -->
-                                </div> <!-- form-row.// -->
-                                <div class="form-row">
-                                    <div class="col-md-4">
-                                        <div class="col form-group">
-                                            <label>Nombre</label>
-                                            <input type="text" class="form-control" id="id_nombre" name="nombre" placeholder="Nombre de la Empresa" value="{{ret_data.nombre}}">
-                                            {% if errores.nombre %}
-                                            <div class="alert alert-danger alert-dismissible " role="alert">
-                                                <strong>ERROR! </strong>{{errores.nombre}}
-                                            </div>
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {% if ctx_empresa.imagen_logo %}
+                                            <center ><img src="{{ctx_empresa.imagen_logo.url}}" width="400" height="400" style="border-radius: 5%"></center>
+                                            {% else %} <br>
+                                            <label for="">No se encontró imagen</label>
                                             {% endif %}
-                                        </div> <!-- form-group end.// -->
+                                        </div>
+                                        <form action="{% url 'ecommerce_app:modificar_img_empresa' ctx_empresa.pk %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="col-sm-12 form-group">
+                                            
+                                            <label style="margin-left: 12.5%;"><Strong>Subir nueva Imagen</Strong></label>
+                                            <center>
+                                            <label for="exampleFormControlFile1">
+                                            <input type="file" class="form-control-file" id="id_imagen" name="imagen" required>
+                                            </label>
+                                            </center>
+                                        </div>
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-info">Actualizar</button>
+                                        </div>
+                                        </form>
                                     </div>
-                                    <div class="form-group col-md-4">
-                                        <label>Contacto</label>
-                                        <input type="text" class="form-control" id="id_contacto" name="telefono" placeholder="Contacto de la Empresa" value="{{ret_data.telefono}}">
-                                        {% if errores.telefono %}
-                                        <div class="alert alert-danger alert-dismissible " role="alert">
-                                            <strong>ERROR! </strong>{{errores.telefono}}
-                                        </div>
-                                        {% endif %}
-                                    </div> <!-- form-group end.// -->
-                                    <div class="form-group col-md-4">
-                                        <label>Correo</label>
-                                        <input type="text" class="form-control" id="id_correo" name="correo" placeholder="Correo de la Empresa" value="{{ret_data.correo}}">
-                                        {% if errores.correo %}
-                                        <div class="alert alert-danger alert-dismissible " role="alert">
-                                            <strong>ERROR! </strong>{{errores.correo}}
-                                        </div>
-                                        {% endif %}
-                                    </div> <!-- form-group end.// -->
-                                </div>
-                                <div class="form-row ">
-                                    <div class="form-group col-md-6">
-                                        <label>Direccion de la Empresa</label>
-                                        <textarea class="form-control" name="direccion" value="{{ret_data.direccion}}" id="id_direccion" rows="3"></textarea>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label>Descripcion de la Empresa</label>
-                                        <textarea class="form-control" name="descripcion" value="{{ret_data.descripcion}}" id="id_descripcion" rows="3"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label>Latitud de la Empresa</label>
-                                        <input type="text" class="form-control" id="id_latitude_empresa" name="latitude_empresa" placeholder="latitud de de la Empresa" value="{{ret_data.latitude_empresa}}">
-                                        {% if errores.latitude_empresa %}
-                                        <div class="alert alert-danger alert-dismissible " role="alert">
-                                            <strong>ERROR! </strong>{{errores.latitude_empresa}}
-                                        </div>
-                                        {% endif %}
-                                    </div> <!-- form-group end.// -->
-                                    <div class="form-group col-md-6">
-                                        <label>Longitud de la Empresa</label>
-                                        <input type="text" class="form-control" id="id_longitude_empresa" name="longitude_empresa" placeholder="longitud de de la Empresa" value="{{ret_data.longitude_empresa}}">
-                                        {% if errores.longitude_empresa %}
-                                        <div class="alert alert-danger alert-dismissible " role="alert">
-                                            <strong>ERROR! </strong>{{errores.longitude_empresa}}
-                                        </div>
-                                        {% endif %}
-                                    </div> <!-- form-group end.// -->
-                                </div> <!-- form-row.// -->
-                                <button onclick="mapa();" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal">
-                                    Mostrar ubicación
-                                </button>
-                                <div class="modal fade" id="modal">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title m-0 font-weight-bold text-primary">Ubicación De Empresa</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body" style="padding:0;">
-                                                <div class="card-body">
-                                                    <div class="form-horizontal">
-                                                        <div class="form-group">
-                                                            <div id="map" style="width:100%; height:400px;"></div>
-                                                            <div class="clearfix"></div>
-                                                        </div>
-                                                        <label>Lat</label>
-                                                        <input type="text" style="color:black; width:190px;" id="lat" value="" disabled>
-                                                        <label>Lng</label>
-                                                        <input type="text" style="color:black; width:190px;" id="lng" value="" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer justify-content-between">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal" onchange="">Cerrar</button>
-                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar</button>
-                                            </div>
-                                        </div>
-                                        <!-- /.modal-content -->
-                                    </div>
-                                    <!-- /.modal-dialog -->
                                 </div>
                             </div>
-                            <center>
-                                <div class="col-md-3">
-                                    <button type="summit" class="btn btn-primary btn-block">Guardar</button>
-                                    <br>
+
+
+   <!--  Modal para editar informacion cliente-->
+                            <div class="modal fade" id="datos{{ctx_empresa.pk}}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content alert alert-info">
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title"><strong>Modificar datos</strong></h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            
+                                        <div class="form-group alert alert-info">
+                            
+                                         <img src="{{ctx_empresa.imagen_logo.url}}" class="img-sm rounded-circle border">
+                                       </div>
+                                        <form action="{% url 'ecommerce_app:modificar_empresa' ctx_empresa.pk %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="col-sm-12 form-group ">
+                                            <hr>
+                                            <div class="row">
+                                            <div class="col-sm-6 form-group">
+                                                        <label>Nombre <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="Nombre " id="id_nombre" name="nombre" value="{{ctx_empresa.nombre}}">
+                                                    </div> <!-- form-group end.// -->
+                                                   <div class="col-sm-6 form-group">
+                                                        <label>Direccion <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="Direccion " id="id_direccion" name="direccion" value="{{ctx_empresa.direccion}}">
+                                                    </div> <!-- form-group end.// -->
+                                                    
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6 form-group">
+                                                        <label><i class="icon fa fa-id-card"></i> Descripcion <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="descripcion" id="id_descripcion" name="descripcion" value="{{ctx_empresa.descripcion}}">
+                                                    </div> <!-- form-group end.// -->
+                                                    <!---->
+                                                    <!---->
+                                                    <div class="col-sm-5 form-group">
+                                                        <label><i class="icon fa fa-phone"> </i> Telefono <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="telefono" id="id_telefono" name="telefono" value="{{ctx_empresa.telefono}}">
+                                                    </div> <!-- form-group end.// -->
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6 form-group">
+                                                        <label><i class="icon fa fa-calendar"></i> Fecha de registro<i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="date" class="form-control" placeholder="fecha_registro" id="id_fecha_registro" name="fecha_registro" value="{{ctx_empresa.fecha_registro}}">
+                                                    </div> <!-- form-group end.// -->
+                                                    <div class="col-sm-6 form-group">
+                                                        <label><i class="icon fa fa-envelope"> </i> Correo <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="correo" id="id_correo" name="correo" value="{{ctx_empresa.correo}}">
+                                                    </div> <!-- form-group end.// -->
+                                                </div>
+                                        </div>
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-info">Actualizar</button>
+                                        </div>
+                                        </form>
+                                        </div>
+                                    </div>
                                 </div>
-                            </center>
-                        </form>
-                    </div> <!-- card-body.// -->
-                </div> <!-- card .// -->
+                            </div>
+
+
+
                 <!-- ============================ COMPONENT PROFILE END.// ================================= -->
             </aside>
             <div class="card shadow mb-4">
@@ -252,5 +293,51 @@ e-commerce | Admin
 $(document).ready(function() {
     $('#tablaE').DataTable();
 });
+
+function history_push(){
+        history.pushState(null,"","{% url 'ecommerce_app:agregar_empresa' %}");
+    }
+function alerta(titulo,icono){
+Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: false, timer: 2300 })
+}
+
+// validacion para la imgaen del cliente
+    {% if 'error2' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 1500 })
+      history_push();
+ {% endif %}
+
+ {% if 'ok2' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'success', title: 'Imagen cargada con éxito.', showConfirmButton: false, timer: 1500 })
+history_push(); 
+ {% endif %}
+
+ // Validacion para datos del cliente
+ {% if 'error' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+history_push();
+ {% endif %}
+
+ {% if 'ok3' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito.', showConfirmButton: false, timer: 1500 })
+history_push();
+ {% endif %}
+
+ // Validacion para datos del domicilio
+ {% if 'errord' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+history_push();
+ {% endif %}
+
+ {% if 'okd' in request.GET %}
+
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito.', showConfirmButton: false, timer: 1500 })
+history_push();
+ {% endif %}
 </script>
 {% endblock js %}

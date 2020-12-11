@@ -44,6 +44,7 @@ urlpatterns = [
 
  path('productos/facturacion', views.facturacion_producto, name='facturacion_producto'),
  path('productos/facturacion/mes', views.pdf_mes_productos_vendidos, name='pdf_mes_productos_vendidos'),
-
+ path('modificar/empresa/<int:id_empresa>/', views.modificar_empresa, name='modificar_empresa'),
+ path('modificar/imagen/empresa/<int:id_empresa>/', views.modificar_img_empresa, name='modificar_img_empresa'),
 
 ]
