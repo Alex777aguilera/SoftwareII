@@ -256,15 +256,15 @@ def registro_cliente(request):
 				try:
 					#Creación de usuario
 					User.objects.create_user(username, email, password)
-					user = User.objects.last()
+					#user = User.objects.last()
 					# save for Cliente
 					query_cliente['usuario_cliente'] = user
 					cliente = Cliente(**query_cliente)
-					cliente.save()
+					#cliente.save()
 					# save for Domicilio
 					query_domicilio['usuario'] = user
 					domicilo = Domicilio(**query_domicilio)
-					domicilo.save()
+					#domicilo.save()
 
 					#Envío de correo a usuario
 					email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
