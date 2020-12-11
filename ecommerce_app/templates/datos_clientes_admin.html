@@ -123,9 +123,7 @@ Easy-buy | Clientes registrados
                                                                         <div class="alert alert-secondary alert-dismissible " role="alert" style="font-size: 12px">
                                                                              {% for domicilio in domicilios %}
                                                                                 <strong>{% ifequal domicilio.usuario.pk cliente.usuario_cliente.pk  %} {{domicilio.direccion}}
-                                                                                	{% else %}
-                                                                                	No tiene direccion!!
-                                                                                	
+
                                                                                 {% endifequal %} </strong>
                                                                                    {% endfor %}
                                                                             </div>
