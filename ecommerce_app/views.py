@@ -185,6 +185,9 @@ def registro_cliente(request):
 		ret_data['numero_telefono'] = request.POST.get("telefono")
 		ret_data['fecha_nacimiento'] = request.POST.get("fecha_nacimiento")
 		ret_data['correo'] = request.POST.get("Correo")
+		ret_data['direccion'] = request.POST.get("direccion")
+		ret_data['genero'] = int(request.POST.get("genero"))
+		ret_data['imagen'] = request.FILES.get("imagen")
 		email = request.POST.get('correo')
 		ret_data['imagen'] = request.POST.get("imagen")
 		
@@ -241,6 +244,11 @@ def registro_cliente(request):
 		else:
 			query_domicilio["direccion"] = request.POST.get("direccion")
 
+		if Cliente.objects.filter(correo=query_cliente['correo']).exists(): 
+			#Si el corre ya existe en la base de datos
+			errores['existe'] = 'Por favor, ingrese otro correo'
+
+			
 		if not errores and not errores_domicilio:
 			try:
 				#Creación de usuario
@@ -255,8 +263,6 @@ def registro_cliente(request):
 				domicilo = Domicilio(**query_domicilio)
 				domicilo.save()
 
-
-				print('mandara correo')
 				#Envío de correo a usuario
 				email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
 				message = get_template('email.html').render(email_data, request=request)
