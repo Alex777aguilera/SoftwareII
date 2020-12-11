@@ -247,11 +247,16 @@ def registro_cliente(request):
 			else:
 				query_domicilio["direccion"] = request.POST.get("direccion")
 
-			if Cliente.objects.filter(correo=query_cliente['correo']).exists(): 
+			#if Cliente.objects.filter(correo=query_cliente['correo']).exists(): 
 				#Si el corre ya existe en la base de datos
-				errores['existe'] = 'Por favor, ingrese otro correo'
+				#errores['existe'] = 'Por favor, ingrese otro correo'
 
-				
+			email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
+			message = get_template('email.html').render(email_data, request=request)
+			msg = EmailMessage('Creación de usuario', message, settings.EMAIL_HOST_USER, 
+								lista_correo)
+			msg.content_subtype = 'html'
+			msg.send(fail_silently=False)
 			if not errores and not errores_domicilio:
 				try:
 					#Creación de usuario
@@ -267,12 +272,7 @@ def registro_cliente(request):
 					#domicilo.save()
 
 					#Envío de correo a usuario
-					email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
-					message = get_template('email.html').render(email_data, request=request)
-					msg = EmailMessage('Creación de usuario', message, settings.EMAIL_HOST_USER, 
-										lista_correo)
-					msg.content_subtype = 'html'
-					msg.send(fail_silently=False)
+				
 				except Exception as e:
 					print (e,"Entro aqui")
 					transaction.rollback()
