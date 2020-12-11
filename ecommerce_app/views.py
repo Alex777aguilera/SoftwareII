@@ -1421,3 +1421,5 @@ def pdf_mes_productos_vendidos(request):
 	else:
 		return render(request,'mes_productos_vendidos.html')
 
+def error_404_view(request, exception):
+	return redirect('ecommerce_app:principal')
