@@ -163,128 +163,138 @@ def cerrar_sesion(request):
 	return HttpResponseRedirect(reverse('ecommerce_app:login'))
 
 def registro_cliente(request):
-	guardar_modificar = True
-	empresas = Empresa.objects.get(pk=1)
-	genero = Genero.objects.exclude(pk=3).exclude(pk=4)
-	rango = 0
-	username = ''
-	lista_correo = []
+	if request.user.is_superuser or request.user.is_authenticated:
+		return redirect('ecommerce_app:principal')	
+	else:
+		guardar_modificar = True
+		empresas = Empresa.objects.get(pk=1)
+		genero = Genero.objects.exclude(pk=3).exclude(pk=4)
+		rango = 0
+		username = ''
+		lista_correo = []
 
-	query_cliente,query_domicilio,ret_data,errores,errores_domicilio = {},{},{},{},{}
-	if request.method == 'POST':
-		existe_usuario = False
-		correo = request.POST.get('Correo')
-		usuario = User.objects.filter(username=correo)
+		query_cliente,query_domicilio,ret_data,errores,errores_domicilio = {},{},{},{},{}
+		if request.method == 'POST':
+			existe_usuario = False
+			correo = request.POST.get('Correo')
+			usuario = User.objects.filter(username=correo)
 
-		ret_data['num_identidad'] = request.POST.get("identificacion")
-		ret_data['nombres'] = request.POST.get("nombres")
-		nombres  = request.POST.get('nombres')
-		ret_data['apellidos'] = request.POST.get("apellidos")
-		apellidos = request.POST.get('apellidos')
-		
-		ret_data['numero_telefono'] = request.POST.get("telefono")
-		ret_data['fecha_nacimiento'] = request.POST.get("fecha_nacimiento")
-		ret_data['correo'] = request.POST.get("Correo")
-		email = request.POST.get('correo')
-		ret_data['imagen'] = request.POST.get("imagen")
-		
-		if request.POST.get("identificacion") == '':
-			errores['num_identidad'] = "DEBES INGRESAR LA IDENTIDAD"
-		else:
-			query_cliente["num_identidad"] = request.POST.get("identificacion")	
-		
-		if request.POST.get("nombres") == '':
-			errores['nombres'] = "DEBES INGRESAR DATOS"
-		else:
-			query_cliente["nombres"] = request.POST.get("nombres")
-
-		if request.POST.get("apellidos") == '':
-			errores['apellidos'] = "DEBES INGRESAR EL APELLIDO"
-		else:
-			query_cliente["apellidos"] = request.POST.get("apellidos")
-		
-		if request.POST.get("fecha_nacimiento") == '':
-			errores['fecha_nacimiento'] = "DEBES INGRESAR LA FECHA DE NACIMIENTO YY-MM-DD"
-		else:
-			query_cliente["fecha_nacimiento"] = request.POST.get("fecha_nacimiento")
-		if request.POST.get("telefono") == '':
-			errores['numero_telefono'] = "DEBES INGRESAR EL NUMERO"
-		else:
-			query_cliente["numero_telefono"] = request.POST.get("telefono")
-		if request.POST.get("Correo") == '':
-			errores['correo'] = "DEBES INGRESAR EL CORREO"
-		else:
-			query_cliente["correo"] = request.POST.get("Correo")
+			ret_data['num_identidad'] = request.POST.get("identificacion")
+			ret_data['nombres'] = request.POST.get("nombres")
+			nombres  = request.POST.get('nombres')
+			ret_data['apellidos'] = request.POST.get("apellidos")
+			apellidos = request.POST.get('apellidos')
 			
-		if request.POST.get("genero") == '':
-			errores['genero'] = "DEBES SELECIONAR UN GENERO"
-		else:
-			query_cliente["genero"] = Genero.objects.get(pk=int(request.POST.get("genero")))
-		
-		if request.FILES.get("imagen") == None:
-			query_cliente["imagen"] =  'Media/imagen_cliente/cliente_default.jpg'
-		else:
-			query_cliente["imagen"] = request.FILES.get("imagen")
-
-
-		password = BaseUserManager().make_random_password(7)
-		lista_correo.append(correo)
-		rango = correo.find('@') #Devulve la posicion donde esta el @
-		for x in range(0,rango):
-			username += correo[x]
+			ret_data['numero_telefono'] = request.POST.get("telefono")
+			ret_data['fecha_nacimiento'] = request.POST.get("fecha_nacimiento")
+			ret_data['correo'] = request.POST.get("Correo")
+			ret_data['direccion'] = request.POST.get("direccion")
+			ret_data['genero'] = int(request.POST.get("genero"))
+			ret_data['imagen'] = request.FILES.get("imagen")
+			email = request.POST.get('correo')
+			ret_data['imagen'] = request.POST.get("imagen")
 			
-		# Creacion del domicilio
-		ret_data['direccion'] = request.POST.get("direccion")
+			if request.POST.get("identificacion") == '':
+				errores['num_identidad'] = "DEBES INGRESAR LA IDENTIDAD"
+			else:
+				query_cliente["num_identidad"] = request.POST.get("identificacion")	
+			
+			if request.POST.get("nombres") == '':
+				errores['nombres'] = "DEBES INGRESAR DATOS"
+			else:
+				query_cliente["nombres"] = request.POST.get("nombres")
 
-		if request.POST.get("direccion") == '':
-			errores_domicilio['direccion'] = "DEBES INGRESAR TU DOMICILIO"
-		else:
-			query_domicilio["direccion"] = request.POST.get("direccion")
-
-		if not errores and not errores_domicilio:
-			try:
-				#Creación de usuario
-				User.objects.create_user(username, email, password)
-				user = User.objects.last()
-				# save for Cliente
-				query_cliente['usuario_cliente'] = user
-				cliente = Cliente(**query_cliente)
-				cliente.save()
-				# save for Domicilio
-				query_domicilio['usuario'] = user
-				domicilo = Domicilio(**query_domicilio)
-				domicilo.save()
-
-
-				print('mandara correo')
-				#Envío de correo a usuario
-				email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
-				message = get_template('email.html').render(email_data, request=request)
-				msg = EmailMessage('Creación de usuario', message, settings.EMAIL_HOST_USER, 
-									lista_correo)
-				msg.content_subtype = 'html'
-				msg.send(fail_silently=False)
-			except Exception as e:
-				print (e,"Entro aqui")
-				transaction.rollback()
+			if request.POST.get("apellidos") == '':
+				errores['apellidos'] = "DEBES INGRESAR EL APELLIDO"
+			else:
+				query_cliente["apellidos"] = request.POST.get("apellidos")
+			
+			if request.POST.get("fecha_nacimiento") == '':
+				errores['fecha_nacimiento'] = "DEBES INGRESAR LA FECHA DE NACIMIENTO YY-MM-DD"
+			else:
+				query_cliente["fecha_nacimiento"] = request.POST.get("fecha_nacimiento")
+			if request.POST.get("telefono") == '':
+				errores['numero_telefono'] = "DEBES INGRESAR EL NUMERO"
+			else:
+				query_cliente["numero_telefono"] = request.POST.get("telefono")
+			if request.POST.get("Correo") == '':
+				errores['correo'] = "DEBES INGRESAR EL CORREO"
+			else:
+				query_cliente["correo"] = request.POST.get("Correo")
 				
+			if request.POST.get("genero") == '':
+				errores['genero'] = "DEBES SELECIONAR UN GENERO"
+			else:
+				query_cliente["genero"] = Genero.objects.get(pk=int(request.POST.get("genero")))
+			
+			if request.FILES.get("imagen") == None:
+				query_cliente["imagen"] =  'Media/imagen_cliente/cliente_default.jpg'
+			else:
+				query_cliente["imagen"] = request.FILES.get("imagen")
+
+
+			password = BaseUserManager().make_random_password(7)
+			lista_correo.append(correo)
+			rango = correo.find('@') #Devulve la posicion donde esta el @
+			for x in range(0,rango):
+				username += correo[x]
+				
+			# Creacion del domicilio
+			ret_data['direccion'] = request.POST.get("direccion")
+
+			if request.POST.get("direccion") == '':
+				errores_domicilio['direccion'] = "DEBES INGRESAR TU DOMICILIO"
+			else:
+				query_domicilio["direccion"] = request.POST.get("direccion")
+
+			if Cliente.objects.filter(correo=query_cliente['correo']).exists(): 
+				#Si el corre ya existe en la base de datos
+				errores['existe'] = 'Por favor, ingrese otro correo'
+
+				
+			if not errores and not errores_domicilio:
+				try:
+					#Creación de usuario
+					User.objects.create_user(username, email, password)
+					user = User.objects.last()
+					# save for Cliente
+					query_cliente['usuario_cliente'] = user
+					cliente = Cliente(**query_cliente)
+					cliente.save()
+					# save for Domicilio
+					query_domicilio['usuario'] = user
+					domicilo = Domicilio(**query_domicilio)
+					domicilo.save()
+
+					#Envío de correo a usuario
+					email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
+					message = get_template('email.html').render(email_data, request=request)
+					msg = EmailMessage('Creación de usuario', message, settings.EMAIL_HOST_USER, 
+										lista_correo)
+					msg.content_subtype = 'html'
+					msg.send(fail_silently=False)
+				except Exception as e:
+					print (e,"Entro aqui")
+					transaction.rollback()
+					
+					data = {'generos':genero,'ret_data':ret_data,
+						'errores':errores,'guardar_modificar':guardar_modificar,'errores_domicilio':errores_domicilio,'empresas':empresas}
+					return render(request,'registro_cliente.html',data)
+
+				else:
+					transaction.commit()
+
+					return HttpResponseRedirect(reverse('ecommerce_app:registro_cliente')+"?ok")
+			else:
 				data = {'generos':genero,'ret_data':ret_data,
-					'errores':errores,'guardar_modificar':guardar_modificar,'errores_domicilio':errores_domicilio,'empresas':empresas}
+						'errores':errores,'guardar_modificar':guardar_modificar,'errores_domicilio':errores_domicilio,'empresas':empresas}
 				return render(request,'registro_cliente.html',data)
 
-			else:
-				transaction.commit()
-
-				return HttpResponseRedirect(reverse('ecommerce_app:registro_cliente')+"?ok")
-		else:
-			data = {'generos':genero,'ret_data':ret_data,
-					'errores':errores,'guardar_modificar':guardar_modificar,'errores_domicilio':errores_domicilio,'empresas':empresas}
+		elif request.method	== 'GET':	
+			data = {'generos':genero,'guardar_modificar':guardar_modificar,'empresas':empresas}
 			return render(request,'registro_cliente.html',data)
 
-	elif request.method	== 'GET':	
-		data = {'generos':genero,'guardar_modificar':guardar_modificar,'empresas':empresas}
-		return render(request,'registro_cliente.html',data)
-	
+@login_required	
 def modificar_cliente(request,id_cliente):
 	clien = Cliente.objects.get(pk=id_cliente)
 	ret_data,query_cliente,errores = {},{},{}
@@ -312,6 +322,7 @@ def modificar_cliente(request,id_cliente):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente'))
 
+@login_required
 def modificar_normal(request,id_cliente):
 	cliente = Cliente.objects.get(pk=id_cliente)
 	generos = Genero.objects.all()
@@ -368,6 +379,7 @@ def modificar_img_cliente(request,id_cliente):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente'))
 
+@login_required
 def modificar_domicilio(request,id_domicilio):
 	domicilio = Domicilio.objects.get(pk=id_domicilio)
 	ret_data,errores = {},{}
@@ -405,79 +417,83 @@ def email(request):
 
 @login_required
 def registrar_producto(request):
-	generos = Genero.objects.all()
-	categorias = Categoria.objects.all()
-	productos = Producto.objects.all()
-	subcategorias = SubCategoria.objects.all()
-	marcas = Marca.objects.all()
-	if request.method == 'POST':
-		ret_data,query_producto,errores = {},{},{}
+	if request.user.is_superuser:
+		generos = Genero.objects.all()
+		categorias = Categoria.objects.all()
+		productos = Producto.objects.all()
+		subcategorias = SubCategoria.objects.all()
+		marcas = Marca.objects.all()
+		if request.method == 'POST':
+			ret_data,query_producto,errores = {},{},{}
 
-		ret_data['nombre_producto'] = request.POST.get('nombre_producto')
-		ret_data['precio'] = request.POST.get('precio')
+			ret_data['nombre_producto'] = request.POST.get('nombre_producto')
+			ret_data['precio'] = request.POST.get('precio')
 
-		query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
-		query_producto['descripcion_producto'] = request.POST.get('descripcion_producto')
-		query_producto['modelo'] = request.POST.get('modelo')
-		query_producto['porcentaje_descuento'] = request.POST.get('porcentaje_descuento')
-		query_producto['proveedor'] = request.POST.get('proveedor')
-
-		if int(request.POST.get('esta_descuento')) == 2: #Por defecto es 1 que es false no esta en descuento
-			query_producto['esta_descuento'] = True
-		
-		if int(request.POST.get('nuevo_producto')) == 2: #Por defecto es 1 que es True es un producto nuevo
-			query_producto['nuevo_producto'] = False
-		#1
-		if request.POST.get('nombre_producto') == '':
-			errores['nombre_producto'] = "Por favor ingrese el nombre del Producto"
-		else:
-			query_producto['nombre_producto'] = request.POST.get('nombre_producto')
-		#2	
-		if request.POST.get('precio') == '':
-			errores['precio'] = "Por favor ingrese el precio del Producto"
-		else:
-			query_producto['precio'] = request.POST.get('precio')
-		#3	
-		if request.FILES.get('imagen_producto') == None:
-			query_producto['imagen_producto'] = 'logo_proyecto.jpg'
-		else:
 			query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
-		#4
-		if int(request.POST.get('marca')) == 0:
-			errores['marca'] = "Por favor debe seleccionar la marca"
-		else:
-			query_producto['marca'] = Marca.objects.get(pk=int(request.POST.get('marca')))
-		#5
-		if int(request.POST.get('categoria_genero')) == 0:
-			errores['categoria_genero'] = "Por favor debe seleccionar el genero"
-		else:
-			query_producto['categoria_genero'] = Genero.objects.get(pk=int(request.POST.get('categoria_genero')))
-	
-		if not errores:
-			try:
-				producto = Producto(**query_producto)
-				producto.save()
-			except Exception as e:
-				transaction.rollback()
-				errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
+			query_producto['descripcion_producto'] = request.POST.get('descripcion_producto')
+			query_producto['modelo'] = request.POST.get('modelo')
+			query_producto['porcentaje_descuento'] = request.POST.get('porcentaje_descuento')
+			query_producto['proveedor'] = request.POST.get('proveedor')
+
+			if int(request.POST.get('esta_descuento')) == 2: #Por defecto es 1 que es false no esta en descuento
+				query_producto['esta_descuento'] = True
+			
+			if int(request.POST.get('nuevo_producto')) == 2: #Por defecto es 1 que es True es un producto nuevo
+				query_producto['nuevo_producto'] = False
+			#1
+			if request.POST.get('nombre_producto') == '':
+				errores['nombre_producto'] = "Por favor ingrese el nombre del Producto"
+			else:
+				query_producto['nombre_producto'] = request.POST.get('nombre_producto')
+			#2	
+			if request.POST.get('precio') == '':
+				errores['precio'] = "Por favor ingrese el precio del Producto"
+			else:
+				query_producto['precio'] = request.POST.get('precio')
+			#3	
+			if request.FILES.get('imagen_producto') == None:
+				query_producto['imagen_producto'] = 'logo_proyecto.jpg'
+			else:
+				query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
+			#4
+			if int(request.POST.get('marca')) == 0:
+				errores['marca'] = "Por favor debe seleccionar la marca"
+			else:
+				query_producto['marca'] = Marca.objects.get(pk=int(request.POST.get('marca')))
+			#5
+			if int(request.POST.get('categoria_genero')) == 0:
+				errores['categoria_genero'] = "Por favor debe seleccionar el genero"
+			else:
+				query_producto['categoria_genero'] = Genero.objects.get(pk=int(request.POST.get('categoria_genero')))
+		
+			if not errores:
+				try:
+					producto = Producto(**query_producto)
+					producto.save()
+				except Exception as e:
+					transaction.rollback()
+					errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
+					ctx = {'generos':generos,'categorias':categorias,'marcas':marcas,
+					'subcategorias':subcategorias,'productos':productos,
+					'errores':errores,'ret_data':ret_data}
+					return render(request,'registrar_producto.html',ctx)
+				else:
+					transaction.commit()
+					return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?ok")
+			else:
 				ctx = {'generos':generos,'categorias':categorias,'marcas':marcas,
 				'subcategorias':subcategorias,'productos':productos,
 				'errores':errores,'ret_data':ret_data}
 				return render(request,'registrar_producto.html',ctx)
-			else:
-				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?ok")
 		else:
-			ctx = {'generos':generos,'categorias':categorias,'marcas':marcas,
-			'subcategorias':subcategorias,'productos':productos,
-			'errores':errores,'ret_data':ret_data}
-			return render(request,'registrar_producto.html',ctx)
+			data = {'generos':generos,'categorias':categorias,'marcas':marcas,
+					'subcategorias':subcategorias,'productos':productos}
+			return render(request,'registrar_producto.html',data)
 	else:
-		data = {'generos':generos,'categorias':categorias,'marcas':marcas,
-				'subcategorias':subcategorias,'productos':productos}
-		return render(request,'registrar_producto.html',data)
+		return redirect('ecommerce_app:principal')	
 
 ## Modificar producto
+@login_required
 def modificar_producto(request,id_producto):
 	productos = Producto.objects.get(pk=id_producto)
 	ret_data,query_producto,errores = {},{},{}
@@ -522,7 +538,8 @@ def modificar_producto(request,id_producto):
 		
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
-			
+
+@login_required			
 def modificar_img_producto(request,id_producto):
 	producto = Producto.objects.get(pk=id_producto)
 	ret_data,query_producto,errores = {},{},{}
@@ -553,7 +570,7 @@ def modificar_img_producto(request,id_producto):
 
 def detalle_producto(request,id_producto):
 	if request.user.is_superuser :
-		return render(request,'inicio_admin.html')
+		return redirect('ecommerce_app:principal_admin')	
 	else:
 		empresas = Empresa.objects.get(pk=1)
 		productos = Producto.objects.get(pk=id_producto)
@@ -670,7 +687,7 @@ def Eliminar_producto_carrito(request,id_Pdelete):
 
 def productos_categoria(request,idcategoria):
 	if request.user.is_superuser :
-		return render(request,'inicio_admin.html')
+		return redirect('ecommerce_app:principal_admin')	
 	else:
 		return redirect('ecommerce_app:productos_categoria')
 	empresas = Empresa.objects.get(pk=1)
@@ -683,7 +700,7 @@ def productos_categoria(request,idcategoria):
 
 def lista_categorias(request):
 	if request.user.is_superuser :
-		return render(request,'inicio_admin.html')
+		return redirect('ecommerce_app:principal_admin')	
 	else:
 		return redirect('ecommerce_app:lista_categorias')
 	empresas = Empresa.objects.get(pk=1)
@@ -801,38 +818,41 @@ def agregar_empresa(request):
 ##Categoria Producto
 @login_required
 def agregar_categoria(request):
-	categorias = Categoria.objects.all()
-	ret_data,query_categoria,errores = {},{},{}
+	if request.user.is_superuser:
+		categorias = Categoria.objects.all()
+		ret_data,query_categoria,errores = {},{},{}
 
-	if request.method == 'POST':
-		ret_data['descripcion_categoria'] = request.POST.get('descripcion_categoria')
-		
-		if request.POST.get('descripcion_categoria') == '':
-			errores['descripcion_categoria'] = "Debe ingresar la Categoría"
+		if request.method == 'POST':
+			ret_data['descripcion_categoria'] = request.POST.get('descripcion_categoria')
 			
-		else:
-			query_categoria['descripcion_categoria'] = request.POST.get('descripcion_categoria')
-
-		if not errores:
-			try:
-				categoria = Categoria(**query_categoria)
-				categoria.save()
-				pass
-			except Exception as e:
-				transaction.rollback()
-				errores['administrador'] = e
-				ctx = {'categorias':categorias,'errores':errores,'ret_data':ret_data}
-
-				return render(request,'agregar_categoria.html',ctx)
+			if request.POST.get('descripcion_categoria') == '':
+				errores['descripcion_categoria'] = "Debe ingresar la Categoría"
+				
 			else:
-				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?ok')
+				query_categoria['descripcion_categoria'] = request.POST.get('descripcion_categoria')
+
+			if not errores:
+				try:
+					categoria = Categoria(**query_categoria)
+					categoria.save()
+					pass
+				except Exception as e:
+					transaction.rollback()
+					errores['administrador'] = e
+					ctx = {'categorias':categorias,'errores':errores,'ret_data':ret_data}
+
+					return render(request,'agregar_categoria.html',ctx)
+				else:
+					transaction.commit()
+					return HttpResponseRedirect(reverse('ecommerce_app:agregar_categoria')+'?ok')
+			else:
+				ctx = {'categorias':categorias,'errores':errores,'ret_data':ret_data}
+				return render(request,'agregar_categoria.html',ctx)
 		else:
-			ctx = {'categorias':categorias,'errores':errores,'ret_data':ret_data}
+			ctx = {'categorias':categorias}
 			return render(request,'agregar_categoria.html',ctx)
 	else:
-		ctx = {'categorias':categorias}
-		return render(request,'agregar_categoria.html',ctx)
+		return redirect('ecommerce_app:principal')	
 
 @login_required
 def modificar_categoria(request,id_categoria):
@@ -859,38 +879,41 @@ def modificar_categoria(request,id_categoria):
 ##Categoria Genero
 @login_required
 def agregar_genero(request):
-	categoria_genero = Genero.objects.all()
-	ret_data,query_categoria,errores = {},{},{}
+	if request.user.is_superuser:
+		categoria_genero = Genero.objects.all()
+		ret_data,query_categoria,errores = {},{},{}
 
-	if request.method == 'POST':
-		ret_data['descripcion_genero'] = request.POST.get('descripcion_genero')
-		
-		if request.POST.get('descripcion_genero') == '':
-			errores['descripcion_genero'] = "Debe ingresar la descripción de Categoría Género"
+		if request.method == 'POST':
+			ret_data['descripcion_genero'] = request.POST.get('descripcion_genero')
 			
-		else:
-			query_categoria['descripcion_genero'] = request.POST.get('descripcion_genero')
-
-		if not errores:
-			try:
-				categoria_genero = Genero(**query_categoria)
-				categoria_genero.save()
-				pass
-			except Exception as e:
-				transaction.rollback()
-				errores['administrador'] = e
-				ctx = {'categoria_genero':categoria_genero,'errores':errores,'ret_data':ret_data}
-
-				return render(request,'agregar_categoria_genero.html',ctx)
+			if request.POST.get('descripcion_genero') == '':
+				errores['descripcion_genero'] = "Debe ingresar la descripción de Categoría Género"
+				
 			else:
-				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
+				query_categoria['descripcion_genero'] = request.POST.get('descripcion_genero')
+
+			if not errores:
+				try:
+					categoria_genero = Genero(**query_categoria)
+					categoria_genero.save()
+					pass
+				except Exception as e:
+					transaction.rollback()
+					errores['administrador'] = e
+					ctx = {'categoria_genero':categoria_genero,'errores':errores,'ret_data':ret_data}
+
+					return render(request,'agregar_categoria_genero.html',ctx)
+				else:
+					transaction.commit()
+					return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
+			else:
+				ctx = {'categoria_genero':categoria_genero,'errores':errores,'ret_data':ret_data}
+				return render(request,'agregar_categoria_genero.html',ctx)
 		else:
-			ctx = {'categoria_genero':categoria_genero,'errores':errores,'ret_data':ret_data}
+			ctx = {'categoria_genero':categoria_genero}
 			return render(request,'agregar_categoria_genero.html',ctx)
 	else:
-		ctx = {'categoria_genero':categoria_genero}
-		return render(request,'agregar_categoria_genero.html',ctx)
+		return redirect('ecommerce_app:principal')	
 
 @login_required
 def modificar_genero(request,id_genero):
@@ -917,45 +940,48 @@ def modificar_genero(request,id_genero):
 ##Subcategoria
 @login_required
 def agregar_subcategoria(request):
-	categorias = Categoria.objects.all()
-	subcategorias = SubCategoria.objects.all()
-	ret_data,query_subcategoria,errores = {},{},{}
+	if request.user.is_superuser:
+		categorias = Categoria.objects.all()
+		subcategorias = SubCategoria.objects.all()
+		ret_data,query_subcategoria,errores = {},{},{}
 
-	if request.method == 'POST':
-		ret_data['descripcion_subcategoria'] = request.POST.get('descripcion_subcategoria')
-		ret_data['categoria'] = Categoria.objects.get(pk=int(request.POST.get('categoria')))
+		if request.method == 'POST':
+			ret_data['descripcion_subcategoria'] = request.POST.get('descripcion_subcategoria')
+			ret_data['categoria'] = Categoria.objects.get(pk=int(request.POST.get('categoria')))
 
-		if request.POST.get('descripcion_subcategoria') == '':
-			errores['descripcion_subcategoria'] = "Debe ingresar la descripcion de la subcategoria"
-		else:
-			query_subcategoria['descripcion_subcategoria'] = request.POST.get('descripcion_subcategoria')
-		
-		if request.POST.get('categoria') == '':
-			errores['categoria'] = "Debe seleccionar la Categoria"
-		else:
-			query_subcategoria['categoria'] = Categoria.objects.get(pk=int(request.POST.get('categoria')))
+			if request.POST.get('descripcion_subcategoria') == '':
+				errores['descripcion_subcategoria'] = "Debe ingresar la descripcion de la subcategoria"
+			else:
+				query_subcategoria['descripcion_subcategoria'] = request.POST.get('descripcion_subcategoria')
+			
+			if request.POST.get('categoria') == '':
+				errores['categoria'] = "Debe seleccionar la Categoria"
+			else:
+				query_subcategoria['categoria'] = Categoria.objects.get(pk=int(request.POST.get('categoria')))
 
-		if not errores:
-			try:
-				subcategoria = SubCategoria(**query_subcategoria)
-				subcategoria.save()
-				pass
-			except Exception as e:
-				transaction.rollback()
-				errores['administrador'] = e
+			if not errores:
+				try:
+					subcategoria = SubCategoria(**query_subcategoria)
+					subcategoria.save()
+					pass
+				except Exception as e:
+					transaction.rollback()
+					errores['administrador'] = e
+					ctx = {'categorias':categorias,'subcategorias':subcategorias,
+							'errores':errores,'ret_data':ret_data}
+					return render(request,'agregar_subcategoria.html',ctx)
+				else:
+					transaction.commit()
+					return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria')+"?ok")
+			else:
 				ctx = {'categorias':categorias,'subcategorias':subcategorias,
 						'errores':errores,'ret_data':ret_data}
 				return render(request,'agregar_subcategoria.html',ctx)
-			else:
-				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria')+"?ok")
 		else:
-			ctx = {'categorias':categorias,'subcategorias':subcategorias,
-					'errores':errores,'ret_data':ret_data}
+			ctx = {'categorias':categorias,'subcategorias':subcategorias}
 			return render(request,'agregar_subcategoria.html',ctx)
 	else:
-		ctx = {'categorias':categorias,'subcategorias':subcategorias}
-		return render(request,'agregar_subcategoria.html',ctx)
+		return redirect('ecommerce_app:principal')	
 
 @login_required
 def modificar_subcategoria(request,id_subcategoria):
@@ -985,46 +1011,49 @@ def modificar_subcategoria(request,id_subcategoria):
 ##Marca
 @login_required
 def agregar_marca(request):
-	marcas = Marca.objects.all()
-	sub_categorias = SubCategoria.objects.all()
-	ret_data,query_marca,errores = {},{},{}
+	if request.user.is_superuser:
+		marcas = Marca.objects.all()
+		sub_categorias = SubCategoria.objects.all()
+		ret_data,query_marca,errores = {},{},{}
 
-	if request.method == 'POST':
-		print(request.POST.get('subcategoria'),"Esto trae")
-		ret_data['descripcion_marca'] = request.POST.get('descripcion_marca')
-		# ret_data['subcategoria'] = SubCategoria.objects.get(pk=int(request.POST.get('subcategoria')))
-		
+		if request.method == 'POST':
+			print(request.POST.get('subcategoria'),"Esto trae")
+			ret_data['descripcion_marca'] = request.POST.get('descripcion_marca')
+			# ret_data['subcategoria'] = SubCategoria.objects.get(pk=int(request.POST.get('subcategoria')))
+			
 
-		if request.POST.get('descripcion_marca') == '':
-			errores['descripcion_marca'] = "Debe ingresar la Marca"
-		else:
-			query_marca['descripcion_marca'] = request.POST.get('descripcion_marca')
-		
-		if request.POST.get('subcategoria') == '':
-			errores['subcategoria'] = "Debe ingresar una sub categoria"
-		else:
-			query_marca['subcategoria'] = SubCategoria.objects.get(pk=int(request.POST.get('subcategoria')))
-
-		if not errores:
-			try:
-				marca = Marca(**query_marca)
-				marca.save()
-				pass
-			except Exception as e:
-				transaction.rollback()
-				errores['administrador'] = e
-				ctx = {'marcas':marcas,'sub_categorias':sub_categorias,'errores':errores,'ret_data':ret_data}
-
-				return render(request,'agregar_marca.html',ctx)
+			if request.POST.get('descripcion_marca') == '':
+				errores['descripcion_marca'] = "Debe ingresar la Marca"
 			else:
-				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca')+"?ok")
+				query_marca['descripcion_marca'] = request.POST.get('descripcion_marca')
+			
+			if request.POST.get('subcategoria') == '':
+				errores['subcategoria'] = "Debe ingresar una sub categoria"
+			else:
+				query_marca['subcategoria'] = SubCategoria.objects.get(pk=int(request.POST.get('subcategoria')))
+
+			if not errores:
+				try:
+					marca = Marca(**query_marca)
+					marca.save()
+					pass
+				except Exception as e:
+					transaction.rollback()
+					errores['administrador'] = e
+					ctx = {'marcas':marcas,'sub_categorias':sub_categorias,'errores':errores,'ret_data':ret_data}
+
+					return render(request,'agregar_marca.html',ctx)
+				else:
+					transaction.commit()
+					return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca')+"?ok")
+			else:
+				ctx = {'marcas':marcas,'sub_categorias':sub_categorias,'errores':errores,'ret_data':ret_data}
+				return render(request,'agregar_marca.html',ctx)
 		else:
-			ctx = {'marcas':marcas,'sub_categorias':sub_categorias,'errores':errores,'ret_data':ret_data}
+			ctx = {'marcas':marcas,'sub_categorias':sub_categorias}
 			return render(request,'agregar_marca.html',ctx)
 	else:
-		ctx = {'marcas':marcas,'sub_categorias':sub_categorias}
-		return render(request,'agregar_marca.html',ctx)
+		return redirect('ecommerce_app:principal')	
 
 @login_required
 def modificar_marca(request,id_marca):
@@ -1054,45 +1083,48 @@ def modificar_marca(request,id_marca):
 
 @login_required
 def registrar_lote(request):
-	productos = Producto.objects.all()
-	lotes = Lote.objects.all()
-	
-	ret_data,query_lote,errores = {},{},{}
-	if request.method == 'POST':
-		ret_data['existencia'] = request.POST.get('existencia')
-		print(request.POST.get('existencia'),"Esto contiene")
-		if request.POST.get('existencia') == '':
-			errores['existencia'] = "DEBE IGRESAR LA EXISTENCIA DEL PRODUCTO!!"
-			
-		else:
-			query_lote['existencia'] = request.POST.get('existencia')
-
-		if request.POST.get('producto') == '':
-			errores['producto'] = "DEBE SELECIONAR EL PRODUCTO"
-		else:
-			query_lote['producto'] = Producto.objects.get(pk=int(request.POST.get('producto')))
-
-		if not errores:
-			try:
-				existencia = Lote(**query_lote)
-				existencia.save()
+	if request.user.is_superuser:
+		productos = Producto.objects.all()
+		lotes = Lote.objects.all()
+		
+		ret_data,query_lote,errores = {},{},{}
+		if request.method == 'POST':
+			ret_data['existencia'] = request.POST.get('existencia')
+			print(request.POST.get('existencia'),"Esto contiene")
+			if request.POST.get('existencia') == '':
+				errores['existencia'] = "DEBE IGRESAR LA EXISTENCIA DEL PRODUCTO!!"
 				
-			except Exception as e:
-				transaction.rollback()
-				errores['administrador'] = e
-				ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
-
-				return render(request,'registrar_lote.html',ctx)
 			else:
-				transaction.commit()
-				return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?ok')
+				query_lote['existencia'] = request.POST.get('existencia')
+
+			if request.POST.get('producto') == '':
+				errores['producto'] = "DEBE SELECIONAR EL PRODUCTO"
+			else:
+				query_lote['producto'] = Producto.objects.get(pk=int(request.POST.get('producto')))
+
+			if not errores:
+				try:
+					existencia = Lote(**query_lote)
+					existencia.save()
+					
+				except Exception as e:
+					transaction.rollback()
+					errores['administrador'] = e
+					ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
+
+					return render(request,'registrar_lote.html',ctx)
+				else:
+					transaction.commit()
+					return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote')+'?ok')
+			else:
+				ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
+				return render(request,'registrar_lote.html',ctx)
+
 		else:
 			ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
 			return render(request,'registrar_lote.html',ctx)
-
 	else:
-		ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'lotes':lotes}
-		return render(request,'registrar_lote.html',ctx)
+		return redirect('ecommerce_app:principal')	
 
 @login_required
 def modificar_lote(request,id_lote):
@@ -1148,17 +1180,15 @@ def productos_subcategoria(request,id_categoria,id_subcategoria):
 @login_required
 def datos_clientes_admin(request):
 	user = request.user
-	empresas = Empresa.objects.get(pk=1)
-	if user.is_authenticated:
-		if request.user.is_superuser :
-			clientes = Cliente.objects.all()
-			domicilios = Domicilio.objects.all()
-			data = {'empresas':empresas,'clientes':clientes,'domicilios':domicilios}
-			return render(request,'datos_clientes_admin.html',data)
-		else:
-			return redirect('ecommerce_app:principal')	
+	if request.user.is_superuser :
+		empresas = Empresa.objects.get(pk=1)
+		clientes = Cliente.objects.all()
+		domicilios = Domicilio.objects.all()
+		data = {'empresas':empresas,'clientes':clientes,'domicilios':domicilios}
+		return render(request,'datos_clientes_admin.html',data)
 	else:
-		return render(request,'error.html')
+		return redirect('ecommerce_app:principal')	
+
 
 
 def cambio_contrasena(request):
@@ -1392,6 +1422,7 @@ def pdf_mes_productos_vendidos(request):
 		return render(request,'mes_productos_vendidos.html')
 
 
+
 @login_required
 def modificar_img_empresa(request,id_empresa):
 	avatar = Empresa.objects.get(pk=id_empresa)
@@ -1443,3 +1474,7 @@ def modificar_empresa(request,id_empresa):
 			return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error")
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
+
+def error_404_view(request, exception):
+	return redirect('ecommerce_app:principal')
+

@@ -29,7 +29,6 @@ Easy-buy | Clientes registrados
                                 <tbody>
                                     <tr>
                                         {% for cliente in clientes %}
-                                        {% for domicilio in domicilios %}
                                         <td>
                                             <div class="itemside  mb-3">
                                                 <div class="aside">
@@ -122,12 +121,10 @@ Easy-buy | Clientes registrados
                                                                     		
                                                                         <label><i class="icon fa fa-home"></i> Domicilio</label>
                                                                         <div class="alert alert-secondary alert-dismissible " role="alert" style="font-size: 12px">
+                                                                             {% for domicilio in domicilios %}
                                                                                 <strong>{% ifequal domicilio.usuario.pk cliente.usuario_cliente.pk  %} {{domicilio.direccion}}
-                                                                                	{% else %}
-                                                                                	No tiene direccion!!
-                                                                                	
                                                                                 {% endifequal %} </strong>
-                                                                               
+                                                                                   {% endfor %}
                                                                             </div>
                                                                     </div> <!-- form-group end.// -->
                                                                     </div>
@@ -141,7 +138,6 @@ Easy-buy | Clientes registrados
                                                 </div>
                                             </div>
                                     </tr>
-                                    {% endfor %}
                                     {% endfor %}
                                 </tbody>
                             </table>
