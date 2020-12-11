@@ -1416,29 +1416,30 @@ def modificar_img_empresa(request,id_empresa):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
 
-def modificar_empresa(request,id_cliente):
-	clien = Cliente.objects.get(pk=id_cliente)
+def modificar_empresa(request,id_empresa):
+	empresa = Empresa.objects.get(pk=id_empresa)
 	ret_data,query_cliente,errores = {},{},{}
 	if request.method=='POST':
-		if request.POST.get('nombres') == '' or request.POST.get('apellidos') == '' or request.POST.get('num_identidad') == '' or request.POST.get('numero_telefono') =='' or request.POST.get('fecha_nacimiento') =='' or request.POST.get('correo') =='' or int(request.POST.get('genero')) == 0:
-			errores['nombres'] = "HAY ERRORES!"
+		if request.POST.get('nombre') == '' or request.POST.get('telefono') == '' or request.POST.get('fecha_registro') == '' or request.POST.get('direccion') =='' or request.POST.get('latitude_empresa') =='' or request.POST.get('longitude_empresa') =='' or request.POST.get('correo') == '' or request.POST.get('descripcion') == '':
+			errores['nombre'] = "HAY ERRORES!"
 		if not errores:
 			try: 
-				clien = Cliente.objects.filter(pk=id_cliente).update(
-																			 num_identidad = request.POST.get('num_identidad'),
-																			 nombres = request.POST.get('nombres'),
-																			 apellidos = request.POST.get('apellidos'),	
-																			 numero_telefono = request.POST.get('numero_telefono'),																			 
-																			 fecha_nacimiento = request.POST.get('fecha_nacimiento'),	
+				empresa = Empresa.objects.filter(pk=id_empresa).update(
+																			 nombre = request.POST.get('nombre'),
+																			 telefono = request.POST.get('telefono'),
+																			 fecha_registro = request.POST.get('fecha_registro'),	
+																			 direccion = request.POST.get('direccion'),																			 
+																			 latitude_empresa = request.POST.get('latitude_empresa'),
+																			 longitude_empresa = request.POST.get('longitude_empresa'),	
 																			 correo = request.POST.get('correo'),
-																			 genero = request.POST.get('genero'),																			 
+																			 descripcion = request.POST.get('descripcion'),																			 
 																			 ),
 			except Exception as e:
 				print (e)
-				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error")
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error")
 			else:
-				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?ok3")		
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?ok3")		
 		else:
-			return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error")
+			return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error")
 	else:
-		return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente'))
+		return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
