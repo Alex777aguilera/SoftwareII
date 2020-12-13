@@ -1,6 +1,6 @@
  {% extends "base_admin.html" %}
  {% block title %}
- e-commerce | Admin
+ Easy-buy | Admin
  {% endblock title %}
  {% load static %}
  {% block content %}
@@ -45,7 +45,7 @@
 						</div>
 						<hr>
 					    <div class="col-sm-4 form-group" style="margin-left: auto; margin-right: auto;">
-					        <button type="submit" class="btn btn-primary btn-block"> Guardar  </button>
+					        <button type="submit" class="btn btn-primary btn-block" id="guardar"> Guardar  </button>
 					    </div>
  					</form>
  				</div> <!-- card-body.// -->
@@ -123,8 +123,19 @@
 {% block js %}
 <script>
 	$(document).ready(function() {
-    $('#tablaG').DataTable();
-}); 
+    $('#tablaG').DataTable({
+	  	language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
+});
+	
+	$('#guardar').click(function(e) {
+	   	if($('#id_descripcion_genero').val() == ''){
+	    	Swal.fire('Advertencia','Debe ingresar la descripción de Categoría Género','warning')
+        	return false;
+	    }
+	}); 
 
 
 </script>
