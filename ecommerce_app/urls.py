@@ -43,6 +43,6 @@ urlpatterns = [
 
  path('productos/facturacion', views.facturacion_producto, name='facturacion_producto'),
  path('productos/facturacion/mes', views.pdf_mes_productos_vendidos, name='pdf_mes_productos_vendidos'),
-
+ path('Detalle/Orden', views.Detalle_Orden, name='Detalle_Orden'),
 
 ]

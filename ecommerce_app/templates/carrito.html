@@ -84,10 +84,14 @@ e-commerce | Car_ecommerce
 </table>
 
 <div class="card-body border-top">
-    <a href="{% url 'ecommerce_app:facturacion_producto' %}" class="btn btn-primary float-md-right" target="_blank"> Ejecutar compra <i class="fa fa-chevron-right"></i> </a>
+    {% if carrito_vacio == 1  %}
+
+    <a href="{% url 'ecommerce_app:Detalle_Orden' %}" class="btn btn-primary float-md-right" > Ejecutar compra <i class="fa fa-chevron-right"></i> </a>
+        
+    {% endif %}
     <a href="{% url 'ecommerce_app:principal' %}" class="btn btn-light"> <i class="fa fa-chevron-left"></i> Continuar comprando </a>
 </div>  
-</div> <!-- card.// -->
+</div> <!-- card.// target="_blank" -->
 
 <div class="alert alert-success mt-3">
     <p class="icontext"><i class="icon text-success fa fa-truck"></i> Actualmente no se esta contando con el servicio de envios</p>
@@ -99,20 +103,20 @@ e-commerce | Car_ecommerce
         <div class="card">
             <div class="card-body">
                     <dl class="dlist-align">
-                      <dt>Total price:</dt>
-                      <dd class="text-right">USD 568</dd>
+                      <dt>Sudtotal :</dt>
+                      <dd class="text-right">Lps {{e}}</dd>
                     </dl>
                     <dl class="dlist-align">
-                      <dt>Discount:</dt>
-                      <dd class="text-right">USD 658</dd>
+                      <dt>Descuento :</dt>
+                      <dd class="text-right">Lps {{g}}</dd>
                     </dl>
                     <dl class="dlist-align">
-                      <dt>Total:</dt>
-                      <dd class="text-right  h5"><strong>$1,650</strong></dd>
+                      <dt>Total :</dt>
+                      <dd class="text-right  h6"><strong>Lps {{total}}</strong></dd>
                     </dl>
                     <hr>
                     <p class="text-center mb-3">
-                        <img src="images/misc/payments.png" height="26">
+                       <i class="fa fa-credit-card fa-3x" aria-hidden="true"></i>
                     </p>
                     
             </div> <!-- card-body.// -->
@@ -128,4 +132,10 @@ e-commerce | Car_ecommerce
 {% endblock content %}
 
 {% block js %}
+<script>
+    
+{% if carrito_vacio == 0 %}
+Swal.fire({ position: 'center', icon: 'error', title: 'No tienes productos agregados en el carrito', showConfirmButton: false, timer: 2000 })
+{% endif %}
+</script>
 {% endblock js %}

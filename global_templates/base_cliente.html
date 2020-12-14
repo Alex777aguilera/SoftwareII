@@ -62,14 +62,7 @@
                     <div class="col-xl-4 col-lg-4 col-md-6">
                         <div class="widgets-wrap float-md-right">
                             {% if request.user.is_authenticated %}
-                                <div class="widget-header mr-3">
-                                <a href="#" class="widget-view">
-                                    <div class="icon-area">
-                                        <i class="fa fa-store"></i>
-                                    </div>
-                                    <small class="text"> Orders </small>
-                                </a>
-                            </div>
+                               
                             {% else %}
 
                                 <div class="widget-header">
@@ -80,7 +73,7 @@
                                     <small class="text"> Ingresar </small>
                               </div>
                             {% endif %}
-                            <a href="#" class="widget-view">
+                            
                             {% if request.user.is_authenticated %}
                            
                                 <div class="widget-header">
@@ -99,7 +92,7 @@
                                 </a> <!-- iconbox // -->
                                 <div class="dropdown-menu dropdown-menu-right ">
                                     <a class="dropdown-item" href="{% url 'ecommerce_app:perfil_cliente' %}">Perfil</a>
-                                    <a class="dropdown-item" href="#">Settings</a>
+                                    
                                     <a class="dropdown-item" href="{% url 'ecommerce_app:cerrar_sesion' %}">Salir</a>
                                 </div>
                             </div>

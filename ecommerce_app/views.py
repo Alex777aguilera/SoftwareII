@@ -159,6 +159,7 @@ def cerrar_sesion(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('ecommerce_app:login'))
 
+
 def registro_cliente(request):
 	guardar_modificar = True
 	empresas = Empresa.objects.get(pk=1)
@@ -281,7 +282,8 @@ def registro_cliente(request):
 	elif request.method	== 'GET':	
 		data = {'generos':genero,'guardar_modificar':guardar_modificar,'empresas':empresas}
 		return render(request,'registro_cliente.html',data)
-	
+
+@login_required	
 def modificar_cliente(request,id_cliente):
 	clien = Cliente.objects.get(pk=id_cliente)
 	ret_data,query_cliente,errores = {},{},{}
@@ -360,6 +362,7 @@ def modificar_img_cliente(request,id_cliente):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente'))
 
+@login_required
 def modificar_domicilio(request,id_domicilio):
 	domicilio = Domicilio.objects.get(pk=id_domicilio)
 	ret_data,errores = {},{}
@@ -470,6 +473,7 @@ def registrar_producto(request):
 		return render(request,'registrar_producto.html',data)
 
 ## Modificar producto
+@login_required
 def modificar_producto(request,id_producto):
 	productos = Producto.objects.get(pk=id_producto)
 	ret_data,query_producto,errores = {},{},{}
@@ -514,7 +518,7 @@ def modificar_producto(request,id_producto):
 		
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
-			
+@login_required		
 def modificar_img_producto(request,id_producto):
 	producto = Producto.objects.get(pk=id_producto)
 	ret_data,query_producto,errores = {},{},{}
@@ -600,19 +604,60 @@ def carrito(request):
 			carritos = Carrito.objects.filter(usuario=request.user)
 							
 			existencias = Lote.objects.all()
+			cant_pro = Carrito.objects.filter(usuario=request.user).aggregate(cant_total=Sum('cantidad'))
+			d = 0
+			e = 0 #subtotal
+			f = 0
+			g = 0 #descuento
+			ac = 0
+			total = 0
+			carrito_vacio = 1
+			print("Cantidad de productos en el carrito ",cant_pro['cant_total'])
+			if cant_pro['cant_total'] == None:
+				carrito_vacio = 0
+				ctx = {'carrito_vacio':carrito_vacio}
+				render(request,'carrito.html',ctx)
 			
-			# print(carritos)
+			# print(carritos.cantidad)
+			for carrito in carritos:
+				
+				d = float(carrito.cantidad) * carrito.producto.precio #sacamos el subtotal de cantidad producto por el precio del mismo
+				f = (int(carrito.producto.porcentaje_descuento)/100) #convertimos un entero en decimal, para poder sacar el % de descuento
+				ac = (d*f)
+				e += d #subtotal
+				g += ac #descuento
+			
+			total = (e - g)
+			print("El sudtotal : ",e)
+			print("El descuento : ",g)
+			print("El total : ",total)
 
 			if request.method == 'POST':
 				a = request.POST.get('producto_id')
-				b = request.POST.get('cantidad_d')
-				print (a,"\n",b)
+				b = int(request.POST.get('cantidad_d'))
+				c = 0
+				dx = 0
+
 				ret_data,query_add_carrito,errores = {},{},{}
 				if Carrito.objects.filter(producto=a,usuario=request.user).exists():
-					xl = Carrito.objects.filter(producto=a,usuario=request.user)
-					print(xl,"\n")
-					print("Existe este producto ya en el carrito")
-					errores["existe"] = "Productos ya existente en el carrito"
+					## Validacion para sumar productos ya agregados al carrito
+					carritos = Carrito.objects.filter(usuario=request.user)
+					cant_p = Carrito.objects.filter(producto=a).aggregate(pro_total=Sum('cantidad'))
+					c = int(cant_p['pro_total']) + b #cantidad de productos agregados
+					
+					print("Se agrego con exito")
+					carro = Carrito.objects.filter(producto=a).update(cantidad=c)
+
+					###### Validacion para reducir los productos agregados al carrito en existencia
+					cant_p_existencia = Lote.objects.get(producto=a)
+					dx = (int(cant_p_existencia.existencia) - b)
+					print(cant_p_existencia,"\n",dx)
+					productos_apartados = Lote.objects.filter(producto=a).update(existencia=dx)
+
+
+					errores["existe"] = "Se agrego con exito"
+					ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'errores':errores,'ret_data':ret_data,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
+					return HttpResponseRedirect(reverse('ecommerce_app:carrito'))
 
 				
 				ret_data['cantidad'] = request.POST.get('cantidad_d')
@@ -631,16 +676,23 @@ def carrito(request):
 
 				if not errores:
 					try:
+						
+						###### Validacion para reducir los productos agregados al carrito en existencia
+						cant_p_existencia = Lote.objects.get(producto=a)
+						dx = (int(cant_p_existencia.existencia) - b)
+						print(cant_p_existencia,"\n",dx)
+						productos_apartados = Lote.objects.filter(producto=a).update(existencia=dx)
 						car = Carrito(**query_add_carrito)
 						car.save()
 						print("se guardo")
+						
 					except Exception as e:
 						transaction.rollback()
 						print (e)
 						rx = 0
 						existencias = Lote.objects.get(producto=a)
 						errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
-						ctx = {'errores':errores,'ret_data':ret_data,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
+						ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'errores':errores,'ret_data':ret_data,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
 						
 						return render(request,'carrito.html',ctx)
 
@@ -653,9 +705,9 @@ def carrito(request):
 					productos = Producto.objects.get(pk=a)
 					existencias = Lote.objects.get(producto=a)
 					print(productos)
-					ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
+					ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'errores':errores,'ret_data':ret_data,'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
 					return render(request,'detalle_producto.html',ctx)
-			ctx = {'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
+			ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
 			return render(request,'carrito.html',ctx)
 	else:
 		return render(request,'carrito.html')
@@ -663,6 +715,13 @@ def carrito(request):
 @login_required
 ##Eliminar producto carrito
 def Eliminar_producto_carrito(request,id_Pdelete):
+	#### Validacion, la cantidad de productos a existencia, en caso no realizen la compra
+	car = Carrito.objects.get(pk=id_Pdelete)
+	cant_p_existencia = Lote.objects.get(producto=car.producto)
+	cant_pro = (int(car.cantidad) + int(cant_p_existencia.existencia))
+	print(cant_pro)
+	suma_car = Lote.objects.filter(producto=car.producto).update(existencia=cant_pro)
+	#####
 	eliminar = Carrito.objects.get(pk=id_Pdelete).delete()
 	return HttpResponseRedirect(reverse('ecommerce_app:carrito'))
 
@@ -1194,9 +1253,43 @@ def cambio_contrasena(request):
 	else:
 		return render(request,'error.html') 
 
+@login_required
+def Detalle_Orden(request):
+	carritos = Carrito.objects.filter(usuario=request.user)
+	a=0
+	b=0
+	c=0
+	d=0
+	e=0
+
+	for carrito in carritos:
+				
+		a = float(carrito.cantidad) * carrito.producto.precio #sacamos el subtotal de cantidad producto por el precio del mismo
+		b = (int(carrito.producto.porcentaje_descuento)/100) 
+		c = (a*b)
+		d += a 
+		e += c
+	
+	total = (d - e)
+	cliente = Cliente.objects.get(usuario_cliente=request.user)
+	domicilio = Domicilio.objects.get(usuario = request.user)
+	empresas = Empresa.objects.get(pk=1)
+
+	### Validacion para eliminar los productos del carrito al ajercer la compra
+	if request.method == 'POST' and request.POST.get('validacion'):
+		c = int(request.POST.get('validacion'))
+		if c == 1:
+			car = Carrito.objects.filter(usuario = request.user).delete()
+			print("\n","Se elimino productos del carrito")
+			return HttpResponseRedirect(reverse('ecommerce_app:Detalle_Orden')+"?dato")
+		else :
+			print("No se elimino nada")
+	ctx = {'carritos':carritos,'empresas':empresas,'cliente':cliente,'domicilio':domicilio,'d':d,'e':e,'total':total}
+	return render(request,'Detalle_Orden.html',ctx)
+
+@login_required
 def facturacion_producto(request):
-	pp = PrettyPrinter(indent=4)
-	#if request.method == 'POST':
+
 	cliente = Cliente.objects.filter(usuario_cliente=request.user)
 	productos_carrito = Carrito.objects.filter(usuario=request.user)
 	empresa = Empresa.objects.filter(pk=1)
@@ -1279,11 +1372,17 @@ def facturacion_producto(request):
 	html = template.render(ctx)
 	response = HttpResponse(content_type='application/pdf')  
 	pisaStatus = pisa.CreatePDF(html,dest=response)
+	
 	return response
 
-	return render(request,'factura_cliente.html',ctx)
+	# return render(request,'factura_cliente.html',ctx)
+	
+
+	
+	
 
 #vista para que el admin vea el pdf de todos los productos vendidos seleccionando un mes en especifico
+@login_required
 def pdf_mes_productos_vendidos(request):
 	if request.method == 'POST':
 		fecha = request.POST.get('mes')

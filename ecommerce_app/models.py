@@ -88,7 +88,7 @@ class Producto(models.Model):
 		return "{}-{}" .format(self.pk,self.nombre_producto)
 #Cambiar el precio del producto, en caso haya descuento o este en promocion, precio anterior, precio actual
 class Carrito(models.Model):
-	"""docstring for lote"""
+	"""docstring for Carrito"""
 	
 	cantidad = models.DecimalField(max_digits=10,decimal_places=2, null=True)
 	producto =  models.ForeignKey(Producto, on_delete=models.CASCADE)
