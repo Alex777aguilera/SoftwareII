@@ -1,6 +1,6 @@
 {% extends "base_admin.html" %}
 {% block title %}
-e-commerce | Admin
+Easy-buy | Admin
 {% endblock title %}
 {% load static %}
 {% block content %}
@@ -96,7 +96,7 @@ e-commerce | Admin
                             {% endif %}
                         </div>
                         <div class="col-sm-4 form-group">
-                            <label>Estado del Producto</label>
+                            <label>Condición del Producto</label>
                             <select class="form-control" data-live-search="true" id="id_nuevo_producto" name="nuevo_producto">
                                 <option value="1" selected="selected">Nuevo</option>
                                 <option value="2">Usado</option>
@@ -373,7 +373,11 @@ e-commerce | Admin
 {% block js %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#dataTable').DataTable();
+    $('#dataTable').DataTable({
+        language: {
+            url: '{% static "json/es__es.json" %}'
+        }
+    });
 });
    function history_push(){
         history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
@@ -388,7 +392,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
  {% endif %}
 
  {% if 'ok1' in request.GET %}
-    alerta('Datos guardados con éxito','success');
+    alerta('Datos actualizados con éxito','success');
     history_push();
  {% endif %}
 
@@ -641,7 +645,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         if($('#id_categoria').val() == 0){
             Swal.fire({
   icon: 'warning',
-  title: 'Oops...',
+  title: 'Advertencia',
   text: 'Debe seleccionar una Categoría',
   
 })
@@ -650,7 +654,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         }else if($('#id_subcategoria').val() == 0){
             Swal.fire({
   icon: 'warning',
-  title: 'Oops...',
+  title: 'Advertencia',
   text: 'Debe seleccionar una Subcategoría',
   
 })
@@ -659,7 +663,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         }else if($('#id_marca').val() == 0){
             Swal.fire({
   icon: 'warning',
-  title: 'Oops...',
+  title: 'Advertencia',
   text: 'Debe seleccionar una Marca',
   
 })
@@ -667,7 +671,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         }else if($('#id_categoria_genero').val() == 0){
             Swal.fire({
   icon: 'warning',
-  title: 'Oops...',
+  title: 'Advertencia',
   text: 'Debe seleccionar el genero al cual esta destinado el Producto',
   
 })

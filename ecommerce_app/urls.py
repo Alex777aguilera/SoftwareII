@@ -31,6 +31,7 @@ urlpatterns = [
  path('productos/categoria/<int:idcategoria>/', views.productos_categoria, name='productos_categoria'),
  path('ajax/existencia', views.ajax_existencia, name='ajax_existencia'),
  path('registro/lote', views.registrar_lote, name='registrar_lote'),
+ path('modificar/lote/<int:id_lote>/', views.modificar_lote, name="modificar_lote"),
  path('email', views.email, name='email'),
  path('perfil/cliente', views.perfil_cliente, name='perfil_cliente'),
  path('modificar/imagen/cliente/<int:id_cliente>/', views.modificar_img_cliente, name='modificar_img_cliente'),
@@ -44,5 +45,9 @@ urlpatterns = [
  path('productos/facturacion', views.facturacion_producto, name='facturacion_producto'),
  path('productos/facturacion/mes', views.pdf_mes_productos_vendidos, name='pdf_mes_productos_vendidos'),
  path('Detalle/Orden', views.Detalle_Orden, name='Detalle_Orden'),
+ path('modificar/empresa/<int:id_empresa>/', views.modificar_empresa, name='modificar_empresa'),
+ path('modificar/imagen/empresa/<int:id_empresa>/', views.modificar_img_empresa, name='modificar_img_empresa'),
+ path('factura/orden/<int:id>/', views.factura_orden, name='factura_orden'),
+
 
 ]

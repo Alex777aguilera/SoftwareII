@@ -1,6 +1,6 @@
 {% extends "base_cliente.html" %}
 {% block title %}
-e-commerce | Registro
+Easy-buy | Registro
 {% endblock title %}
 {% load static %}
 {% block content %}
@@ -12,17 +12,24 @@ e-commerce | Registro
                 <div class="card-header py-3">
                     <h5 class="m-0 font-weight-bold text-primary">Crear Cuenta</h5>
                 </div>
-                <form action="{% url 'ecommerce_app:registro_cliente' %}" method="POST" enctype="multipart/form-data"><!---  onsubmit="return Charger();"  ---->
+                {% if errores.existe %}
+                    <div class="alert alert-danger alert-dismissible " role="alert">
+                        <strong>Por favor ingrese un correo diferente </strong>
+                    </div>
+                {% endif %}
+                <form action="{% url 'ecommerce_app:registro_cliente' %}" method="POST" enctype="multipart/form-data"><!---  onsubmit="return Charger();"  -->
                     {% csrf_token %}
                     <div class="row">
                         {% if errores.administrador %}
                         <div class="alert alert-danger alert-dismissible " role="alert">
                             <strong>ERROR! </strong>{{errores.administrador}}
+                        </div>
                             {% endif %}
+                         
                             <article class="card-body">
                                 <div class="form-row">
                                     <div class="col-sm-4 form-group">
-                                        <label>Identidad</label>
+                                        <label>Identidad</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                                         {% if errores.num_identidad %}
                                         <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
                                             <strong>ERROR! </strong>{{errores.num_identidad}}
@@ -31,7 +38,7 @@ e-commerce | Registro
                                         <input type="text" class="form-control" id="identificacion" name="identificacion" placeholder="ejm .. 0601-1995-07789" value="{{ret_data.num_identidad}}">
                                     </div> <!-- form-group end.// -->
                                     <div class="col-sm-4 form-group">
-                                        <label>Nombres</label>
+                                        <label>Nombres</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                                         {% if errores.nombres %}
                                         <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
                                             <strong>ERROR! </strong>{{errores.nombres}}
@@ -40,7 +47,7 @@ e-commerce | Registro
                                         <input type="text" class="form-control" id="id_nombres" name="nombres" placeholder="1ro y 2do nombre" value="{{ret_data.nombres}}">
                                     </div> <!-- form-group end.// -->
                                     <div class="col-sm-4 form-group">
-                                        <label>Apellidos</label>
+                                        <label>Apellidos</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                                         {% if errores.apellidos %}
                                         <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
                                             <strong>ERROR! </strong>{{errores.apellidos}}
@@ -51,7 +58,7 @@ e-commerce | Registro
                                 </div> <!-- form-row end.// -->
                                 <div class="form-row">
                                     <div class="col-sm-4 form-group">
-                                        <label>Telefono</label>
+                                        <label>Teléfono</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                                         {% if errores.numero_telefono %}
                                         <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
                                             <strong>ERROR! </strong>{{errores.numero_telefono}}
@@ -60,7 +67,7 @@ e-commerce | Registro
                                         <input type="text" class="form-control" id="id_telefono" name="telefono" placeholder="Telefono" value="{{ret_data.numero_telefono}}">
                                     </div> <!-- form-group end.// -->
                                     <div class="col-sm-4 form-group">
-                                        <label>Correo</label>
+                                        <label>Correo</label> <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                                         {% if errores.correo %}
                                         <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
                                             <strong>ERROR! </strong>{{errores.correo}}
@@ -69,18 +76,22 @@ e-commerce | Registro
                                         <input type="text" class="form-control" id="id_Correo" name="Correo" placeholder="Email" value="{{ret_data.correo}}">
                                     </div> <!-- form-group end.// -->
                                     <div class="col-sm-4 form-group">
-                                        <label>Género</label>
+                                        <label>Género</label><i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                                         <select class="form-control" style="width: 100%;" id="id_genero" name="genero">
                                             <option value="0">--Seleccione--</option>
                                             {% for genero in generos %}
+                                            {% ifequal genero.pk ret_data.genero  %} 
+                                                <option value='{{genero.pk}}' selected>{{genero.descripcion_genero}}</option>
+                                            {% else %}
                                             <option value='{{genero.pk}}'>{{genero.descripcion_genero}}</option>
+                                                {% endifequal %}
                                             {% endfor %}
                                         </select>
 
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Fecha de nacimiento</label>
+                                            <label>Fecha de nacimiento</label><i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                                             {% if errores.fecha_nacimiento %}
                                             <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
                                                 <strong>ERROR! </strong>{{errores.fecha_nacimiento}}
@@ -92,7 +103,7 @@ e-commerce | Registro
                                                         <i class="far fa-calendar-alt"></i>
                                                     </span>
                                                 </div>
-                                                <input type="text" class="form-control float-right" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{ret_data.fecha_nacimiento|date:'Y-m-d'}}">
+                                                <input type="date" class="form-control float-right" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{ret_data.fecha_nacimiento}}">
                                             </div>
                                         </div>
                                     </div>
@@ -104,20 +115,21 @@ e-commerce | Registro
                                                 <strong>ERROR! </strong>{{errores.imagen}}
                                             </div>
                                             {% endif %}
-                                            <input type="file" name="imagen">
+                                            <input type="file" name="imagen" value="{{ret_data.imagen}}">
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label>Domicilio</label>
+                                        <label>Domicilio</label><i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i>
                                         {% if errores_domicilio.direccion %}
                                         <div class="alert alert-danger alert-dismissible " role="alert" style="font-size: 12px">
                                             <strong>ERROR! </strong>{{errores_domicilio.direccion}}
                                         </div>
                                         {% endif %}
-                                        <textarea class="form-control" name="direccion" value="{{ret_data.direccion}}" id="id_direccion" rows="3"></textarea>
+                                        <textarea class="form-control" name="direccion" id="id_direccion" rows="3">{{ret_data.direccion}}</textarea>
+                                     
                                     </div>
                                 </div>
                                 <hr>
@@ -161,7 +173,7 @@ e-commerce | Registro
                         </div>
                     </div>
                 </div>
-                <!--Fin modal de carga ---->
+                <!--Fin modal de carga -->
             </aside>
         </div>
     </section>
@@ -172,21 +184,36 @@ e-commerce | Registro
 
 // validaciones
 {% if 'ok' in request.GET %}
-
 Swal.fire({ position: 'center', icon: 'success', title: 'Usuario creado con éxito', showConfirmButton: false, timer: 2000 })
+    history.pushState(null,"","{% url 'ecommerce_app:registro_cliente' %}");
  {% endif %}
 
-$('#guardar').click(function(e) {
-    if ($('#id_genero').val() == 0) {
-        Swal.fire({
-  icon: 'error',
-  title: 'Oops...',
-  text: 'Debes seleccionar un genero!',
-  
-})
+    {% if errores.existe %}
+        $('#id_Correo').val('');
+        $("#id_Correo").focus();
+        Swal.fire('Error','El correo ingresado ya existe en nuestro sistema','error')
+
+    {% endif %}
+
+    $('#guardar').click(function(e) {
+        var identificacion = $('#identificacion').val()
+        var nombres = $('#id_nombres').val()
+        var apellidos = $('#id_apellidos').val()
+        var telefono = $('#id_telefono').val()
+        var correo = $('#id_Correo').val()
+        var fecha_nacimiento = $('#id_fecha_nacimiento').val()
+        var domicilio = $('#id_direccion').val()
+        //Para validar que los campos no vayan vacios
+        if(identificacion == ''  || nombres == '' || apellidos == '' || 
+            telefono == '' || correo == '' || fecha_nacimiento == '' ||
+            domicilio == '' ){
+            Swal.fire('Advertencia','Debe llenar todos los campos con asterico rojo','warning')
+            return false;
+        }else if($('#id_genero').val() == 0){
+            Swal.fire('Advertencia','Debe seleccionar un Género','warning')
             return false;
         }
-});
+    });
 
 $('#id_fecha_nacimiento').daterangepicker({
     singleDatePicker: true,

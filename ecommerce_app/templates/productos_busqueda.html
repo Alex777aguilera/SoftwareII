@@ -1,6 +1,6 @@
 {% extends "base_cliente.html" %}
 {% block title %}
-e-commerce | Registro Lote
+Easy-buy | Productos
 {% endblock title %}
 {% load static %}
 {% load bootstrap_pagination %}
@@ -76,13 +76,13 @@ e-commerce | Registro Lote
     <div class="col-md-4">
         <figure class="card card-product-grid rounded-lg">
             <div class="img-wrap"> 
-                <img src="{{producto.imagen_producto.url}}">
+                <a  href="{% url 'ecommerce_app:detalle_producto' producto.pk %}" ><img src="{{producto.imagen_producto.url}}"></a>
             </div> <!-- img-wrap.// -->
             <figcaption class="info-wrap">
                 <div class="fix-height">
                     <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}"  class="title">{{producto.nombre_producto}}</a>
                     <div class="price-wrap mt-2">
-                        <span class="price">L{{producto.precio}}0</span>
+                        <span class="price">L. {{producto.precio}}0</span>
                     </div> <!-- price-wrap.// -->
                 </div>
                 <a href="{% url 'ecommerce_app:detalle_producto' producto.pk %}"  class="btn btn-block btn-primary">Ver </a>  
