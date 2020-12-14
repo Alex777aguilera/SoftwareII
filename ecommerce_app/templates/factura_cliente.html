@@ -25,7 +25,7 @@
 <body>
 	<div style="width:100%" class="encabezado" id="header_content">
 		<div style="width:250px;">
-			<center><img src="https://i.ibb.co/JmvcqVR/logo-recortado.jpg" alt=""></center>
+			<!--<center><img src="https://i.ibb.co/JmvcqVR/logo-recortado.jpg" alt=""></center>-->
 		</div>
 	    <table style="width:100%;">
 	    	<thead>
@@ -43,6 +43,7 @@
 	      	{% for emp in empresa %}
 	      		<td class="td-header">Dirección: {{emp.direccion}}</td>
 	      	{% endfor %}
+
 	      	{% for cl in cliente %}
 	      		<td class="td-header">Cliente: {{cl.nombres}} {{cl.apellidos}}</td>
 	      	{% endfor %}
@@ -97,19 +98,27 @@
 		<tfoot>
             <tr >
                 <th colspan="4" style="text-align:right;">Subtotal</th>
-                <td style="text-align:center;">Lps {{subtotal}}</td>
+                {% for orden in orden_factura %}
+                <td style="text-align:center;">Lps {{orden.subtotal}}</td>
+                {% endfor %}
             </tr>
             <tr>
                 <th colspan="4" style="text-align:right;">Descuento</th>
-                <td style="text-align:center;">Lps {{descuento}}</td>
+                {% for orden in orden_factura %}
+                <td style="text-align:center;">Lps {{orden.descuento}}</td>
+                {% endfor %}
             </tr>
             <tr>
                 <th colspan="4" style="text-align:right;">ISV (15%)</th>
-                <td style="text-align:center;">Lps {{isv}}</td>
+                {% for orden in orden_factura %}
+                <td style="text-align:center;">Lps {{orden.impuesto}}</td>
+                {% endfor %}
             </tr>
             <tr>
                 <th colspan="4" style="text-align:right;">Total</th>
-                <td style="text-align:center;">Lps {{total}}</td>
+                {% for orden in orden_factura %}
+                <td style="text-align:center;">Lps {{orden.total}}</td>
+                {% endfor %}
             </tr>
         </tfoot>
 	</table>

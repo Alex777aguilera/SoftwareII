@@ -48,4 +48,6 @@ urlpatterns = [
  path('modificar/empresa/<int:id_empresa>/', views.modificar_empresa, name='modificar_empresa'),
  path('modificar/imagen/empresa/<int:id_empresa>/', views.modificar_img_empresa, name='modificar_img_empresa'),
 
+ path('factura/orden/<int:id>/', views.factura_orden, name='factura_orden'),
+
 ]
