@@ -49,7 +49,7 @@ Easy-buy | Admin
                                     {% endfor %}
                                   
                                     <td>{{orden.total}}</td>
-                                    <td><button class="btn btn-danger">Generar <i class="fas fa-file-pdf"></i></button></td>
+                                    <td><a class="btn btn-danger" href="{% url 'ecommerce_app:factura_orden' orden.pk %}">Generar <i class="fas fa-file-pdf"></i></a></td>
                                 </tr>
 
                                 {% endfor %}

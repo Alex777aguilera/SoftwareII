@@ -1214,11 +1214,12 @@ def facturacion_producto(request):
 		if prod.producto.porcentaje_descuento == 0 or prod.producto.porcentaje_descuento == None:
 			desc_prod = 0
 		else:
-			desc_prod = prod.producto.porcentaje_descuento * sub_x_producto
+			desc_prod = prod.producto.porcentaje_descuento
 
 		desc_factura += desc_prod
 
 		total_x_prod = sub_x_producto - desc_prod
+
 		subtotal_factura += total_x_prod
 
 		lista_data_prod.append(prod.cantidad)
@@ -1371,7 +1372,6 @@ def pdf_mes_productos_vendidos(request):
 				'anio' : date[0],
 				'no_ventas' : no_ventas}
 
-
 		template = get_template('pdf_mes_productos_vendidos.html')
 		html = template.render(ctx)
 		response = HttpResponse(content_type='application/pdf')  
@@ -1380,4 +1380,42 @@ def pdf_mes_productos_vendidos(request):
 
 	else:
 		return render(request,'mes_productos_vendidos.html')
+
+
+def factura_orden(request, id):
+	orden_factura = Orden.objects.filter(pk=id)
+	factura_detalle = DetalleOrden.objects.filter(orden=Orden.objects.get(pk=id))
+
+	cliente = Cliente.objects.filter(usuario_cliente=request.user)
+	empresa = Empresa.objects.filter(pk=1)
+	logo_emp = Empresa.objects.get(pk=1)
+
+	lista = []
+	dic_data = {}
+
+	for fact_det in factura_detalle:
+		lista_data_prod = []
+		lista_data_prod.append(fact_det.cantidad)
+		lista_data_prod.append(fact_det.producto.nombre_producto)
+		lista_data_prod.append(f'Lps {fact_det.producto.precio}')
+		lista_data_prod.append(f'Lps {fact_det.descuento}')
+		lista_data_prod.append(f'Lps {fact_det.total_producto}')
+
+		lista.append(lista_data_prod)
+
+	dic_data['detalle'] = lista
+
+	ctx = {
+			'factura' : dic_data,
+			'cliente' : cliente,
+			'orden_factura' : orden_factura,
+			'empresa' : empresa,
+			'logo_emp' : logo_emp.imagen_logo
+		}
+
+	template = get_template('factura_cliente.html')
+	html = template.render(ctx)
+	response = HttpResponse(content_type='application/pdf')  
+	pisaStatus = pisa.CreatePDF(html,dest=response)
+	return response
 
