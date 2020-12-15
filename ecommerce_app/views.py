@@ -1324,6 +1324,7 @@ def Detalle_Orden(request):
 def facturacion_producto(request):
 
 	cliente = Cliente.objects.filter(usuario_cliente=request.user)
+	cliente_correo = Cliente.objects.get(usuario_cliente=request.user)
 	productos_carrito = Carrito.objects.filter(usuario=request.user)
 	empresa = Empresa.objects.filter(pk=1)
 	logo_emp = Empresa.objects.get(pk=1)
@@ -1407,6 +1408,21 @@ def facturacion_producto(request):
 	response = HttpResponse(content_type='application/pdf')  
 	pisaStatus = pisa.CreatePDF(html,dest=response)
 	car = Carrito.objects.filter(usuario = request.user).delete()
+
+	correo = cliente_correo.correo
+	lista_correo = []
+	lista_correo.append(correo)
+
+	try:
+		message = get_template('factura_cliente.html').render(ctx, request=request)
+		msg = EmailMessage('Factura', message, settings.EMAIL_HOST_USER,lista_correo)
+		msg.content_subtype = 'html'
+		msg.send(fail_silently=False)
+	except Exception as e:
+		pass
+	else:
+		pass
+
 	return response
 
 	# return render(request,'factura_cliente.html',ctx)
