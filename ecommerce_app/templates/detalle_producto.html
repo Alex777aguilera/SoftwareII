@@ -40,6 +40,7 @@ Easy-buy | Producto Detalle
             <main class="col-md-6">
                 {% csrf_token %}
                 <article class="product-info-aside">
+                    <hr>
                     <h2 class="title mt-3">{{productos.marca}}-{{productos.nombre_producto}}</h2>
                     <div class="rating-wrap my-3">
                         <ul class="rating-stars">
@@ -58,13 +59,8 @@ Easy-buy | Producto Detalle
                     <div class="mb-3">
                         <var class="price h4">L. {{productos.precio}}</var>
 
-                        
+                        <br>
                     </div> <!-- price-detail-wrap .// -->
-                    <p>{{productos.descripcion_producto}} </p>
-                    
-                        
-
-                    
                     <p>{{productos.descripcion_producto}} </p>
                     <dl class="row">
 
