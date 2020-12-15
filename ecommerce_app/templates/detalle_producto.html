@@ -142,7 +142,10 @@ function User_Nologin() {
   footer: '<a href="{% url 'ecommerce_app:login' %}">Iniciar sesión</a>'
 })
 }
-
+    //Evento para solo permitir numeros
+    $('#cantidad').on('input', function () { 
+        this.value = this.value.replace(/[^0-9]/g,'');
+    });
  var id_producto = $('#id_producto').val();
  var existencia_glogal = 0;
  var hola = false;
