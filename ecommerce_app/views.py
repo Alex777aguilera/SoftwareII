@@ -453,17 +453,20 @@ def registrar_producto(request):
 				errores['precio'] = "Por favor ingrese el precio del Producto"
 			else:
 				query_producto['precio'] = request.POST.get('precio')
-			#3	
+			#3
+			if request.POST.get('porcentaje_descuento') == '':
+				errores['porcentaje_descuento'] = 0
+			#4	
 			if request.FILES.get('imagen_producto') == None:
 				query_producto['imagen_producto'] = 'logo_proyecto.jpg'
 			else:
 				query_producto['imagen_producto'] = request.FILES.get('imagen_producto')
-			#4
+			#5
 			if int(request.POST.get('marca')) == 0:
 				errores['marca'] = "Por favor debe seleccionar la marca"
 			else:
 				query_producto['marca'] = Marca.objects.get(pk=int(request.POST.get('marca')))
-			#5
+			#6
 			if int(request.POST.get('categoria_genero')) == 0:
 				errores['categoria_genero'] = "Por favor debe seleccionar el genero"
 			else:
