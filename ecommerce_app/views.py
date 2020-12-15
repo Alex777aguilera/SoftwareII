@@ -1,37 +1,46 @@
-from django.shortcuts import render,redirect
-from django.db import transaction,connections
-from django.contrib.auth import login as auth_login,logout,authenticate
-from django.http import HttpResponseRedirect,JsonResponse, HttpResponse
-from django.urls import reverse
-from django.contrib.auth.models import *
-from django.conf import settings
+from django.shortcuts import render,redirect #Rendirzado de plantillas y vista
+from django.contrib.auth import login as auth_login,logout,authenticate #Atenticacion Django
+from django.http import HttpResponseRedirect,JsonResponse, HttpResponse #Respuestas a nivel web
+from django.urls import reverse #Manejo de vistas
+from django.contrib.auth.models import * #Modelos de nuestra APP
+from django.conf import settings #Configuracion de nuestro proyecto
 from django.db.models import Sum,Q 
 from django.db import transaction,connections #manejo de base de datos
-import json, re, telegram, os 
-from datetime import datetime
-from django.core.mail import EmailMessage
-from django.contrib.auth.hashers import make_password
-from django.core import serializers
-from django.core.paginator import Paginator
-from django.contrib.auth.decorators import login_required, permission_required
-from django.template.loader import get_template
+import json, re, os #formato json, paquete y sistema
+from datetime import datetime #Paquete de python para fechas
+from django.core.mail import EmailMessage #Paquete de python para correo
+from django.contrib.auth.hashers import make_password #Paquete de python para contreseña
+from django.core import serializers #Serializadores para convertir objetos a json
+from django.core.paginator import Paginator #Paginador para html
+from django.contrib.auth.decorators import login_required, permission_required #Manejo de permisos
+from django.template.loader import get_template #Manejo de plantillas HTMl
 
-from ecommerce_app.models import *
-from decimal import Decimal
-from pprint import PrettyPrinter
+from ecommerce_app.models import * #Modelos de nuestra aplicacion
+from decimal import Decimal #Paquete
+from pprint import PrettyPrinter #Manejo de PDF
 
 #Librerias para PDF
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from io import StringIO
 from io import BytesIO
-# Create your views here.
 
-existe = ''
-#vista principal
+'''
+Lo anterior son todas librerias de terceros, de python y django que son necesarias
+para el funcionamiento de la aplicacion, tambien configuraciones y paquetes necesarios.
+'''
+
+'''
+Por delante nos encontramos con la logica de nuestro proyecto, donde se rendereiza a plantillas
+junto con sus datos respectivos, validaciones,atenticaciones, manejo de eventos asincronos, 
+envios de correo, generacion de reportes etc.
+'''
+existe = '' #variable global
+#vista principal por aqui se redirige al tipo de usuario
 def principal(request):
-	consulta = request.GET.get('busqueda')
+	consulta = request.GET.get('busqueda') #Busqueda de productos
 	if consulta:
+		#filtros de la consulta
 		productos = Producto.objects.filter(
 			Q(nombre_producto__icontains=consulta)	|
 			Q(descripcion_producto__icontains=consulta) |
@@ -43,12 +52,13 @@ def principal(request):
 		categorias = Categoria.objects.all()
 		subcategorias = SubCategoria.objects.all()
 		paginator = Paginator(productos, 6)
-
+		#paginador para los resultados
 		page_number = request.GET.get('page')
 		productos = paginator.get_page(page_number)
 		data = {'productos':productos,'categorias':categorias,'subcategorias':subcategorias}
 		return render(request, 'productos_busqueda.html', data)
 	else:
+		#Data para nuestro index
 		productos_recientes = Producto.objects.filter(estado_producto=True).order_by('-id')[:8]
 		productos_femeninos = Producto.objects.filter(categoria_genero=2).order_by('-id')[:8]
 		productos_masculinos = Producto.objects.filter(categoria_genero=1).order_by('-id')[:8]
@@ -62,26 +72,17 @@ def principal(request):
 				'empresas':empresas}
 		if request.user.is_authenticated:
 			if request.user.is_superuser :
+				#Si es super usuario redirige a plantilla admin
 				return redirect('ecommerce_app:principal_admin')
 			else:
+				#Si no a plantilla prinicpal
 				return render(request,'principal.html',data)
 		else:
+			#Si no esta autenticado plantilla principal
 			return render(request,'principal.html',data)
 
-# def ajax_gelocalizacion(request):
-# 	if request.method == "POST" and request.is_ajax():
-# 		print(1)
-# 		if request.POST.get('id_empresa') is not None:
-# 			print("id ",request.POST.get('id_empresa'))
-# 			empresaU = Empresa.objects.get(pk=request.POST.get('id_empresa'))
-			
-# 			if empresaU:
-# 				return JsonResponse(empresaU,safe=False)
-# 			else:
-# 				return JsonResponse({'empresaU':'nada'})
 
-
-## Vista admin
+## Vista admin con su data
 @login_required
 def principal_admin(request):
 	user = request.user
@@ -118,7 +119,7 @@ def perfil_cliente(request):
 		return render(request,'error.html')
 
 
-
+#Vista para el login con sus validaciones
 def login(request):
 	if request.user.is_authenticated:
 		if request.user.is_superuser :
@@ -131,13 +132,13 @@ def login(request):
 		username = request.POST.get('username')
 		contrasenia = request.POST.get('pass')
 		user = authenticate(username=username,password=contrasenia)
-		
+		#Consulta si el usuario tiene una cuenta 
 		if user is not None:
 			
-			if user.is_active:
+			if user.is_active:#Si el usuario esta activo
 				auth_login(request,user)
 				
-				if request.user.is_superuser :
+				if request.user.is_superuser :#Validacion
 					return redirect('ecommerce_app:principal_admin')
 				else:
 					return redirect('ecommerce_app:principal')	
@@ -155,12 +156,12 @@ def login(request):
 	return render(request,'login.html',ctx)
 
 
-
+#vista para cerrar sesion
 def cerrar_sesion(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('ecommerce_app:login'))
 
-
+#Para registrar cliente
 def registro_cliente(request):
 	if request.user.is_superuser or request.user.is_authenticated:
 		return redirect('ecommerce_app:principal')	
@@ -173,7 +174,7 @@ def registro_cliente(request):
 		lista_correo = []
 
 		query_cliente,query_domicilio,ret_data,errores,errores_domicilio = {},{},{},{},{}
-		if request.method == 'POST':
+		if request.method == 'POST':#Si es metodo post guardara en la base de datos
 			existe_usuario = False
 			correo = request.POST.get('Correo')
 			usuario = User.objects.filter(username=correo)
@@ -247,7 +248,7 @@ def registro_cliente(request):
 				query_domicilio["direccion"] = request.POST.get("direccion")
 
 			if Cliente.objects.filter(correo=query_cliente['correo']).exists(): 
-				#Si el corre ya existe en la base de datos
+				#Si el correo ya existe en la base de datos
 				errores['existe'] = 'Por favor, ingrese otro correo'
 
 				
@@ -256,11 +257,11 @@ def registro_cliente(request):
 					#Creación de usuario
 					User.objects.create_user(username, email, password)
 					user = User.objects.last()
-					# save for Cliente
+					# guardado para Cliente
 					query_cliente['usuario_cliente'] = user
 					cliente = Cliente(**query_cliente)
 					cliente.save()
-					# save for Domicilio
+					# guardado para Domicilio
 					query_domicilio['usuario'] = user
 					domicilo = Domicilio(**query_domicilio)
 					domicilo.save()
@@ -296,7 +297,7 @@ def registro_cliente(request):
 	# 	data = {'generos':genero,'guardar_modificar':guardar_modificar,'empresas':empresas}
 	# 	return render(request,'registro_cliente.html',data)
 
-
+#Vista para modificar cliente con sus parametros
 @login_required	
 def modificar_cliente(request,id_cliente):
 	clien = Cliente.objects.get(pk=id_cliente)
@@ -352,7 +353,7 @@ def modificar_normal(request,id_cliente):
 		ret_data['genero'] = cliente.genero.pk
 		data = {'guardar_modificar':guardar_modificar,'id_cliente':id_cliente,'ret_data':ret_data,'generos':generos}
 		return  render(request,'registro_cliente.html',data)
-
+#Vista para modificar imagenes
 @login_required
 def modificar_img_cliente(request,id_cliente):
 	avatar = Cliente.objects.get(pk=id_cliente)
@@ -365,9 +366,12 @@ def modificar_img_cliente(request,id_cliente):
 		if not errores:
 			try: 
 				if avatar.imagen == 'Media/imagen_cliente/cliente_default.jpg':
+					#Ubicacion de la ruta de nuestro servidor de archivos en Amazon S3
+					#Si contiene imagen por defecto no elimina la imagen y la cambio
 					avatar.imagen = request.FILES.get('imagen')
 					avatar.save()
 				else:
+					#Caso contrario la elimina
 					avatar.imagen.delete()
 					avatar.imagen = request.FILES.get('imagen')
 					avatar.save()  
@@ -407,17 +411,8 @@ def modificar_domicilio(request,id_domicilio):
 def email(request):
 	return render(request,'email.html')
 	
-# def buscar_productos(request):
-# 	if request.method == 'POST':
-# 		lista = {}
-# 		lista_buscar = vista de los productos.objects.filter(Q(nombre_producto__icontains=request.POST.get('busqueda')) 
-# 													| Q(empresa__nombre__icontains=request.POST.get('busqueda'))
-# 													| Q(descripcion_producto__icontains=request.POST.get('busqueda'))).filter(empresa__estado_aprobacion=3)
-# 		print lista_buscar.query,"lista buscar"
-# 		return render(request,'buscar_productos.html',{'empresas':lista_buscar})
-# 	else:
-# 		return render(request,'error.html')
 
+#Vista necesaria para registrar un producto
 @login_required
 def registrar_producto(request):
 	if request.user.is_superuser:
@@ -544,7 +539,7 @@ def modificar_producto(request,id_producto):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
 
-
+#Modificar imagen de producto
 @login_required			
 def modificar_img_producto(request,id_producto):
 	producto = Producto.objects.get(pk=id_producto)
@@ -573,7 +568,7 @@ def modificar_img_producto(request,id_producto):
 		
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
-
+#Vista necesario para el html de detalle de producto
 def detalle_producto(request,id_producto):
 	if request.user.is_superuser :
 		return redirect('ecommerce_app:principal_admin')	
@@ -588,7 +583,7 @@ def detalle_producto(request,id_producto):
 		rx = 1
 		ctx = {'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
 		return render(request,'detalle_producto.html',ctx)
-
+#peticion ajax asincrona para consultar la existencia de ese producto
 def ajax_existencia(request):
 	existencia_p = 0
 	if request.method == "POST" and request.is_ajax():
@@ -608,17 +603,7 @@ def ajax_existencia(request):
 		return JsonResponse({'otra_variable':'0'})
 
 
-# def ajax_existencia2(request):
-# 	if is_ajax():
-		
-# 		print("id ",request.POST.get('id_producto'))
-# 		existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
-# 		otra_variable = serializers.serialize('json', [ existencia_p ])
-# 		print("AJAX : ",type(existencia_p))
-# 		if existencia_p:
-# 			return JsonResponse(otra_variable,safe=False)
-# 		else:
-# 			return JsonResponse({'otra_variable':'nada'})
+
 
 #vista carrito
 @login_required
@@ -751,29 +736,8 @@ def Eliminar_producto_carrito(request,id_Pdelete):
 	return HttpResponseRedirect(reverse('ecommerce_app:carrito'))
 
 
-def productos_categoria(request,idcategoria):
-	if request.user.is_superuser :
-		return redirect('ecommerce_app:principal_admin')	
-	else:
-		return redirect('ecommerce_app:productos_categoria')
-	empresas = Empresa.objects.get(pk=1)
-	sub_categorias = SubCategoria.objects.filter(categoria=idcategoria)
-	categorias = Categoria.objects.get(pk=idcategoria)
-	marcas = Marca.objects.filter(subcategoria=2)#generar filtro random
-	print(sub_categorias)
-	ctx = {'sub_categorias':sub_categorias,'categorias':categorias,'empresas':empresas}
-	return render(request,'productos_categoria.html',ctx)
 
-def lista_categorias(request):
-	if request.user.is_superuser :
-		return redirect('ecommerce_app:principal_admin')	
-	else:
-		return redirect('ecommerce_app:lista_categorias')
-	empresas = Empresa.objects.get(pk=1)
-	categorias = Categoria.objects.all();
-	ctx = {'categorias':categorias,'empresas':empresas}
-	return render(request,'lista_categorias.html',ctx)
-
+#Vista necesaria para cargar los combobox de manera asincrona a travesde AJAX
 def ajax_categoria_subcategoria(request):
 	if request.method == "GET" and request.is_ajax():
 
@@ -784,6 +748,7 @@ def ajax_categoria_subcategoria(request):
 			else:
 				return JsonResponse({'subcategorias_categorias':'nada'})
 
+#Vista necesaria para cargar los combobox de manera asincrona a travesde AJAX
 def ajax_subcategoria_marca(request):
 	if request.method == "GET" and request.is_ajax():
 		if request.GET.get('id_subcategoria') is not None:
@@ -793,6 +758,7 @@ def ajax_subcategoria_marca(request):
 			else:
 				return JsonResponse({'marcas_subcategorias':'nada'})
 
+#Vista para agregar una empresa
 @login_required
 def agregar_empresa(request):
 	guardar_editar = True 
@@ -1003,7 +969,7 @@ def modificar_genero(request,id_genero):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_genero'))
 
-##Subcategoria
+##Vista para agregar subcategoria
 @login_required
 def agregar_subcategoria(request):
 	if request.user.is_superuser:
@@ -1074,7 +1040,7 @@ def modificar_subcategoria(request,id_subcategoria):
 			return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria')+'?error1')
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_subcategoria'))
-##Marca
+##Vista para agregar marca
 @login_required
 def agregar_marca(request):
 	if request.user.is_superuser:
@@ -1146,7 +1112,7 @@ def modificar_marca(request,id_marca):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_marca'))
 
-
+#Vista para agrear un lote 
 @login_required
 def registrar_lote(request):
 	if request.user.is_superuser:
@@ -1212,7 +1178,7 @@ def modificar_lote(request,id_lote):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_lote'))
 
-
+#Vista para renderizar a plantilla busqueda con sus filtros
 def productos_categorias(request,id_categoria):
 	productos = Producto.objects.filter(marca__subcategoria__categoria = id_categoria,
 										estado_producto = True)
@@ -1227,7 +1193,7 @@ def productos_categorias(request,id_categoria):
 			'subcategorias':subcategorias}
 	return render(request, 'productos_busqueda.html', data)
 
-
+#Vista para renderizar a plantilla busqueda con sus filtros
 def productos_subcategoria(request,id_categoria,id_subcategoria):
 	productos = Producto.objects.filter(marca__subcategoria=id_subcategoria,
 										estado_producto = True)
@@ -1243,6 +1209,7 @@ def productos_subcategoria(request,id_categoria,id_subcategoria):
 			'subcategoria':subcategoria,'subcategorias':subcategorias}
 	return render(request, 'productos_busqueda.html', data)
 
+#Datos de los clientes en la plantilla de administrador
 @login_required
 def datos_clientes_admin(request):
 	user = request.user
@@ -1255,37 +1222,6 @@ def datos_clientes_admin(request):
 	else:
 		return redirect('ecommerce_app:principal')	
 
-
-
-def cambio_contrasena(request):
-	if request.user.is_authenticated():
-		username = request.user.username
-		contrasenia = request.POST.get('contrasena_actual')
-		user = authenticate(username=username,password=contrasenia)
-		ret_data = {}
-
-		global existe
-		if request.method == 'POST':
-			if user is not None :
-				user = User.objects.get(pk=request.user.pk)
-				password = request.POST.get('contrasena_nueva')
-				contrasena_confirma = request.POST.get('contrasena_confirma')
-				if password == contrasena_confirma:
-					if validar_password(password):
-						user.set_password(password)
-						user.save()
-						return HttpResponseRedirect(reverse('sumacua_app:cerrar_sesion'))
-					else:
-						return HttpResponseRedirect(reverse('sumacua_app:cambio_contrasena')+"?error3")
-				else:
-					return HttpResponseRedirect(reverse('sumacua_app:cambio_contrasena')+"?error2")
-			else:
-				return HttpResponseRedirect(reverse('sumacua_app:cambio_contrasena')+"?error")
-		else:
-			data = {'existe':existe}	
-			return render(request,'cambio_contrasena.html',data) 
-	else:
-		return render(request,'error.html') 
 
 @login_required
 def Detalle_Orden(request):
@@ -1409,6 +1345,7 @@ def facturacion_producto(request):
 	pisaStatus = pisa.CreatePDF(html,dest=response)
 	car = Carrito.objects.filter(usuario = request.user).delete()
 
+	#Enviamos un correo cuando generamos la factura
 	correo = cliente_correo.correo
 	lista_correo = []
 	lista_correo.append(correo)
@@ -1595,10 +1532,11 @@ def modificar_empresa(request,id_empresa):
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
 
+#Vista para el manejo de paginas no encontradas, renderiza a la vista principal que esta haga el trabajo
 def error_404_view(request, exception):
 	return redirect('ecommerce_app:principal')
 
-
+#Se genera una factura, para la plantilla en administracion
 def factura_orden(request, id):
 	orden_factura = Orden.objects.filter(pk=id)
 	fact = Orden.objects.get(pk=id)
