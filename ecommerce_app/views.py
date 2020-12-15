@@ -85,7 +85,6 @@ def principal(request):
 @login_required
 def principal_admin(request):
 	user = request.user
-	print (user.pk)
 	if user.is_authenticated:
 		if request.user.is_superuser :
 			ordenes = Orden.objects.all()
@@ -1224,34 +1223,34 @@ def modificar_lote(request,id_lote):
 
 
 def productos_categorias(request,id_categoria):
-    productos = Producto.objects.filter(marca__subcategoria__categoria = id_categoria,
+	productos = Producto.objects.filter(marca__subcategoria__categoria = id_categoria,
 										estado_producto = True)
-    categoria = Categoria.objects.get(pk=id_categoria)
-    categorias = Categoria.objects.all()
-    subcategorias = SubCategoria.objects.all()
-    paginator = Paginator(productos, 6)
+	categoria = Categoria.objects.get(pk=id_categoria)
+	categorias = Categoria.objects.all()
+	subcategorias = SubCategoria.objects.all()
+	paginator = Paginator(productos, 6)
 
-    page_number = request.GET.get('page')
-    productos = paginator.get_page(page_number)
-    data = {'productos':productos,'categorias':categorias,'categoria':categoria,
-    		'subcategorias':subcategorias}
-    return render(request, 'productos_busqueda.html', data)
+	page_number = request.GET.get('page')
+	productos = paginator.get_page(page_number)
+	data = {'productos':productos,'categorias':categorias,'categoria':categoria,
+			'subcategorias':subcategorias}
+	return render(request, 'productos_busqueda.html', data)
 
 
 def productos_subcategoria(request,id_categoria,id_subcategoria):
-    productos = Producto.objects.filter(marca__subcategoria=id_subcategoria,
-    									estado_producto = True)
-    categoria = Categoria.objects.get(pk=id_categoria)
-    subcategoria = SubCategoria.objects.get(pk=id_subcategoria)
-    categorias = Categoria.objects.all()
-    subcategorias = SubCategoria.objects.all()
-    paginator = Paginator(productos, 6)
+	productos = Producto.objects.filter(marca__subcategoria=id_subcategoria,
+										estado_producto = True)
+	categoria = Categoria.objects.get(pk=id_categoria)
+	subcategoria = SubCategoria.objects.get(pk=id_subcategoria)
+	categorias = Categoria.objects.all()
+	subcategorias = SubCategoria.objects.all()
+	paginator = Paginator(productos, 6)
 
-    page_number = request.GET.get('page')
-    productos = paginator.get_page(page_number)
-    data = {'productos':productos,'categorias':categorias,'categoria':categoria,
-    		'subcategoria':subcategoria,'subcategorias':subcategorias}
-    return render(request, 'productos_busqueda.html', data)
+	page_number = request.GET.get('page')
+	productos = paginator.get_page(page_number)
+	data = {'productos':productos,'categorias':categorias,'categoria':categoria,
+			'subcategoria':subcategoria,'subcategorias':subcategorias}
+	return render(request, 'productos_busqueda.html', data)
 
 @login_required
 def datos_clientes_admin(request):
@@ -1324,10 +1323,9 @@ def Detalle_Orden(request):
 		c = int(request.POST.get('validacion'))
 		if c == 1:
 			# 
-			print("\n","Se elimino productos del carrito")
 			return HttpResponseRedirect(reverse('ecommerce_app:Detalle_Orden')+"?dato")
 		else :
-			print("No se elimino nada")
+			pass
 	
 	return render(request,'Detalle_Orden.html',ctx)
 
