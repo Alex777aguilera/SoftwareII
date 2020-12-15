@@ -23,8 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '2e=5*7jtu(poyd&(yj89fc!7%w(tg)3$1iu*k(=i39=d2&%jcv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-from decouple import config
-DEBUG = config('DEBUG', default=False, cast=bool)
+#from decouple import config
+#DEBUG = config('DEBUG', default=False, cast=bool)
+
+DEBUG = True
 
 ALLOWED_HOSTS = ['easy-buyuth.herokuapp.com']
 
