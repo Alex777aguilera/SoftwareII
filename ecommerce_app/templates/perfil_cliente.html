@@ -208,17 +208,20 @@ Easy-buy | Cliente
                                                         </select>
                                                     </div>
                                                     <!---->
-                                                    <div class="col-sm-5 form-group">
-                                                        <label><i class="icon fa fa-phone"> </i> Telefono <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="text" class="form-control" placeholder="numero_telefono" id="id_numero_telefono" name="numero_telefono" value="{{cliente.numero_telefono}}">
-                                                    </div> <!-- form-group end.// -->
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-sm-6 form-group">
                                                         <label><i class="icon fa fa-calendar"></i> Fecha de nacimiento <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="date" class="form-control" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{cliente.fecha_nacimiento}}">
+                                                        <input type="date" class="form-control" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{cliente.fecha_nacimiento|date:'Y-m-d'}}">
                                                     </div> <!-- form-group end.// -->
-                                                    <div class="col-sm-6 form-group">
+                                                    <div class="col-sm-5 form-group">
+                                                        <label><i class="icon fa fa-phone"> </i> Telefono <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <input type="text" class="form-control" placeholder="numero_telefono" id="id_numero_telefono" name="numero_telefono" value="{{cliente.numero_telefono}}">
+                                                    </div> <!-- form-group end.// -->
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-8 form-group">
                                                         <label><i class="icon fa fa-envelope"> </i> Correo <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
                                                         <input type="text" class="form-control" placeholder="correo" id="id_correo" name="correo" value="{{cliente.correo}}">
                                                     </div> <!-- form-group end.// -->
@@ -279,36 +282,45 @@ Easy-buy | Cliente
 {% block js %}
 <script>
 // validacion para la imgaen del cliente
+    function history_push(){
+        history.pushState(null,"","{% url 'ecommerce_app:perfil_cliente' %}");
+    }
 	{% if 'error2' in request.GET %}
 
-Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 1500 })
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 2300 })
+    history_push();
  {% endif %}
 
  {% if 'ok2' in request.GET %}
 
-Swal.fire({ position: 'center', icon: 'success', title: 'Imagen cargada con éxito.', showConfirmButton: false, timer: 1500 })
+Swal.fire({ position: 'center', icon: 'success', title: 'Imagen cargada con éxito.', showConfirmButton: false, timer: 2300 })
+    history_push();
  {% endif %}
 
  // Validacion para datos del cliente
  {% if 'error' in request.GET %}
 
-Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 2300 })
+    history_push();
  {% endif %}
 
  {% if 'ok3' in request.GET %}
 
-Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito.', showConfirmButton: false, timer: 1500 })
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito.', showConfirmButton: false, timer: 2300 })
+    history_push();
  {% endif %}
 
  // Validacion para datos del domicilio
  {% if 'errord' in request.GET %}
 
-Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
+Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 2300 })
+    history_push();
  {% endif %}
 
  {% if 'okd' in request.GET %}
 
-Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito.', showConfirmButton: false, timer: 1500 })
+Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con éxito.', showConfirmButton: false, timer: 2300 })
+    history_push();
  {% endif %}
 </script>
 {% endblock js %}

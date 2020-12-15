@@ -43,7 +43,7 @@ Easy-buy | Admin
                                     <td>{{orden.fecha_compra}}</td>
 
                                     {% for cliente in clientes  %}
-                                    	{% ifequal  orden.username.pk cliente.username.pk %} 
+                                    	{% ifequal  cliente.usuario_cliente.pk orden.usuario.pk %} 
                                 		  	<td>{{cliente.nombres}} {{cliente.apellidos}}</td>
                                     	{% endifequal %}
                                     {% endfor %}
