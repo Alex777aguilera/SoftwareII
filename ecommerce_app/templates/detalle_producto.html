@@ -176,8 +176,10 @@ function User_Nologin() {
             text: 'La cantidad ingresada supera nuestro inventario',})
              $('#cantidad').val(existencia_glogal);
             return false;
+        }else if(cantidad == 0){
+           return false;
         }else{
-            this.submit();
+            this.submit()
         }
     });
 
