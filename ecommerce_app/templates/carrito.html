@@ -47,7 +47,7 @@ Easy-buy | Car_ecommerce
 <tr>
     <td>
         <figure class="itemside">
-            <div class="aside"><img src="{{car.producto.imagen_producto}}" class="img-sm"> <a href="{% url 'ecommerce_app:detalle_producto' car.producto.pk %}">ver </a></div>
+            <div class="aside"><img src="{{car.producto.imagen_producto.url}}" class="img-sm"> <a href="{% url 'ecommerce_app:detalle_producto' car.producto.pk %}">ver </a></div>
             <figcaption class="info">
                 <h7 class="title text-black m-2 bg-grey ">{{car.producto.nombre_producto}}</h7>
                 <p class="text-muted small">{{car.producto.descripcion_producto}}</p>
