@@ -1,9 +1,13 @@
-from django.urls import path, include
-from django.conf import settings
-from . import views
+from django.urls import path, include #Libreria para utilizar path manejo de urls
+from django.conf import settings #Configuracion de nuestro proyecto
+from . import views #Importamos nuestras vistas
 
-app_name = 'ecommerce_app'
+app_name = 'ecommerce_app' #El nombre de nuestra aplicacion
 
+'''Aqui van nuestras url que apuntan siempre una vista, donde la variable name es la que indica
+el nombre por el cual se le asigna a los html. Hay vistas que contienen parametros por ejemplo id
+necesarios para identificar que se actualizara o que consulta en especifico se requiere.
+'''
 urlpatterns = [
  path('', views.principal, name='principal'),
  path('principal/admin', views.principal_admin, name='principal_admin'),
@@ -23,12 +27,10 @@ urlpatterns = [
  path('modificar/marca/<int:id_marca>/', views.modificar_marca, name='modificar_marca'),
  path('ajax/categoria/subcategorias', views.ajax_categoria_subcategoria, name='ajax_categoria_subcategoria'),
  path('detalle/producto/<int:id_producto>/', views.detalle_producto, name='detalle_producto'),
- path('lista/categorias/', views.lista_categorias, name='lista_categorias'),
  path('ajax/subcategoria/marcas', views.ajax_subcategoria_marca, name='ajax_subcategoria_marca'),
  path('modificar/imagen/producto<int:id_producto>/', views.modificar_img_producto, name='modificar_img_producto'),
  path('modificar/producto/<int:id_producto>/', views.modificar_producto, name='modificar_producto'),
  path('delete/prudcto/carrito/<int:id_Pdelete>/', views.Eliminar_producto_carrito, name='Eliminar_producto_carrito'),
- path('productos/categoria/<int:idcategoria>/', views.productos_categoria, name='productos_categoria'),
  path('ajax/existencia', views.ajax_existencia, name='ajax_existencia'),
  path('registro/lote', views.registrar_lote, name='registrar_lote'),
  path('modificar/lote/<int:id_lote>/', views.modificar_lote, name="modificar_lote"),
