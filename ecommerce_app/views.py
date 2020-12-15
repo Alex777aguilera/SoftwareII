@@ -648,7 +648,7 @@ def carrito(request):
 			for carrito in carritos:
 				
 				d = float(carrito.cantidad) * carrito.producto.precio #sacamos el subtotal de cantidad producto por el precio del mismo
-				f = (int(carrito.producto.porcentaje_descuento)/100) #convertimos un entero en decimal, para poder sacar el % de descuento
+				#f = (int(carrito.producto.porcentaje_descuento)/100) #convertimos un entero en decimal, para poder sacar el % de descuento
 				ac = (d*f)
 				e += d #subtotal
 				g += ac #descuento
