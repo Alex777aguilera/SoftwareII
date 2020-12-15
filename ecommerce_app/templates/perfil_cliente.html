@@ -28,7 +28,7 @@ Easy-buy | Cliente
                         <div class="form-group alert alert-info">
                             
                             <img src="{{cliente.imagen.url}}" class="img-sm rounded-circle border">
-                            <button type="submit" class="rounded-circle border"style="position: absolute;top: 58%; left: 12%; red"title="Ver"data-toggle="modal" data-target="#id_imagen{{cliente.pk}}"><i class="fa fa-camera "></i></button>
+                            <button type="submit" class="rounded-circle border"style="position: absolute;top: 58%; left: 10%; red"title="Ver"data-toggle="modal" data-target="#id_imagen{{cliente.pk}}"><i class="fa fa-camera "></i></button>
 
                             <div style="text-align: right">
                             	<i class="icon fa fa-user-circle"></i> {{cliente.usuario_cliente}}
@@ -52,9 +52,9 @@ Easy-buy | Cliente
                         <div class="form-row">
                             <div class="col form-group">
                                 <label>
-                                	{% if cliente.genero.pk == 1 %}
+                                	{% if cliente.genero.pk == 2 %}
                                 		<i class="icon fa fa-female"></i>
-                                	 {% elif cliente.genero.pk == 2 %}
+                                	 {% elif cliente.genero.pk == 1 %}
                                 		<i class="icon fa fa-male"></i>
                                 	{% endif %}
                                 	 Genero</label>
@@ -108,31 +108,11 @@ Easy-buy | Cliente
                         
                     </div> <!-- form-row.// -->
                     
-                  <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="#datos{{domicilio.pk}}">Editar</button>
+                  <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="#datosx{{domicilio.pk}}">Editar</button>
                 </div> <!-- card-body.// -->
             </div> <!-- card .// -->
         </aside>
-         <aside class="col-md-4">
-            <div class="card mb-4 ">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">Datos de Targeta</h4>
-                    
-                        <img src="{% static 'images/icons/Icono-direccion.png' %}" class="img-sm rounded-circle border">
-                    
-                    <div class="form-row col-md-15">
-                        <div class="col form-group ">
-                            <label># de targeta</label>
-                            <div class="alert alert-success alert-dismissible " role="alert" style="font-size: 12px">
-                                <strong>{{domicilio.direccion}} </strong>
-                            </div>
-                        </div> <!-- form-group end.// -->
-                        
-                    </div> <!-- form-row.// -->
-                    
-                  <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="">Editar</button>
-                </div> <!-- card-body.// -->
-            </div> <!-- card .// -->
-        </aside>
+         
     </div>
 
 
@@ -212,9 +192,9 @@ Easy-buy | Cliente
                                                     </div> <!-- form-group end.// -->
                                                     <!---->
                                                     <div class="col-sm-5 form-group">
-                                                        <label>{% if cliente.genero.pk == 1 %}
+                                                        <label>{% if cliente.genero.pk == 2 %}
 						                            		<i class="icon fa fa-female"></i>
-						                            	 {% elif cliente.genero.pk == 2 %}
+						                            	 {% elif cliente.genero.pk == 1 %}
 						                            		<i class="icon fa fa-male"></i>
 						                            	{% endif %} Género <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
                                                      <select class="form-control" id="id_genero" name="genero">
@@ -236,7 +216,7 @@ Easy-buy | Cliente
                                                 <div class="row">
                                                     <div class="col-sm-6 form-group">
                                                         <label><i class="icon fa fa-calendar"></i> Fecha de nacimiento <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="date" class="form-control" placeholder="fecha_nacimiento" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{cliente.fecha_nacimiento}}">
+                                                        <input type="date" class="form-control" id="id_fecha_nacimiento" name="fecha_nacimiento" value="{{cliente.fecha_nacimiento}}">
                                                     </div> <!-- form-group end.// -->
                                                     <div class="col-sm-6 form-group">
                                                         <label><i class="icon fa fa-envelope"> </i> Correo <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
@@ -255,7 +235,7 @@ Easy-buy | Cliente
                                 </div>
                             </div>
     <!--  Modal para editar el domicilio-->
-                            <div class="modal fade" id="datos{{domicilio.pk}}">
+                            <div class="modal fade" id="datosx{{domicilio.pk}}">
                                 <div class="modal-dialog">
                                     <div class="modal-content alert alert-info">
                                         <!-- Modal Header -->

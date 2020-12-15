@@ -1,0 +1,124 @@
+{% extends "base_cliente.html" %}
+{% block title %}
+e-commerce | Orden
+{% endblock title %}
+{% load static %}
+{% block content %}
+<div class="container">
+<section class="section-content padding-y bg">
+<article class="card card-body " style="border-radius: 10px;">
+<div class=" " style="border: 15px !important">
+	<div class="col-md-4">	
+		<figure>
+			{{empresas.nombre}}
+		</figure> <!-- iconbox // -->
+	</div><!-- col // -->   
+</div>
+
+</article> <!-- card.// -->
+
+<!---->
+<br>
+        <div class="row">
+            <aside class="col-md-12" >
+                <div class="card mb-4" style="border-radius: 10px;">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Detalle Orden</h4>
+                       
+                        <hr>
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label><i class="icon fa fa-user"> </i> Nombre</label>
+                                <div class="alert alert-info" role="alert" style="font-size: 12px">
+                                    <strong>{{cliente.nombres}}-{{cliente.apellidos}} </strong>
+                                </div>
+                            </div> <!--  -->
+                             
+                             <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-calendar"> </i> Fecha</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong id="fecha"></strong>
+
+                                </div>
+                            </div> <!-- form-group end.// -->
+                        </div> <!-- form-row.// -->
+                        <div class="form-row">
+                           
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-phone"> </i> # Telefono</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{cliente.numero_telefono}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                        
+                            
+
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-map"> </i> Direccion de envio</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{domicilio.direccion}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                            
+                        </div> <!-- form-row.// -->
+                        <hr>
+                        <div class="row">
+                        	<div class="form-group col-md-6">
+                                <label><i class="fa fa-usd" aria-hidden="true"></i> Subtotal</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{d}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-money"> </i> Descuento</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{e}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-cash"> </i> Total</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{total}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
+                        </div>
+                        <form action="{% url 'ecommerce_app:Detalle_Orden' %}" method="POST" accept-charset="utf-8" enctype="multipart/form-data" >
+                        	{% csrf_token %}
+                        <div class="card-body border-top">
+                            <button type="submit" class="btn btn-primary float-md-right" value="1" name="validacion" id="validacion" onclick="emerget_window();">Ejecutar compra</button>
+                        	
+                        	 </div>
+                        </form>
+                    </div>
+                </div>
+            </aside>
+<!---->
+</section>
+</div>
+
+{% endblock content %}
+{% block js %}
+<script>
+
+	var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+	var dias = new Array ("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado");
+    var f=new Date(); 
+	 
+	var fecha1 = dias[f.getDay()] + " " + f.getDate() + " de " + meses[f.getMonth()] + " de " + f.getFullYear()
+	 // alert("hola "+fecha1);
+     document.getElementById('fecha').innerHTML=' '+fecha1;
+
+
+
+function emerget_window() {
+    window.open('{% url 'ecommerce_app:facturacion_producto' %}');
+}
+
+//Vaidacion de datos eliminados del carrito
+{% if 'dato' in request.GET %}
+Swal.fire({ position: 'center', icon: 'success', title: 'Compra generada exitosamente', showConfirmButton: true, timer: 4000 })
+{% endif %} 
+
+
+</script>
+{% endblock js %}

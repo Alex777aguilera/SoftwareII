@@ -6,10 +6,10 @@ Easy-buy | Login
 {% block content %}
 
 <!-- ========================= Seccion de contenido ========================= -->
-<section class="section-conten padding-y" style="min-height:60vh">
+<section class="section-conten padding-y alert alert-info" style="min-height:60vh">
 
 <!-- ============================ Inicio de login ================================= -->
-	<div class="card mx-auto" style="max-width: 380px; margin-top: 20px;">
+	<div class="card mx-auto " style="max-width: 400px; margin-top: 40px;">
       <div class="card-body">
       <center><h3 class="card-title mb-4">Iniciar sesión</h3></center>
       <hr> 
@@ -18,18 +18,23 @@ Easy-buy | Login
             </div>
           </center>
             <hr>
-      <form class="user" method="post">
+      <form class="user" method="POST">
         {% csrf_token %}
+
           <div class="form-group">
 			 <input  class="form-control" placeholder="Usuario" type="text" name="username">
           </div> <!-- form-group// -->
-          <div class="form-group">
-			<input  class="form-control" placeholder="Contraseña" type="password" name="pass">
-          </div> <!-- form-group// -->
+          <div class="input-group mb-4">
+            <input type="password" class="form-control" placeholder="Contraseña" name="pass" id="id_contrasena">
+            <div class="input-group-append">
+              <button class="btn btn-secondary" type="button" onclick="mostrarPassword();"  id="mostrar_contrasena"></button>
+            </div>
+          </div><!-- form-group// -->
           <div class="form-group">
               <button type="submit" class="btn btn-primary btn-block"> Ingresar  </button>
           </div> <!-- form-group// -->    
       </form>
+      <hr>
       <div>
          <p class="text-center mt-4"><strong>¿No tiene cuenta?</strong><a href="{% url 'ecommerce_app:registro_cliente' %}"><strong> Crear</strong></a></p>
       </div>
@@ -47,4 +52,20 @@ Easy-buy | Login
 {% endblock content %}
 
 {% block js %}
+<script type="text/javascript">
+$(document).ready(function () {
+  $('#mostrar_contrasena').addClass('fa fa-eye-slash');
+});
+  function mostrarPassword(){
+    var cambio = document.getElementById("id_contrasena");
+    if(cambio.type == "password"){
+      $("#id_contrasena").prop("type", "text");
+      $('#mostrar_contrasena').removeClass('fa fa-eye-slash').addClass('fa fa-eye');
+    }else{
+      $("#id_contrasena").prop("type", "password");
+      $('#mostrar_contrasena').removeClass('fa fa-eye').addClass('fa fa-eye-slash');
+    }
+  } 
+
+</script>
 {% endblock js %}

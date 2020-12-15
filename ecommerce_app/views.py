@@ -85,7 +85,6 @@ def principal(request):
 @login_required
 def principal_admin(request):
 	user = request.user
-	print (user.pk)
 	if user.is_authenticated:
 		if request.user.is_superuser :
 			ordenes = Orden.objects.all()
@@ -113,7 +112,6 @@ def perfil_cliente(request):
 			cliente = Cliente.objects.get(usuario_cliente = user)
 			domicilio = Domicilio.objects.get(usuario = user)
 
-			print(cliente,"\n",domicilio)
 			data = {'cliente':cliente,'domicilio':domicilio,'generos':generos,'empresas':empresas}
 			return render(request,'perfil_cliente.html',data)	
 	else:
@@ -135,10 +133,10 @@ def login(request):
 		user = authenticate(username=username,password=contrasenia)
 		
 		if user is not None:
-			print(1)
+			
 			if user.is_active:
 				auth_login(request,user)
-				print(2)
+				
 				if request.user.is_superuser :
 					return redirect('ecommerce_app:principal_admin')
 				else:
@@ -161,6 +159,7 @@ def login(request):
 def cerrar_sesion(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('ecommerce_app:login'))
+
 
 def registro_cliente(request):
 	if request.user.is_superuser or request.user.is_authenticated:
@@ -274,7 +273,6 @@ def registro_cliente(request):
 					msg.content_subtype = 'html'
 					msg.send(fail_silently=False)
 				except Exception as e:
-					print (e,"Entro aqui")
 					transaction.rollback()
 					
 					data = {'generos':genero,'ret_data':ret_data,
@@ -293,6 +291,11 @@ def registro_cliente(request):
 		elif request.method	== 'GET':	
 			data = {'generos':genero,'guardar_modificar':guardar_modificar,'empresas':empresas}
 			return render(request,'registro_cliente.html',data)
+
+	# elif request.method	== 'GET':	
+	# 	data = {'generos':genero,'guardar_modificar':guardar_modificar,'empresas':empresas}
+	# 	return render(request,'registro_cliente.html',data)
+
 
 @login_required	
 def modificar_cliente(request,id_cliente):
@@ -529,7 +532,6 @@ def modificar_producto(request,id_producto):
 																),
 
 			except Exception as e:
-				print(e,"Este es el error");	
 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error1")
 			else:
 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?ok1")		
@@ -538,6 +540,7 @@ def modificar_producto(request,id_producto):
 		
 	else:
 		return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto'))
+
 
 @login_required			
 def modificar_img_producto(request,id_producto):
@@ -577,7 +580,6 @@ def detalle_producto(request,id_producto):
 
 		if Lote.objects.filter(producto=id_producto).exists() :
 			existencias = Lote.objects.get(producto=id_producto)
-			print(existencias)
 		else:
 			existencias = 0	
 		rx = 1
@@ -587,9 +589,7 @@ def detalle_producto(request,id_producto):
 def ajax_existencia(request):
 	existencia_p = 0
 	if request.method == "POST" and request.is_ajax():
-		print(1)
 		if request.POST.get('id_producto') is not None:
-			print("id ",request.POST.get('id_producto'))
 			try:
 				existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
 			except Exception as e:
@@ -600,8 +600,22 @@ def ajax_existencia(request):
 			if existencia_p:
 				return JsonResponse(otra_variable,safe=False)
 			else:
-				return JsonResponse({'otra_variable':'0'})
+				return JsonResponse({'otra_variable':'nada'})
+	else :
+		return JsonResponse({'otra_variable':'0'})
 
+
+# def ajax_existencia2(request):
+# 	if is_ajax():
+		
+# 		print("id ",request.POST.get('id_producto'))
+# 		existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
+# 		otra_variable = serializers.serialize('json', [ existencia_p ])
+# 		print("AJAX : ",type(existencia_p))
+# 		if existencia_p:
+# 			return JsonResponse(otra_variable,safe=False)
+# 		else:
+# 			return JsonResponse({'otra_variable':'nada'})
 
 #vista carrito
 @login_required
@@ -609,7 +623,6 @@ def carrito(request):
 	empresas = Empresa.objects.get(pk=1)
 	rx = 0
 	user = request.user
-	print (user)
 	if user.is_authenticated:
 		if request.user.is_superuser :
 			return redirect('ecommerce_app:principal')
@@ -618,19 +631,55 @@ def carrito(request):
 			carritos = Carrito.objects.filter(usuario=request.user)
 							
 			existencias = Lote.objects.all()
+			cant_pro = Carrito.objects.filter(usuario=request.user).aggregate(cant_total=Sum('cantidad'))
+			d = 0
+			e = 0 #subtotal
+			f = 0
+			g = 0 #descuento
+			ac = 0
+			total = 0
+			carrito_vacio = 1
+			if cant_pro['cant_total'] == None:
+				carrito_vacio = 0
+				ctx = {'carrito_vacio':carrito_vacio}
+				render(request,'carrito.html',ctx)
 			
-			# print(carritos)
+			# print(carritos.cantidad)
+			for carrito in carritos:
+				
+				d = float(carrito.cantidad) * carrito.producto.precio #sacamos el subtotal de cantidad producto por el precio del mismo
+				f = (int(carrito.producto.porcentaje_descuento)/100) #convertimos un entero en decimal, para poder sacar el % de descuento
+				ac = (d*f)
+				e += d #subtotal
+				g += ac #descuento
+			
+			total = (e - g)
 
 			if request.method == 'POST':
 				a = request.POST.get('producto_id')
-				b = request.POST.get('cantidad_d')
-				print (a,"\n",b)
+				b = int(request.POST.get('cantidad_d'))
+				c = 0
+				dx = 0
+
 				ret_data,query_add_carrito,errores = {},{},{}
 				if Carrito.objects.filter(producto=a,usuario=request.user).exists():
-					xl = Carrito.objects.filter(producto=a,usuario=request.user)
-					print(xl,"\n")
-					print("Existe este producto ya en el carrito")
-					errores["existe"] = "Productos ya existente en el carrito"
+					## Validacion para sumar productos ya agregados al carrito
+					carritos = Carrito.objects.filter(usuario=request.user)
+					cant_p = Carrito.objects.filter(producto=a).aggregate(pro_total=Sum('cantidad'))
+					c = int(cant_p['pro_total']) + b #cantidad de productos agregados
+					
+					carro = Carrito.objects.filter(producto=a).update(cantidad=c)
+
+					###### Validacion para reducir los productos agregados al carrito en existencia
+					cant_p_existencia = Lote.objects.get(producto=a)
+					dx = (int(cant_p_existencia.existencia) - b)
+					print(cant_p_existencia,"\n",dx)
+					productos_apartados = Lote.objects.filter(producto=a).update(existencia=dx)
+
+
+					errores["existe"] = "Se agrego con exito"
+					ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'errores':errores,'ret_data':ret_data,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
+					return HttpResponseRedirect(reverse('ecommerce_app:carrito'))
 
 				
 				ret_data['cantidad'] = request.POST.get('cantidad_d')
@@ -649,16 +698,23 @@ def carrito(request):
 
 				if not errores:
 					try:
+						
+						###### Validacion para reducir los productos agregados al carrito en existencia
+						cant_p_existencia = Lote.objects.get(producto=a)
+						dx = (int(cant_p_existencia.existencia) - b)
+						print(cant_p_existencia,"\n",dx)
+						productos_apartados = Lote.objects.filter(producto=a).update(existencia=dx)
 						car = Carrito(**query_add_carrito)
 						car.save()
 						print("se guardo")
+						
 					except Exception as e:
 						transaction.rollback()
 						print (e)
 						rx = 0
 						existencias = Lote.objects.get(producto=a)
 						errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
-						ctx = {'errores':errores,'ret_data':ret_data,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
+						ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'errores':errores,'ret_data':ret_data,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
 						
 						return render(request,'carrito.html',ctx)
 
@@ -671,9 +727,9 @@ def carrito(request):
 					productos = Producto.objects.get(pk=a)
 					existencias = Lote.objects.get(producto=a)
 					print(productos)
-					ctx = {'errores':errores,'ret_data':ret_data,'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
+					ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'errores':errores,'ret_data':ret_data,'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
 					return render(request,'detalle_producto.html',ctx)
-			ctx = {'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
+			ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
 			return render(request,'carrito.html',ctx)
 	else:
 		return render(request,'carrito.html')
@@ -681,6 +737,13 @@ def carrito(request):
 @login_required
 ##Eliminar producto carrito
 def Eliminar_producto_carrito(request,id_Pdelete):
+	#### Validacion, la cantidad de productos a existencia, en caso no realizen la compra
+	car = Carrito.objects.get(pk=id_Pdelete)
+	cant_p_existencia = Lote.objects.get(producto=car.producto)
+	cant_pro = (int(car.cantidad) + int(cant_p_existencia.existencia))
+	print(cant_pro)
+	suma_car = Lote.objects.filter(producto=car.producto).update(existencia=cant_pro)
+	#####
 	eliminar = Carrito.objects.get(pk=id_Pdelete).delete()
 	return HttpResponseRedirect(reverse('ecommerce_app:carrito'))
 
@@ -729,12 +792,12 @@ def ajax_subcategoria_marca(request):
 
 @login_required
 def agregar_empresa(request):
-	guardar_editar = True
-	empresas = Empresa.objects.all()
+	guardar_editar = True 
+	empresas = Empresa.objects.all() 
 	ret_data,query_empresa,errores = {},{},{}
 
 	if request.method == 'POST':
-		ret_data['nombre'] = request.POST.get('nombre')
+		ret_data['nombre'] = request.POST.get('nombre') #Capturamos los valores que son ingresados en los textfield
 		ret_data['imagen_logo'] = request.FILES.get('imagen_logo')
 		ret_data['telefono'] = request.POST.get('telefono')
 		ret_data['correo'] = request.POST.get('correo')
@@ -743,7 +806,7 @@ def agregar_empresa(request):
 		ret_data['longitude_empresa'] = request.POST.get('longitude_empresa')
 		ret_data['descripcion'] = request.POST.get('descripcion')
 
-		#1
+		#1  Validaciones para que los campos no vayan con valor nulo
 		if request.POST.get('nombre') == '':
 			errores['nombre'] = "Por favor ingrese el nombre de la Empresa"
 		else:
@@ -799,9 +862,9 @@ def agregar_empresa(request):
 				transaction.rollback()
 				print (e)
 				errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
-				ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar,'empresas':empresas}
+				ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar,'empresas':empresas} #Se envia el contexto a una variable
 				
-				return render(request,'agregar_empresa.html',ctx)
+				return render(request,'agregar_empresa.html',ctx)  #rediereccionamiento de urls
 
 			else:
 				transaction.commit()
@@ -1148,34 +1211,34 @@ def modificar_lote(request,id_lote):
 
 
 def productos_categorias(request,id_categoria):
-    productos = Producto.objects.filter(marca__subcategoria__categoria = id_categoria,
+	productos = Producto.objects.filter(marca__subcategoria__categoria = id_categoria,
 										estado_producto = True)
-    categoria = Categoria.objects.get(pk=id_categoria)
-    categorias = Categoria.objects.all()
-    subcategorias = SubCategoria.objects.all()
-    paginator = Paginator(productos, 6)
+	categoria = Categoria.objects.get(pk=id_categoria)
+	categorias = Categoria.objects.all()
+	subcategorias = SubCategoria.objects.all()
+	paginator = Paginator(productos, 6)
 
-    page_number = request.GET.get('page')
-    productos = paginator.get_page(page_number)
-    data = {'productos':productos,'categorias':categorias,'categoria':categoria,
-    		'subcategorias':subcategorias}
-    return render(request, 'productos_busqueda.html', data)
+	page_number = request.GET.get('page')
+	productos = paginator.get_page(page_number)
+	data = {'productos':productos,'categorias':categorias,'categoria':categoria,
+			'subcategorias':subcategorias}
+	return render(request, 'productos_busqueda.html', data)
 
 
 def productos_subcategoria(request,id_categoria,id_subcategoria):
-    productos = Producto.objects.filter(marca__subcategoria=id_subcategoria,
-    									estado_producto = True)
-    categoria = Categoria.objects.get(pk=id_categoria)
-    subcategoria = SubCategoria.objects.get(pk=id_subcategoria)
-    categorias = Categoria.objects.all()
-    subcategorias = SubCategoria.objects.all()
-    paginator = Paginator(productos, 6)
+	productos = Producto.objects.filter(marca__subcategoria=id_subcategoria,
+										estado_producto = True)
+	categoria = Categoria.objects.get(pk=id_categoria)
+	subcategoria = SubCategoria.objects.get(pk=id_subcategoria)
+	categorias = Categoria.objects.all()
+	subcategorias = SubCategoria.objects.all()
+	paginator = Paginator(productos, 6)
 
-    page_number = request.GET.get('page')
-    productos = paginator.get_page(page_number)
-    data = {'productos':productos,'categorias':categorias,'categoria':categoria,
-    		'subcategoria':subcategoria,'subcategorias':subcategorias}
-    return render(request, 'productos_busqueda.html', data)
+	page_number = request.GET.get('page')
+	productos = paginator.get_page(page_number)
+	data = {'productos':productos,'categorias':categorias,'categoria':categoria,
+			'subcategoria':subcategoria,'subcategorias':subcategorias}
+	return render(request, 'productos_busqueda.html', data)
 
 @login_required
 def datos_clientes_admin(request):
@@ -1221,9 +1284,42 @@ def cambio_contrasena(request):
 	else:
 		return render(request,'error.html') 
 
+@login_required
+def Detalle_Orden(request):
+	carritos = Carrito.objects.filter(usuario=request.user)
+	a=0
+	b=0
+	c=0
+	d=0
+	e=0
+
+	for carrito in carritos:
+				
+		a = float(carrito.cantidad) * carrito.producto.precio #sacamos el subtotal de cantidad producto por el precio del mismo
+		b = (int(carrito.producto.porcentaje_descuento)/100) 
+		c = (a*b)
+		d += a 
+		e += c
+	
+	total = (d - e)
+	cliente = Cliente.objects.get(usuario_cliente=request.user)
+	domicilio = Domicilio.objects.get(usuario = request.user)
+	empresas = Empresa.objects.get(pk=1)
+	ctx = {'carritos':carritos,'empresas':empresas,'cliente':cliente,'domicilio':domicilio,'d':d,'e':e,'total':total}
+	### Validacion para eliminar los productos del carrito al ajercer la compra
+	if request.method == 'POST' and request.POST.get('validacion'):
+		c = int(request.POST.get('validacion'))
+		if c == 1:
+			# 
+			return HttpResponseRedirect(reverse('ecommerce_app:Detalle_Orden')+"?dato")
+		else :
+			pass
+	
+	return render(request,'Detalle_Orden.html',ctx)
+
+@login_required
 def facturacion_producto(request):
-	pp = PrettyPrinter(indent=4)
-	#if request.method == 'POST':
+
 	cliente = Cliente.objects.filter(usuario_cliente=request.user)
 	productos_carrito = Carrito.objects.filter(usuario=request.user)
 	empresa = Empresa.objects.filter(pk=1)
@@ -1254,11 +1350,12 @@ def facturacion_producto(request):
 		if prod.producto.porcentaje_descuento == 0 or prod.producto.porcentaje_descuento == None:
 			desc_prod = 0
 		else:
-			desc_prod = prod.producto.porcentaje_descuento * sub_x_producto
+			desc_prod = prod.producto.porcentaje_descuento
 
 		desc_factura += desc_prod
 
 		total_x_prod = sub_x_producto - desc_prod
+
 		subtotal_factura += total_x_prod
 
 		lista_data_prod.append(prod.cantidad)
@@ -1306,11 +1403,17 @@ def facturacion_producto(request):
 	html = template.render(ctx)
 	response = HttpResponse(content_type='application/pdf')  
 	pisaStatus = pisa.CreatePDF(html,dest=response)
+	car = Carrito.objects.filter(usuario = request.user).delete()
 	return response
 
-	return render(request,'factura_cliente.html',ctx)
+	# return render(request,'factura_cliente.html',ctx)
+	
+
+	
+	
 
 #vista para que el admin vea el pdf de todos los productos vendidos seleccionando un mes en especifico
+@login_required
 def pdf_mes_productos_vendidos(request):
 	if request.method == 'POST':
 		fecha = request.POST.get('mes')
@@ -1411,7 +1514,6 @@ def pdf_mes_productos_vendidos(request):
 				'anio' : date[0],
 				'no_ventas' : no_ventas}
 
-
 		template = get_template('pdf_mes_productos_vendidos.html')
 		html = template.render(ctx)
 		response = HttpResponse(content_type='application/pdf')  
@@ -1421,5 +1523,100 @@ def pdf_mes_productos_vendidos(request):
 	else:
 		return render(request,'mes_productos_vendidos.html')
 
+
+@login_required
+def modificar_img_empresa(request,id_empresa):
+	avatar = Empresa.objects.get(pk=id_empresa) #Capturamos la informacion en una sola variable
+	ret_data,errores = {},{}
+
+	if request.method=='POST':
+		if request.FILES.get('imagen') == None:
+			errores['errores'] = "HAY ERRORES!" #Muestra un error si no se encuentra algun valor
+
+		if not errores:
+			try: 
+				avatar.imagen_logo = request.FILES.get('imagen')
+				avatar.save() 
+
+			except Exception as e:	
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error2") #Redireccionamiento que simula un refresh
+			else:
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?ok2")		
+		else:
+			return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error2")
+		
+	else:
+		return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
+
+def modificar_empresa(request,id_empresa):
+	empresa = Empresa.objects.get(pk=id_empresa) #Capturamos la informacion en una sola variable
+	ret_data,errores = {},{}
+	if request.method=='POST':#usamos un metodo POST para recibir valores
+		if request.POST.get('nombre') == '' or request.POST.get('telefono') == '' or request.POST.get('fecha_registro') == '' or request.POST.get('direccion') =='' or request.POST.get('latitude_empresa') =='' or request.POST.get('longitude_empresa') =='' or request.POST.get('correo') == '' or request.POST.get('descripcion') == '':
+			errores['nombre'] = "HAY ERRORES!" #Muestra un error si no se encuentra algun valor
+		if not errores:
+			try: 
+				empresa = Empresa.objects.filter(pk=id_empresa).update(
+																			 nombre = request.POST.get('nombre'),
+																			 telefono = request.POST.get('telefono'),
+																			 fecha_registro = request.POST.get('fecha_registro'),	
+																			 direccion = request.POST.get('direccion'),																			 
+																			 latitude_empresa = request.POST.get('latitude_empresa'),
+																			 longitude_empresa = request.POST.get('longitude_empresa'),	
+																			 correo = request.POST.get('correo'),
+																			 descripcion = request.POST.get('descripcion'),																			 
+																			 ), #Actualizacion de datos
+			except Exception as e: 
+				print (e)
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error")  #Redireccionamiento que simula un refresh
+			else:
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?ok3")		
+		else:
+			return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error")
+	else:
+		return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
+
 def error_404_view(request, exception):
 	return redirect('ecommerce_app:principal')
+
+
+def factura_orden(request, id):
+	orden_factura = Orden.objects.filter(pk=id)
+	fact = Orden.objects.get(pk=id)
+
+	factura_detalle = DetalleOrden.objects.filter(orden=fact)
+
+	cliente = Cliente.objects.filter(usuario_cliente=fact.usuario)
+	empresa = Empresa.objects.filter(pk=1)
+	logo_emp = Empresa.objects.get(pk=1)
+
+	lista = []
+	dic_data = {}
+
+	for fact_det in factura_detalle:
+		lista_data_prod = []
+		lista_data_prod.append(fact_det.cantidad)
+		lista_data_prod.append(fact_det.producto.nombre_producto)
+		lista_data_prod.append(f'Lps {fact_det.producto.precio}')
+		lista_data_prod.append(f'Lps {fact_det.descuento}')
+		lista_data_prod.append(f'Lps {fact_det.total_producto}')
+
+		lista.append(lista_data_prod)
+
+	dic_data['detalle'] = lista
+
+	ctx = {
+			'factura' : dic_data,
+			'cliente' : cliente,
+			'orden_factura' : orden_factura,
+			'empresa' : empresa,
+			'logo_emp' : logo_emp.imagen_logo
+		}
+
+	template = get_template('factura_cliente.html')
+	html = template.render(ctx)
+	response = HttpResponse(content_type='application/pdf')  
+	pisaStatus = pisa.CreatePDF(html,dest=response)
+	return response
+
+
