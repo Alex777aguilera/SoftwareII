@@ -112,8 +112,8 @@ Easy-buy | Admin
                             </select>
                         </div>
                         <div class="col-sm-4 form-group">
-                            <label>Porcentaje</label>
-                            <input type="text" class="form-control" placeholder="Porcentaje de Descuento" id="id_porcentaje_descuento" name="porcentaje_descuento" disabled>
+                            <label>Porcentaje Descuento</label>
+                            <input type="number" class="form-control" placeholder="Numero Entero" id="id_porcentaje_descuento" name="porcentaje_descuento" disabled>
                         </div> <!-- form-group end.// -->
                         <div class="col-sm-4 form-group">
                             <label for="exampleFormControlFile1">
@@ -379,6 +379,10 @@ $(document).ready(function() {
         }
     });
 });
+    //Evento para solo permitir numeros
+    $('#id_porcentaje_descuento').on('input', function () { 
+        this.value = this.value.replace(/[^0-9]/g,'');
+    });
    function history_push(){
         history.pushState(null,"","{% url 'ecommerce_app:registrar_producto' %}");
     }
@@ -416,6 +420,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
     $(document).on('change', '#id_esta_descuento', function() {
         var id_seleccion = $(this).val();
         if (id_seleccion == 2) {
+            $('#id_porcentaje_descuento').val(0);
             $("#id_porcentaje_descuento").prop("disabled", false);
         } else {
             $('#id_porcentaje_descuento').val('');
@@ -428,6 +433,7 @@ Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: f
         var id = $(this).attr('id');
         var id_seleccion = $(this).val();
         if (id_seleccion == 2) {
+            $('#id_porcentaje_descuento'+id).val(0);
             $('#id_porcentaje_descuento' + id).prop("disabled", false);
         } else {
             $('#id_porcentaje_descuento'+id).val('');
