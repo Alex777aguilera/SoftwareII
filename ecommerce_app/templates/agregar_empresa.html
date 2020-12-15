@@ -1,9 +1,10 @@
-{% extends "base_admin.html" %}
+{% extends "base_admin.html" %}  
 {% block title %}
 Easy-buy | Admin
 {% endblock title %}
 {% load static %}
 {% block content %}
+<!-- Hacemos referencia a a la plantilla base para la captura de los valores de una empresa -->
 <br>
 <div class="container">
     <section class="content">
@@ -13,6 +14,7 @@ Easy-buy | Admin
                 <div class="row">
             <aside class="col-md-12" >
                 <div class="card mb-4" style="border-radius: 10px;">
+                    <!-- Aqui mostramos y capturamos los valores que se piden para el almacenamiento de la nueva empresa -->
                     <div class="card-body">
                         <h4 class="card-title mb-4">Empresa</h4>
                         <div class="form-group alert alert-info">
@@ -83,7 +85,7 @@ Easy-buy | Admin
                            
                             
                         </div> <!-- form-row.// -->
-
+                        <!-- Boton que captura el valor y lo almacena en la base de Datos correspondiente -->
                         <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="#datos{{ctx_empresa.pk}}">Editar</button>
                     </div>
                 </div>
@@ -93,7 +95,7 @@ Easy-buy | Admin
          
     </div>
 
-    <!--  Modal para visualizar imgen-->
+    <!--  Modal para visualizar imagen de la empresa-->
                             <div class="modal fade" id="id_imagen{{ctx_empresa.pk}}">
                                 <div class="modal-dialog">
                                     <div class="modal-content alert alert-info">
@@ -109,6 +111,7 @@ Easy-buy | Admin
                                             {% else %} <br>
                                             <label for="">No se encontró imagen</label>
                                             {% endif %}
+                                            <!-- Este if sirve para cargar la imagen de no encontrarla se manda un mensaje de error -->
                                         </div>
                                         <form action="{% url 'ecommerce_app:modificar_img_empresa' ctx_empresa.pk %}" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
@@ -125,6 +128,7 @@ Easy-buy | Admin
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                                             <button type="submit" class="btn btn-info">Actualizar</button>
+                                            <!-- Boton para actualizar la imagen si esta fue cargada -->
                                         </div>
                                         </form>
                                     </div>
@@ -132,7 +136,7 @@ Easy-buy | Admin
                             </div>
 
 
-   <!--  Modal para editar informacion cliente-->
+   <!--  Modal para editar informacion Empresa-->
                             <div class="modal fade" id="datos{{ctx_empresa.pk}}">
                                 <div class="modal-dialog">
                                     <div class="modal-content alert alert-info">
@@ -150,6 +154,7 @@ Easy-buy | Admin
                                        </div>
                                         <form action="{% url 'ecommerce_app:modificar_empresa' ctx_empresa.pk %}" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
+                                        <!-- Se cargan los datos de la empresa mediante una tabla modal -->
                                         <div class="col-sm-12 form-group ">
                                             <hr>
                                             <div class="row">
@@ -201,6 +206,7 @@ Easy-buy | Admin
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                                             <button type="submit" class="btn btn-info">Actualizar</button>
+                                            <!-- Si los campos fueron corregidos mediante este boton se actualiza para que haga el cambio en la base de datos -->
                                         </div>
                                         </form>
                                         </div>
@@ -225,6 +231,7 @@ $(document).ready(function() {
     $('#tablaE').DataTable();
 });
 
+/*Carga los plugin para una mejor visualizacion en un calendario*/
 $('#id_fecha_registro').daterangepicker({
     singleDatePicker: true,
     showDropdowns: true,
@@ -233,7 +240,7 @@ $('#id_fecha_registro').daterangepicker({
         format: 'YYYY-MM-DD'
     }
 });
-
+/*Funciones con sus respectivas validaciones */
 function history_push(){
         history.pushState(null,"","{% url 'ecommerce_app:agregar_empresa' %}");
     }
@@ -241,7 +248,7 @@ function alerta(titulo,icono){
 Swal.fire({ position: 'center', icon: icono, title: titulo, showConfirmButton: false, timer: 2300 })
 }
 
-// validacion para la imgaen del cliente
+// validacion para la imgaen del Empresa
     {% if 'error2' in request.GET %}
 
 Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar la imagen.', showConfirmButton: false, timer: 1500 })
@@ -254,7 +261,7 @@ Swal.fire({ position: 'center', icon: 'success', title: 'Imagen cargada con éxi
 history_push(); 
  {% endif %}
 
- // Validacion para datos del cliente
+ // Validacion para datos del Empresa
  {% if 'error' in request.GET %}
 
 Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
@@ -267,7 +274,7 @@ Swal.fire({ position: 'center', icon: 'success', title: 'Datos modificados con �
 history_push();
  {% endif %}
 
- // Validacion para datos del domicilio
+ 
  {% if 'errord' in request.GET %}
 
 Swal.fire({ position: 'center', icon: 'error', title: 'No se pudo actualizar los datos.', showConfirmButton: false, timer: 1500 })
