@@ -266,13 +266,18 @@ def registro_cliente(request):
 					domicilo = Domicilio(**query_domicilio)
 					domicilo.save()
 
-					#Envío de correo a usuario
-					email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
-					message = get_template('email.html').render(email_data, request=request)
-					msg = EmailMessage('Creación de usuario', message, settings.EMAIL_HOST_USER, 
-										lista_correo)
-					msg.content_subtype = 'html'
-					msg.send(fail_silently=False)
+					try:
+						#Envío de correo a usuario
+						email_data = {'nombres':nombres,'usuario':username,'contrasena':password}
+						message = get_template('email.html').render(email_data, request=request)
+						msg = EmailMessage('Creación de usuario', message, settings.EMAIL_HOST_USER, 
+											lista_correo)
+						msg.content_subtype = 'html'
+						msg.send(fail_silently=False)
+					except Exception as e:
+						pass
+					else:
+						pass
 				except Exception as e:
 					transaction.rollback()
 					
