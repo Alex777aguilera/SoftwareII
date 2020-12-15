@@ -1,5 +1,5 @@
-from django.urls import path
-
+from django.urls import path, include
+from django.conf import settings
 from . import views
 
 app_name = 'ecommerce_app'
@@ -7,7 +7,6 @@ app_name = 'ecommerce_app'
 urlpatterns = [
  path('', views.principal, name='principal'),
  path('principal/admin', views.principal_admin, name='principal_admin'),
- # path('principal/cliente', views.principal_cliente, name='principal_cliente'),
  path('login', views.login, name='login'),
  path('registro/cliente', views.registro_cliente, name="registro_cliente"),	
  path('modificar/cliente/<int:id_cliente>/', views.modificar_cliente, name="modificar_cliente"),
@@ -45,7 +44,10 @@ urlpatterns = [
 
  path('productos/facturacion', views.facturacion_producto, name='facturacion_producto'),
  path('productos/facturacion/mes', views.pdf_mes_productos_vendidos, name='pdf_mes_productos_vendidos'),
+ path('Detalle/Orden', views.Detalle_Orden, name='Detalle_Orden'),
  path('modificar/empresa/<int:id_empresa>/', views.modificar_empresa, name='modificar_empresa'),
  path('modificar/imagen/empresa/<int:id_empresa>/', views.modificar_img_empresa, name='modificar_img_empresa'),
+ path('factura/orden/<int:id>/', views.factura_orden, name='factura_orden'),
+
 
 ]

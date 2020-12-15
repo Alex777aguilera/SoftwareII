@@ -36,7 +36,7 @@
 		<table style="width:70%;">
 	      <tr>
 	        <td class="td-header" style="width:400px; text-align:center;">
-	            <img src="https://i.ibb.co/JmvcqVR/logo-recortado.jpg" alt="" width="230px">
+	            <!--<img src="https://i.ibb.co/JmvcqVR/logo-recortado.jpg" alt="" width="230px">-->
 	        </td>
 	        <td class="td-header" style="width:500px;">
 	          <h2 style="text-align:center;">Empresa <br>{{empresa_nombre | upper}}</h2>
@@ -62,18 +62,6 @@
 			</tr>
 		</thead>
 		<tbody>
-		<!--{% for clave, detalle_prod in reporte_productos.items %}
-			{% if clave == 'productos' %}
-				{% for detalle in detalle_prod %}
-				<tr>
-					{% for dt in detalle %}
-						<td style="text-align:center;">{{dt}}</td>
-					{% endfor %}
-				</tr>
-				{% endfor %}
-			{% endif %}
-		{% endfor %}-->
-
 		{% for clave, detalle_prod in reporte_productos.items %}
 			{% if clave == 'productos' %}
 				{% for detalle in detalle_prod %}
@@ -104,19 +92,6 @@
 				{% endfor %}
 			</tr>
 		{% endfor %}
-
-		<!--{% for detalle_prod in reporte_productos %}
-		<tr>
-			{% for detalle in detalle_prod %}
-				{% if foorlop.last %}
-					<td style="text-align:center; border-bottom: 1px solid #8B8B8B;">{{detalle}}</td>
-				{% else %}
-					<td style="text-align:center;">{{detalle}}</td>
-				{% endif %}
-			{% endfor %}
-		</tr>
-		{% endfor %}-->
-		<!--<tr style="border-top: 1px solid #8B8B8B; "></tr>-->
 		</tbody>
 	</table>
 </body>

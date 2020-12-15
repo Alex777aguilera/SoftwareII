@@ -1,6 +1,6 @@
 {% extends "base_cliente.html" %}
 {% block title %}
-Easy-buy | Producto
+Easy-buy | Producto Detalle
 {% endblock title %}
 {% load static %}
 {% block content %}
@@ -57,9 +57,17 @@ Easy-buy | Producto
                     </div> <!-- rating-wrap.// -->
                     <div class="mb-3">
                         <var class="price h4">L. {{productos.precio}}</var>
+
+                        
                     </div> <!-- price-detail-wrap .// -->
                     <p>{{productos.descripcion_producto}} </p>
+                    
+                        
+
+                    
+                    <p>{{productos.descripcion_producto}} </p>
                     <dl class="row">
+
                         <dt class="col-sm-3">Marca</dt>
                         <dd class="col-sm-9">{{productos.marca.descripcion_marca}}</dd>
                         <dt class="col-sm-3">Modelo</dt>
@@ -140,6 +148,7 @@ function User_Nologin() {
 }
 
  var id_producto = $('#id_producto').val();
+ 
     $.ajax({
         type: "POST",
         url: "{% url 'ecommerce_app:ajax_existencia' %}",
@@ -178,7 +187,7 @@ $("#cantidad").change(function() {
         success: function(json_data) {
             var obj = JSON.parse(json_data);
             var exitencia_producto =parseInt(obj[0].fields.existencia)
-            alert(exitencia_producto)
+            
 
            
               
@@ -225,7 +234,7 @@ $("#cantidad").change(function() {
             })
 
              $(this).prop('disabled', false);
-            alert(holi)
+            
               }
 
 

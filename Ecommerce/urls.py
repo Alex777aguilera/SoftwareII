@@ -21,6 +21,9 @@ from django.conf.urls.static import static
 urlpatterns = [
 	path('', include('ecommerce_app.urls')),
     path('admin/', admin.site.urls),
+    ## Social 
+ 	# path('', include('social.apps.django_app.urls', namespace='social')),
+	 ##
     
 ]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
 
