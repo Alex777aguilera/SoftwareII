@@ -56,14 +56,13 @@ Easy-buy | Car_ecommerce
     </td>
     <td> 
         <div class="price-wrap" align="center"> 
-            <var class="price">{{car.cantidad}} | {{exi.existencia}}</var> 
+            <var class="price">{{car.cantidad|floatformat:"0"}} | {{exi.existencia}}</var> 
             
         </div> 
     </td>
     <td> 
         <div class="price-wrap"> 
             <var class="price  bg-light ">Lps. {{car.producto.precio}}</var> 
-            <small class="text-muted"> Lps. 315.20 antes </small> 
         </div> <!-- price-wrap .// -->
     </td>
     <td class="text-right"> 
@@ -103,7 +102,7 @@ Easy-buy | Car_ecommerce
         <div class="card">
             <div class="card-body">
                     <dl class="dlist-align">
-                      <dt>Sudtotal :</dt>
+                      <dt>Subtotal :</dt>
                       <dd class="text-right">Lps {{e}}</dd>
                     </dl>
                     <dl class="dlist-align">
@@ -135,7 +134,7 @@ Easy-buy | Car_ecommerce
 <script>
     
 {% if carrito_vacio == 0 %}
-Swal.fire({ position: 'center', icon: 'error', title: 'No tienes productos agregados en el carrito', showConfirmButton: false, timer: 2000 })
+Swal.fire({ position: 'center', icon: 'warning', title: 'No tiene productos agregados en el carrito', showConfirmButton: false, timer: 2000 })
 {% endif %}
 </script>
 {% endblock js %}
