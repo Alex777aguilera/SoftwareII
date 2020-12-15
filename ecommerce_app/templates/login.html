@@ -24,9 +24,12 @@ Easy-buy | Login
           <div class="form-group">
 			 <input  class="form-control" placeholder="Usuario" type="text" name="username">
           </div> <!-- form-group// -->
-          <div class="form-group">
-			<input  class="form-control  " placeholder="Contraseña" type="password" name="pass">
-          </div> <!-- form-group// -->
+          <div class="input-group mb-4">
+            <input type="password" class="form-control" placeholder="Contraseña" name="pass" id="id_contrasena">
+            <div class="input-group-append">
+              <button class="btn btn-secondary" type="button" onclick="mostrarPassword();"  id="mostrar_contrasena"></button>
+            </div>
+          </div><!-- form-group// -->
           <div class="form-group">
               <button type="submit" class="btn btn-primary btn-block"> Ingresar  </button>
           </div> <!-- form-group// -->    
@@ -49,5 +52,20 @@ Easy-buy | Login
 {% endblock content %}
 
 {% block js %}
+<script type="text/javascript">
+$(document).ready(function () {
+  $('#mostrar_contrasena').addClass('fa fa-eye-slash');
+});
+  function mostrarPassword(){
+    var cambio = document.getElementById("id_contrasena");
+    if(cambio.type == "password"){
+      $("#id_contrasena").prop("type", "text");
+      $('#mostrar_contrasena').removeClass('fa fa-eye-slash').addClass('fa fa-eye');
+    }else{
+      $("#id_contrasena").prop("type", "password");
+      $('#mostrar_contrasena').removeClass('fa fa-eye').addClass('fa fa-eye-slash');
+    }
+  } 
 
+</script>
 {% endblock js %}
