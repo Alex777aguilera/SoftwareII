@@ -1318,17 +1318,17 @@ def Detalle_Orden(request):
 	cliente = Cliente.objects.get(usuario_cliente=request.user)
 	domicilio = Domicilio.objects.get(usuario = request.user)
 	empresas = Empresa.objects.get(pk=1)
-
+	ctx = {'carritos':carritos,'empresas':empresas,'cliente':cliente,'domicilio':domicilio,'d':d,'e':e,'total':total}
 	### Validacion para eliminar los productos del carrito al ajercer la compra
 	if request.method == 'POST' and request.POST.get('validacion'):
 		c = int(request.POST.get('validacion'))
 		if c == 1:
-			car = Carrito.objects.filter(usuario = request.user).delete()
+			# 
 			print("\n","Se elimino productos del carrito")
 			return HttpResponseRedirect(reverse('ecommerce_app:Detalle_Orden')+"?dato")
 		else :
 			print("No se elimino nada")
-	ctx = {'carritos':carritos,'empresas':empresas,'cliente':cliente,'domicilio':domicilio,'d':d,'e':e,'total':total}
+	
 	return render(request,'Detalle_Orden.html',ctx)
 
 @login_required
@@ -1417,7 +1417,7 @@ def facturacion_producto(request):
 	html = template.render(ctx)
 	response = HttpResponse(content_type='application/pdf')  
 	pisaStatus = pisa.CreatePDF(html,dest=response)
-	
+	car = Carrito.objects.filter(usuario = request.user).delete()
 	return response
 
 	# return render(request,'factura_cliente.html',ctx)
