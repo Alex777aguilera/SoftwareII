@@ -95,7 +95,7 @@ Easy-buy | Producto Detalle
                             <div class="form-group col-md flex-grow-0">
                                 <div class="input-group mb-3 input-spinner">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-light" type="button" id="button-minus"> &minus; </button>
+                                        <button class="btn btn-light " type="button" id="button-minus" onclick="boton_operacion(this);"> &minus; </button>
                                     </div>
                                     <input type="text" class="form-control" value="1" name="cantidad_d" id="cantidad" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" />
                                     {% if errores.cantidad_d %}
@@ -105,7 +105,7 @@ Easy-buy | Producto Detalle
                                     </div>
                                     {% endif %}
                                     <div class="input-group-append">
-                                        <button class="btn btn-light" type="button" id="button-plus"> + </button>
+                                        <button class="btn btn-light " type="button" id="button-plus" onclick="boton_operacion(this);"> + </button>
                                     </div>
                                 </div>
                             </div> <!-- col.// -->
@@ -243,6 +243,24 @@ $("#cantidad").change(function() {
         }
     });
 });
+
+   function boton_operacion(identificador){
+        var id = identificador.id;
+        var cantidad = parseInt($('#cantidad').val());
+        var total = 0;
+        if(id == 'button-plus'){
+            total = cantidad + 1
+            $('#cantidad').val(total);
+        }else{
+            if(cantidad == 1){
+                return
+            }else{
+                total = cantidad - 1
+                $('#cantidad').val(total);
+            }
+           
+        }
+   }
 // 
 
  
