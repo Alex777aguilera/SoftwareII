@@ -112,7 +112,6 @@ def perfil_cliente(request):
 			cliente = Cliente.objects.get(usuario_cliente = user)
 			domicilio = Domicilio.objects.get(usuario = user)
 
-			print(cliente,"\n",domicilio)
 			data = {'cliente':cliente,'domicilio':domicilio,'generos':generos,'empresas':empresas}
 			return render(request,'perfil_cliente.html',data)	
 	else:
@@ -274,7 +273,6 @@ def registro_cliente(request):
 					msg.content_subtype = 'html'
 					msg.send(fail_silently=False)
 				except Exception as e:
-					print (e,"Entro aqui")
 					transaction.rollback()
 					
 					data = {'generos':genero,'ret_data':ret_data,
@@ -534,7 +532,6 @@ def modificar_producto(request,id_producto):
 																),
 
 			except Exception as e:
-				print(e,"Este es el error");	
 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?error1")
 			else:
 				return HttpResponseRedirect(reverse('ecommerce_app:registrar_producto')+"?ok1")		
@@ -583,7 +580,6 @@ def detalle_producto(request,id_producto):
 
 		if Lote.objects.filter(producto=id_producto).exists() :
 			existencias = Lote.objects.get(producto=id_producto)
-			print(existencias)
 		else:
 			existencias = 0	
 		rx = 1
@@ -594,7 +590,6 @@ def ajax_existencia(request):
 	existencia_p = 0
 	if request.method == "POST" and request.is_ajax():
 		if request.POST.get('id_producto') is not None:
-			print("id ",request.POST.get('id_producto'))
 			try:
 				existencia_p = Lote.objects.get(producto=request.POST.get('id_producto'))
 			except Exception as e:
@@ -607,7 +602,6 @@ def ajax_existencia(request):
 			else:
 				return JsonResponse({'otra_variable':'nada'})
 	else :
-		print("no es ajax")
 		return JsonResponse({'otra_variable':'0'})
 
 
@@ -629,7 +623,6 @@ def carrito(request):
 	empresas = Empresa.objects.get(pk=1)
 	rx = 0
 	user = request.user
-	print (user)
 	if user.is_authenticated:
 		if request.user.is_superuser :
 			return redirect('ecommerce_app:principal')
@@ -646,7 +639,6 @@ def carrito(request):
 			ac = 0
 			total = 0
 			carrito_vacio = 1
-			print("Cantidad de productos en el carrito ",cant_pro['cant_total'])
 			if cant_pro['cant_total'] == None:
 				carrito_vacio = 0
 				ctx = {'carrito_vacio':carrito_vacio}
@@ -662,9 +654,6 @@ def carrito(request):
 				g += ac #descuento
 			
 			total = (e - g)
-			print("El sudtotal : ",e)
-			print("El descuento : ",g)
-			print("El total : ",total)
 
 			if request.method == 'POST':
 				a = request.POST.get('producto_id')
@@ -679,7 +668,6 @@ def carrito(request):
 					cant_p = Carrito.objects.filter(producto=a).aggregate(pro_total=Sum('cantidad'))
 					c = int(cant_p['pro_total']) + b #cantidad de productos agregados
 					
-					print("Se agrego con exito")
 					carro = Carrito.objects.filter(producto=a).update(cantidad=c)
 
 					###### Validacion para reducir los productos agregados al carrito en existencia
