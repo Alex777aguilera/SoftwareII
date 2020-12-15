@@ -805,12 +805,12 @@ def ajax_subcategoria_marca(request):
 
 @login_required
 def agregar_empresa(request):
-	guardar_editar = True
-	empresas = Empresa.objects.all()
+	guardar_editar = True 
+	empresas = Empresa.objects.all() 
 	ret_data,query_empresa,errores = {},{},{}
 
 	if request.method == 'POST':
-		ret_data['nombre'] = request.POST.get('nombre')
+		ret_data['nombre'] = request.POST.get('nombre') #Capturamos los valores que son ingresados en los textfield
 		ret_data['imagen_logo'] = request.FILES.get('imagen_logo')
 		ret_data['telefono'] = request.POST.get('telefono')
 		ret_data['correo'] = request.POST.get('correo')
@@ -819,7 +819,7 @@ def agregar_empresa(request):
 		ret_data['longitude_empresa'] = request.POST.get('longitude_empresa')
 		ret_data['descripcion'] = request.POST.get('descripcion')
 
-		#1
+		#1  Validaciones para que los campos no vayan con valor nulo
 		if request.POST.get('nombre') == '':
 			errores['nombre'] = "Por favor ingrese el nombre de la Empresa"
 		else:
@@ -875,9 +875,9 @@ def agregar_empresa(request):
 				transaction.rollback()
 				print (e)
 				errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
-				ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar,'empresas':empresas}
+				ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar,'empresas':empresas} #Se envia el contexto a una variable
 				
-				return render(request,'agregar_empresa.html',ctx)
+				return render(request,'agregar_empresa.html',ctx)  #rediereccionamiento de urls
 
 			else:
 				transaction.commit()
@@ -1318,17 +1318,17 @@ def Detalle_Orden(request):
 	cliente = Cliente.objects.get(usuario_cliente=request.user)
 	domicilio = Domicilio.objects.get(usuario = request.user)
 	empresas = Empresa.objects.get(pk=1)
-
+	ctx = {'carritos':carritos,'empresas':empresas,'cliente':cliente,'domicilio':domicilio,'d':d,'e':e,'total':total}
 	### Validacion para eliminar los productos del carrito al ajercer la compra
 	if request.method == 'POST' and request.POST.get('validacion'):
 		c = int(request.POST.get('validacion'))
 		if c == 1:
-			car = Carrito.objects.filter(usuario = request.user).delete()
+			# 
 			print("\n","Se elimino productos del carrito")
 			return HttpResponseRedirect(reverse('ecommerce_app:Detalle_Orden')+"?dato")
 		else :
 			print("No se elimino nada")
-	ctx = {'carritos':carritos,'empresas':empresas,'cliente':cliente,'domicilio':domicilio,'d':d,'e':e,'total':total}
+	
 	return render(request,'Detalle_Orden.html',ctx)
 
 @login_required
@@ -1417,7 +1417,7 @@ def facturacion_producto(request):
 	html = template.render(ctx)
 	response = HttpResponse(content_type='application/pdf')  
 	pisaStatus = pisa.CreatePDF(html,dest=response)
-	
+	car = Carrito.objects.filter(usuario = request.user).delete()
 	return response
 
 	# return render(request,'factura_cliente.html',ctx)
@@ -1540,12 +1540,12 @@ def pdf_mes_productos_vendidos(request):
 
 @login_required
 def modificar_img_empresa(request,id_empresa):
-	avatar = Empresa.objects.get(pk=id_empresa)
-	ret_data,query_cliente,errores = {},{},{}
+	avatar = Empresa.objects.get(pk=id_empresa) #Capturamos la informacion en una sola variable
+	ret_data,errores = {},{}
 
 	if request.method=='POST':
 		if request.FILES.get('imagen') == None:
-			errores['errores'] = "HAY ERRORES!"
+			errores['errores'] = "HAY ERRORES!" #Muestra un error si no se encuentra algun valor
 
 		if not errores:
 			try: 
@@ -1553,7 +1553,7 @@ def modificar_img_empresa(request,id_empresa):
 				avatar.save() 
 
 			except Exception as e:	
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error2")
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error2") #Redireccionamiento que simula un refresh
 			else:
 				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?ok2")		
 		else:
@@ -1563,11 +1563,11 @@ def modificar_img_empresa(request,id_empresa):
 		return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa'))
 
 def modificar_empresa(request,id_empresa):
-	empresa = Empresa.objects.get(pk=id_empresa)
-	ret_data,query_cliente,errores = {},{},{}
-	if request.method=='POST':
+	empresa = Empresa.objects.get(pk=id_empresa) #Capturamos la informacion en una sola variable
+	ret_data,errores = {},{}
+	if request.method=='POST':#usamos un metodo POST para recibir valores
 		if request.POST.get('nombre') == '' or request.POST.get('telefono') == '' or request.POST.get('fecha_registro') == '' or request.POST.get('direccion') =='' or request.POST.get('latitude_empresa') =='' or request.POST.get('longitude_empresa') =='' or request.POST.get('correo') == '' or request.POST.get('descripcion') == '':
-			errores['nombre'] = "HAY ERRORES!"
+			errores['nombre'] = "HAY ERRORES!" #Muestra un error si no se encuentra algun valor
 		if not errores:
 			try: 
 				empresa = Empresa.objects.filter(pk=id_empresa).update(
@@ -1579,10 +1579,10 @@ def modificar_empresa(request,id_empresa):
 																			 longitude_empresa = request.POST.get('longitude_empresa'),	
 																			 correo = request.POST.get('correo'),
 																			 descripcion = request.POST.get('descripcion'),																			 
-																			 ),
-			except Exception as e:
+																			 ), #Actualizacion de datos
+			except Exception as e: 
 				print (e)
-				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error")
+				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error")  #Redireccionamiento que simula un refresh
 			else:
 				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?ok3")		
 		else:
