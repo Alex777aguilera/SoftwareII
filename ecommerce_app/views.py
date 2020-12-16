@@ -1311,7 +1311,7 @@ def facturacion_producto(request):
 		detalle.save()
 
 	isv = round((subtotal_factura * Decimal(0.15)),2)
-	total_factura = round(((subtotal_factura + isv) - desc_factura),2)
+	total_factura = round((subtotal_factura + isv),2)
 
 	dic_data['detalle'] = lista
 	#se guarda en el modelo de orden los calculos de total de la factura
