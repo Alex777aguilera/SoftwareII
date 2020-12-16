@@ -59,8 +59,11 @@ def principal(request):
 	else:
 		#Data para nuestro index
 		productos_recientes = Producto.objects.filter(estado_producto=True).order_by('-id')[:8]
-		productos_femeninos = Producto.objects.filter(categoria_genero=2).order_by('-id')[:8]
-		productos_masculinos = Producto.objects.filter(categoria_genero=1).order_by('-id')[:8]
+		productos_femeninos = Producto.objects.filter(estado_producto=True,categoria_genero=2
+												).order_by('-id')[:8]
+		productos_masculinos = Producto.objects.filter(estado_producto=True,categoria_genero=1
+												).order_by('-id')[:8]
+		lotes = Lote.objects.all()
 
 		categorias = Categoria.objects.get(pk=1)
 		empresas = Empresa.objects.get(pk=1)
@@ -68,7 +71,7 @@ def principal(request):
 
 		data = {'productos_recientes':productos_recientes,'productos_femeninos':productos_femeninos,
 				'productos_masculinos':productos_masculinos,'categorias':categorias,'a':a,
-				'empresas':empresas}
+				'lotes':lotes,'empresas':empresas}
 		if request.user.is_authenticated:
 			if request.user.is_superuser :
 				#Si es super usuario redirige a plantilla admin
@@ -500,6 +503,7 @@ def modificar_producto(request,id_producto):
 	bool_descuento = False
 	bool_nuevo_producto = True
 	bool_estado_producto= True
+	descuento_porcentaje = 0
 
 	if request.method=='POST':
 		if request.POST.get('nombre_producto') == '' or request.POST.get('precio') == '':
@@ -508,6 +512,9 @@ def modificar_producto(request,id_producto):
 		if not errores:
 			if int(request.POST.get('esta_descuento')) == 2:
 				bool_descuento = True
+				descuento_porcentaje = request.POST.get('porcentaje_descuento')
+			else:
+				descuento_porcentaje = 0
 			if int(request.POST.get('nuevo_producto')) == 2: #Por defecto es 1 que es True es un producto nuevo
 				bool_nuevo_producto = False
 			if int(request.POST.get('estado_producto')) == 2: #Por defecto es 1 que es True es un producto activo
@@ -519,7 +526,7 @@ def modificar_producto(request,id_producto):
 																	descripcion_producto = request.POST.get('descripcion_producto'),
 																	modelo = request.POST.get('modelo'),
 																	precio = request.POST.get('precio'),
-																	porcentaje_descuento = request.POST.get('porcentaje_descuento'),
+																	porcentaje_descuento = descuento_porcentaje,
 																	proveedor = request.POST.get('proveedor'),
 																	esta_descuento = bool_descuento,
 																	nuevo_producto = bool_nuevo_producto,

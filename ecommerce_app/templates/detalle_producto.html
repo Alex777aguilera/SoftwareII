@@ -198,7 +198,7 @@ function User_Nologin() {
             total = cantidad + 1
             $('#cantidad').val(total);
         }else{
-            if(cantidad == 1){
+            if(cantidad <= 1){
                 return
             }else{
                 total = cantidad - 1
