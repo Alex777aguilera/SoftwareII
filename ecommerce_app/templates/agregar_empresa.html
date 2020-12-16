@@ -46,23 +46,6 @@ Easy-buy | Admin
                             </div> <!-- form-group end.// -->
                         </div> <!-- form-row.// -->
 
-                        
-                            <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label><i class="icon fa fa-file-signature"></i> Descripcion</label>
-                                <div class="alert alert-info" role="alert" style="font-size: 12px">
-                                    <strong>{{ctx_empresa.descripcion}} </strong>
-                                </div>
-                            </div> <!-- form-group end.// -->
-                            
-                            <div class="form-group col-md-6">
-                                <label><i class="icon fa fa-map-signs"> </i> Direccion</label>
-                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
-                                    <strong>{{ctx_empresa.direccion}} </strong>
-                                </div>
-                            </div> <!-- form-group end.// -->
-                        </div> <!-- form-row.// -->
-
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label><i class="icon fa fa-envelope"> </i> Correo</label>
@@ -82,8 +65,23 @@ Easy-buy | Admin
                                     <strong>{{ctx_empresa.longitude_empresa}}</strong>
                                 </div>
                             </div> <!--  -->
-                           
+                        </div> <!-- form-row.// -->
+
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-file-signature"></i> Descripcion</label>
+                                <div class="alert alert-info" role="alert" style="font-size: 12px">
+                                    <strong>{{ctx_empresa.descripcion}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
                             
+                            <div class="form-group col-md-6">
+                                <label><i class="icon fa fa-map-signs"> </i> Direccion</label>
+                                <div class="alert alert-info alert-dismissible " role="alert" style="font-size: 12px">
+                                    <strong>{{ctx_empresa.direccion}} </strong>
+                                </div>
+                            </div> <!-- form-group end.// -->
                         </div> <!-- form-row.// -->
                         <!-- Boton que captura el valor y lo almacena en la base de Datos correspondiente -->
                         <button class="btn btn-outline-ligh ml-2" data-toggle="modal" data-target="#datos{{ctx_empresa.pk}}">Editar</button>
@@ -138,7 +136,7 @@ Easy-buy | Admin
 
    <!--  Modal para editar informacion Empresa-->
                             <div class="modal fade" id="datos{{ctx_empresa.pk}}">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content alert alert-info">
                                         <!-- Modal Header -->
                                         <div class="modal-header">
@@ -155,52 +153,52 @@ Easy-buy | Admin
                                         <form action="{% url 'ecommerce_app:modificar_empresa' ctx_empresa.pk %}" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <!-- Se cargan los datos de la empresa mediante una tabla modal -->
-                                        <div class="col-sm-12 form-group ">
+                                    
                                             <hr>
                                             <div class="row">
-                                            <div class="col-sm-6 form-group">
-                                                        <label> <i class="icon fa fa-building"> </i> Nombre <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="text" class="form-control" placeholder="Nombre " id="id_nombre" name="nombre" value="{{ctx_empresa.nombre}}">
+                                                <div class="col-sm-4 form-group">
+                                                    <label> <i class="icon fa fa-building"> </i> Nombre <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                    <input type="text" class="form-control" placeholder="Nombre " id="id_nombre" name="nombre" value="{{ctx_empresa.nombre}}">
+                                                </div> <!-- form-group end.// -->
+                                                <div class="col-sm-4 form-group">
+                                                    <label><i class="icon fa fa-phone"> </i> Telefono <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                    <input type="text" class="form-control" placeholder="telefono" id="id_telefono" name="telefono" value="{{ctx_empresa.telefono}}">
+                                                </div>
+                                                 <div class="col-sm-4 form-group">
+                                                    <label><i class="icon fa fa-calendar"></i> Fecha de registro<i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                    <input type="date" class="form-control" placeholder="fecha_registro" id="id_fecha_registro" name="fecha_registro" value="{{ctx_empresa.fecha_registro|date:'Y-m-d'}}">
+                                                </div> <!-- form-group end.// -->
+                                               
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4 form-group">
+                                                    <label><i class="icon fa fa-envelope"> </i> Correo <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                    <input type="text" class="form-control" placeholder="correo" id="id_correo" name="correo" value="{{ctx_empresa.correo}}">
+                                                </div> <!-- form-group end.// -->
+
+                                                <div class="col-sm-4 form-group">
+                                                    <label><i class="icon fa fa-compass"></i> Latitud <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                    <input type="text" class="form-control" placeholder="latitude_empresa " id="id_latitude_empresa" name="latitude_empresa" value="{{ctx_empresa.latitude_empresa}}">
+                                                </div> <!-- form-group end.// --> 
+                                                <div class="col-sm-4 form-group">
+                                                    <label><i class="icon fa fa-compass"></i> Longitud <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                    <input type="text" class="form-control" placeholder="longitude_empresa " id="id_longitude_empresa" name="longitude_empresa" value="{{ctx_empresa.longitude_empresa}}">
+                                                </div> <!-- form-group end.// -->
+                                            </div> <!-- form-group end.// -->
+                                                <div class="row">
+                                                    <div class="col-sm-6 form-group">
+                                                        <label><i class="icon fa fa-file-signature"></i> Descripción <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <textarea class="form-control" placeholder="Descripción" id="id_descripcion" name="descripcion">{{ctx_empresa.descripcion}}</textarea>
                                                     </div> <!-- form-group end.// -->
                                                    <div class="col-sm-6 form-group">
-                                                        <label> <i class="icon fa fa-map-signs"> </i> Direccion <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="text" class="form-control" placeholder="Direccion " id="id_direccion" name="direccion" value="{{ctx_empresa.direccion}}">
-                                                    </div> <!-- form-group end.// -->
-                                                    
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-6 form-group">
-                                                        <label><i class="icon fa fa-file-signature"></i> Descripcion <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="text" class="form-control" placeholder="descripcion" id="id_descripcion" name="descripcion" value="{{ctx_empresa.descripcion}}">
-                                                    </div> <!-- form-group end.// -->
-                                                    <!---->
-                                                    <!---->
-                                                    <div class="col-sm-5 form-group">
-                                                        <label><i class="icon fa fa-phone"> </i> Telefono <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="text" class="form-control" placeholder="telefono" id="id_telefono" name="telefono" value="{{ctx_empresa.telefono}}">
+                                                        <label> <i class="icon fa fa-map-signs"> </i> Dirección <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
+                                                        <textarea class="form-control" placeholder="Dirección " id="id_direccion" name="direccion" >{{ctx_empresa.direccion}}</textarea>
                                                     </div> <!-- form-group end.// -->
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-sm-6 form-group">
-                                                        <label><i class="icon fa fa-calendar"></i> Fecha de registro<i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="date" class="form-control" placeholder="fecha_registro" id="id_fecha_registro" name="fecha_registro" value="{{ctx_empresa.fecha_registro|date:'Y-m-d'}}">
-                                                    </div> <!-- form-group end.// -->
-
-                                                    <div class="col-sm-6 form-group">
-                                                        <label><i class="icon fa fa-envelope"> </i> Correo <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="text" class="form-control" placeholder="correo" id="id_correo" name="correo" value="{{ctx_empresa.correo}}">
-                                                    </div> <!-- form-group end.// -->
-
-                                                    <div class="col-sm-6 form-group">
-                                                        <label><i class="icon fa fa-compass"></i> Latitud <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="text" class="form-control" placeholder="latitude_empresa " id="id_latitude_empresa" name="latitude_empresa" value="{{ctx_empresa.latitude_empresa}}">
-                                                    </div> <!-- form-group end.// -->
-
-                                                    <div class="col-sm-6 form-group">
-                                                        <label><i class="icon fa fa-compass"></i> Longitud <i class="fas fa-asterisk" style="font-size: 0.7em; color: red;"></i></label>
-                                                        <input type="text" class="form-control" placeholder="longitude_empresa " id="id_longitude_empresa" name="longitude_empresa" value="{{ctx_empresa.longitude_empresa}}">
-                                                    </div> <!-- form-group end.// -->
+                                                 
                                                 </div>
+                                              
                                         </div>
                                         <!-- Modal footer -->
                                         <div class="modal-footer">
@@ -222,8 +220,7 @@ Easy-buy | Admin
         </div>
     </section>
 </div>
-<script type="text/javascript" src="{% static 'js/mapa.js' %}"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmLNF_7mdep2BVrJqpuBy_CxQO6TGKqVc&callback=initMap"></script>
+
 {% endblock content %}
 {% block js %}
 <script type="text/javascript">
@@ -231,15 +228,7 @@ $(document).ready(function() {
     $('#tablaE').DataTable();
 });
 
-/*Carga los plugin para una mejor visualizacion en un calendario*/
-$('#id_fecha_registro').daterangepicker({
-    singleDatePicker: true,
-    showDropdowns: true,
-    maxDate: '12/31/2030',
-    locale: {
-        format: 'YYYY-MM-DD'
-    }
-});
+
 /*Funciones con sus respectivas validaciones */
 function history_push(){
         history.pushState(null,"","{% url 'ecommerce_app:agregar_empresa' %}");
