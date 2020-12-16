@@ -17,7 +17,6 @@ from django.template.loader import get_template #Manejo de plantillas HTMl
 
 from ecommerce_app.models import * #Modelos de nuestra aplicacion
 from decimal import Decimal #Paquete
-from pprint import PrettyPrinter #Manejo de PDF
 
 #Librerias para PDF
 from xhtml2pdf import pisa
@@ -31,8 +30,8 @@ para el funcionamiento de la aplicacion, tambien configuraciones y paquetes nece
 '''
 
 '''
-Por delante nos encontramos con la logica de nuestro proyecto, donde se rendereiza a plantillas
-junto con sus datos respectivos, validaciones,atenticaciones, manejo de eventos asincronos, 
+Por delante nos encontramos con la logica de nuestro proyecto, donde se renderiza a plantillas
+junto con sus datos respectivos, validaciones, autenticaciones, manejo de eventos asincronos, 
 envios de correo, generacion de reportes etc.
 '''
 existe = '' #variable global
@@ -322,7 +321,6 @@ def modificar_cliente(request,id_cliente):
 																			 genero = request.POST.get('genero'),																			 
 																			 ),
 			except Exception as e:
-				print (e)
 				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?error")
 			else:
 				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?ok3")		
@@ -400,12 +398,8 @@ def modificar_domicilio(request,id_domicilio):
 			errores['direccion'] = "HAY ERRORES!"
 		if not errores:
 			try: 
-				domicilio = Domicilio.objects.filter(pk=id_domicilio).update(
-																			 direccion = request.POST.get('direccion'),
-																			 																			 
-																			 ),
+				domicilio = Domicilio.objects.filter(pk=id_domicilio).update(direccion = request.POST.get('direccion')),
 			except Exception as e:
-				print (e)
 				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?errord")
 			else:
 				return HttpResponseRedirect(reverse('ecommerce_app:perfil_cliente')+"?okd")		
@@ -637,7 +631,6 @@ def carrito(request):
 				ctx = {'carrito_vacio':carrito_vacio}
 				render(request,'carrito.html',ctx)
 			
-			# print(carritos.cantidad)
 			for carrito in carritos:
 				
 				d = float(carrito.cantidad) * carrito.producto.precio #sacamos el subtotal de cantidad producto por el precio del mismo
@@ -666,7 +659,6 @@ def carrito(request):
 					###### Validacion para reducir los productos agregados al carrito en existencia
 					cant_p_existencia = Lote.objects.get(producto=a)
 					dx = (int(cant_p_existencia.existencia) - b)
-					print(cant_p_existencia,"\n",dx)
 					productos_apartados = Lote.objects.filter(producto=a).update(existencia=dx)
 
 
@@ -695,15 +687,12 @@ def carrito(request):
 						###### Validacion para reducir los productos agregados al carrito en existencia
 						cant_p_existencia = Lote.objects.get(producto=a)
 						dx = (int(cant_p_existencia.existencia) - b)
-						print(cant_p_existencia,"\n",dx)
 						productos_apartados = Lote.objects.filter(producto=a).update(existencia=dx)
 						car = Carrito(**query_add_carrito)
 						car.save()
-						print("se guardo")
 						
 					except Exception as e:
 						transaction.rollback()
-						print (e)
 						rx = 0
 						existencias = Lote.objects.get(producto=a)
 						errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
@@ -719,7 +708,6 @@ def carrito(request):
 					rx = 0
 					productos = Producto.objects.get(pk=a)
 					existencias = Lote.objects.get(producto=a)
-					print(productos)
 					ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'errores':errores,'ret_data':ret_data,'productos':productos,'existencias':existencias,'empresas':empresas,'rx':rx}
 					return render(request,'detalle_producto.html',ctx)
 			ctx = {'carrito_vacio':carrito_vacio,'total':total,'g':g,'e':e,'carritos':carritos,'existencias':existencias,'empresas':empresas,'rx':rx}
@@ -734,7 +722,6 @@ def Eliminar_producto_carrito(request,id_Pdelete):
 	car = Carrito.objects.get(pk=id_Pdelete)
 	cant_p_existencia = Lote.objects.get(producto=car.producto)
 	cant_pro = (int(car.cantidad) + int(cant_p_existencia.existencia))
-	print(cant_pro)
 	suma_car = Lote.objects.filter(producto=car.producto).update(existencia=cant_pro)
 	#####
 	eliminar = Carrito.objects.get(pk=id_Pdelete).delete()
@@ -834,7 +821,6 @@ def agregar_empresa(request):
 				empresa.save()
 			except Exception as e:
 				transaction.rollback()
-				print (e)
 				errores['administrador'] = "CONTACTAR AL ADMINISTEADOR DEL SISTEMA"
 				ctx = {'errores':errores,'ret_data':ret_data, 'guardar_editar':guardar_editar,'empresas':empresas} #Se envia el contexto a una variable
 				
@@ -1054,7 +1040,6 @@ def agregar_marca(request):
 		ret_data,query_marca,errores = {},{},{}
 
 		if request.method == 'POST':
-			print(request.POST.get('subcategoria'),"Esto trae")
 			ret_data['descripcion_marca'] = request.POST.get('descripcion_marca')
 			# ret_data['subcategoria'] = SubCategoria.objects.get(pk=int(request.POST.get('subcategoria')))
 			
@@ -1127,7 +1112,7 @@ def registrar_lote(request):
 		ret_data,query_lote,errores = {},{},{}
 		if request.method == 'POST':
 			ret_data['existencia'] = request.POST.get('existencia')
-			print(request.POST.get('existencia'),"Esto contiene")
+
 			if request.POST.get('existencia') == '':
 				errores['existencia'] = "DEBE IGRESAR LA EXISTENCIA DEL PRODUCTO!!"
 				
@@ -1263,7 +1248,6 @@ def Detalle_Orden(request):
 
 @login_required
 def facturacion_producto(request):
-
 	cliente = Cliente.objects.filter(usuario_cliente=request.user)
 	cliente_correo = Cliente.objects.get(usuario_cliente=request.user)
 	productos_carrito = Carrito.objects.filter(usuario=request.user)
@@ -1272,7 +1256,7 @@ def facturacion_producto(request):
 
 	query_orden = {}
 	lista = []
-
+	#inicialmente se guarda la orden de la factura con los valores de calculos en 0
 	query_orden['metodo_pago'] = MetodoPago.objects.get(pk=1)
 	query_orden['domicilio'] = Domicilio.objects.get(usuario=request.user)
 	query_orden['usuario'] = request.user
@@ -1286,44 +1270,44 @@ def facturacion_producto(request):
 
 	dic_data = {}
 	subtotal_factura, desc_factura, sub_x_producto = 0, 0, 0
-
+	#recorremos todos los productos que estan en el carrito y que pertenece a el usuario logeado
 	for prod in productos_carrito:
 		lista_data_prod = []
-
+		#realizacion de los calculos para el detalle de la factura
 		sub_x_producto = prod.cantidad * Decimal(prod.producto.precio)
 
 		if prod.producto.porcentaje_descuento == 0 or prod.producto.porcentaje_descuento == None:
 			desc_prod = 0
 		else:
-			desc_prod = prod.producto.porcentaje_descuento
+			desc_prod = (Decimal(prod.producto.porcentaje_descuento / 100) * sub_x_producto)
 
 		desc_factura += desc_prod
 
 		total_x_prod = sub_x_producto - desc_prod
 
 		subtotal_factura += total_x_prod
-
+		#agregamos la informacion del detalle por cada producto para enviarla a la plantilla html
 		lista_data_prod.append(prod.cantidad)
 		lista_data_prod.append(prod.producto.nombre_producto)
 		lista_data_prod.append(f'Lps {prod.producto.precio}')
-		lista_data_prod.append(f'Lps {desc_prod}')
-		lista_data_prod.append(f'Lps {total_x_prod}')
+		lista_data_prod.append(f'Lps {round(desc_prod,2)}')
+		lista_data_prod.append(f'Lps {round(total_x_prod,2)}')
 
 		lista.append(lista_data_prod)
-
+		#guardamos cada registro de los productos en el detalle de la factura
 		detalle = DetalleOrden(cantidad=prod.cantidad,
 								precio=prod.producto.precio,
 								producto=Producto.objects.get(pk=prod.producto.pk),
 								orden=Orden.objects.get(pk=orden.pk),
-								descuento=desc_prod,
-								total_producto=total_x_prod)
+								descuento=round(desc_prod,2),
+								total_producto=round(total_x_prod,2))
 		detalle.save()
 
 	isv = round((subtotal_factura * Decimal(0.15)),2)
 	total_factura = round(((subtotal_factura + isv) - desc_factura),2)
 
 	dic_data['detalle'] = lista
-
+	#se guarda en el modelo de orden los calculos de total de la factura
 	orden.subtotal = subtotal_factura
 	orden.impuesto = isv
 	orden.descuento = desc_factura
@@ -1343,7 +1327,7 @@ def facturacion_producto(request):
 	'empresa' : empresa,
 	'logo_emp' : logo_emp.imagen_logo
 	}
-
+	#ejecucion para generar el reporte pdf mostrando una previsualizacion en otra pestaña del navegador
 	template = get_template('factura_cliente.html')
 	html = template.render(ctx)
 	response = HttpResponse(content_type='application/pdf')  
@@ -1367,12 +1351,6 @@ def facturacion_producto(request):
 
 	return response
 
-	# return render(request,'factura_cliente.html',ctx)
-	
-
-	
-	
-
 #vista para que el admin vea el pdf de todos los productos vendidos seleccionando un mes en especifico
 @login_required
 def pdf_mes_productos_vendidos(request):
@@ -1383,8 +1361,7 @@ def pdf_mes_productos_vendidos(request):
 		lista = []
 		dic_productos, dic, dic_total = {}, {}, {}
 		no_ventas = False
-		#fecha_reporte = datetime.now()
-
+		#guardar el nombre del mes
 		if date[1] == '01':
 			mes = 'Enero'
 
@@ -1439,8 +1416,7 @@ def pdf_mes_productos_vendidos(request):
 													orden__fecha_compra__month=date[1]
 													).aggregate(total = Sum('total_producto'))['total']
 
-
-		if facturas.count() > 0:#validar que hay facturas realizadas en ese mes
+		if facturas.count() > 0:#validar que si hay facturas realizadas en ese mes
 
 			for factura in facturas:
 				#obteniendo cada uno de los productos vendidos de esa factura en el mes
@@ -1448,7 +1424,7 @@ def pdf_mes_productos_vendidos(request):
 
 				for producto in productos_vendidos:
 					lista_producto = []
-
+					#se guardan en una lista que se asigna a un diccinario para mostrarlo en la plantilla html
 					lista_producto.append(producto.orden.fecha_compra.strftime("%d/%m/%Y"))
 					lista_producto.append(producto.orden.pk)
 					lista_producto.append(producto.producto.nombre_producto)
@@ -1462,7 +1438,7 @@ def pdf_mes_productos_vendidos(request):
 			dic_total['total'] = [total_cantidad, f'Lps {total_precio}', f'Lps {total_descuento}', f'Lps {total_prod}']
 
 			dic_productos['productos'] = lista
-		else:
+		else:#No hay registros de ventas en el mes seleccionado
 			dic_productos = {}
 			dic_total = {}
 			no_ventas = True
@@ -1474,7 +1450,7 @@ def pdf_mes_productos_vendidos(request):
 				'mes': mes,
 				'anio' : date[0],
 				'no_ventas' : no_ventas}
-
+		#ejecucion para generar el reporte pdf mostrando una previsualizacion en otra pestaña del navegador
 		template = get_template('pdf_mes_productos_vendidos.html')
 		html = template.render(ctx)
 		response = HttpResponse(content_type='application/pdf')  
@@ -1528,7 +1504,6 @@ def modificar_empresa(request,id_empresa):
 																			 descripcion = request.POST.get('descripcion'),																			 
 																			 ), #Actualizacion de datos
 			except Exception as e: 
-				print (e)
 				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?error")  #Redireccionamiento que simula un refresh
 			else:
 				return HttpResponseRedirect(reverse('ecommerce_app:agregar_empresa')+"?ok3")		
@@ -1545,16 +1520,14 @@ def error_404_view(request, exception):
 def factura_orden(request, id):
 	orden_factura = Orden.objects.filter(pk=id)
 	fact = Orden.objects.get(pk=id)
-
 	factura_detalle = DetalleOrden.objects.filter(orden=fact)
-
 	cliente = Cliente.objects.filter(usuario_cliente=fact.usuario)
 	empresa = Empresa.objects.filter(pk=1)
 	logo_emp = Empresa.objects.get(pk=1)
 
 	lista = []
 	dic_data = {}
-
+	#recoremos los productos que contiene la factura para guardar su informacion en una lista
 	for fact_det in factura_detalle:
 		lista_data_prod = []
 		lista_data_prod.append(fact_det.cantidad)
@@ -1566,7 +1539,7 @@ def factura_orden(request, id):
 		lista.append(lista_data_prod)
 
 	dic_data['detalle'] = lista
-
+	#enviamos la data a la plantilla para mostrar la factura
 	ctx = {
 			'factura' : dic_data,
 			'cliente' : cliente,
@@ -1574,7 +1547,7 @@ def factura_orden(request, id):
 			'empresa' : empresa,
 			'logo_emp' : logo_emp.imagen_logo
 		}
-
+	#ejecucion para generar el reporte pdf mostrando una previsualizacion en otra pestaña del navegador
 	template = get_template('factura_cliente.html')
 	html = template.render(ctx)
 	response = HttpResponse(content_type='application/pdf')  
